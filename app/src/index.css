@@ -1,0 +1,280 @@
+@import url('https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&family=Outfit:wght@300;400;500;600;700;800&display=swap');
+
+:root {
+  /* Premium Palette HSL base tokens */
+  --primary-hue: 239;
+  --secondary-hue: 328;
+  --success-hue: 161;
+  --warning-hue: 38;
+  --error-hue: 0;
+
+  /* HSL Colors */
+  --primary: hsl(var(--primary-hue), 84%, 67%);
+  --secondary: hsl(var(--secondary-hue), 86%, 60%);
+  --success: hsl(var(--success-hue), 84%, 48%);
+  --warning: hsl(var(--warning-hue), 92%, 50%);
+  --error: hsl(var(--error-hue), 84%, 55%);
+
+  /* Core Layout System Colors */
+  --text: #4b5563;
+  --text-h: #111827;
+  --bg: #f8fafc;
+  --border: #e2e8f0;
+  
+  /* Glassmorphism Variables */
+  --glass-bg: rgba(255, 255, 255, 0.45);
+  --glass-border: rgba(255, 255, 255, 0.6);
+  --glass-shadow: 0 8px 32px 0 rgba(31, 38, 135, 0.04);
+  --accent-gradient: linear-gradient(135deg, #6366f1 0%, #a855f7 50%, #ec4899 100%);
+  --accent-glow: rgba(99, 102, 241, 0.15);
+
+  --sans: 'Outfit', 'Inter', system-ui, -apple-system, sans-serif;
+  --mono: ui-monospace, Consolas, monospace;
+
+  font: 16px/1.5 var(--sans);
+  letter-spacing: -0.01em;
+  color-scheme: light dark;
+  color: var(--text);
+  background: var(--bg);
+  font-synthesis: none;
+  text-rendering: optimizeLegibility;
+  -webkit-font-smoothing: antialiased;
+  -moz-osx-font-smoothing: grayscale;
+}
+
+@media (prefers-color-scheme: dark) {
+  :root {
+    --text: #94a3b8;
+    --text-h: #f8fafc;
+    --bg: #0f172a;
+    --border: #1e293b;
+
+    --glass-bg: rgba(15, 23, 42, 0.55);
+    --glass-border: rgba(255, 255, 255, 0.06);
+    --glass-shadow: 0 8px 32px 0 rgba(0, 0, 0, 0.3);
+    --accent-glow: rgba(99, 102, 241, 0.25);
+  }
+}
+
+body {
+  margin: 0;
+  background-color: var(--bg);
+}
+
+/* Beautiful custom container background glow */
+.seo-dashboard-wrapper {
+  position: relative;
+  background: radial-gradient(circle at 10% 20%, rgba(99, 102, 241, 0.05) 0%, transparent 40%),
+              radial-gradient(circle at 90% 80%, rgba(236, 72, 153, 0.05) 0%, transparent 40%);
+  min-height: 100vh;
+  border-radius: 12px;
+  overflow: hidden;
+}
+
+/* Glassmorphic Panel Design */
+.glass-panel {
+  background: var(--glass-bg);
+  backdrop-filter: blur(16px);
+  -webkit-backdrop-filter: blur(16px);
+  border: 1px solid var(--glass-border);
+  border-radius: 16px;
+  box-shadow: var(--glass-shadow);
+  transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+}
+
+.glass-panel:hover {
+  box-shadow: 0 12px 40px 0 rgba(31, 38, 135, 0.08);
+  border-color: rgba(99, 102, 241, 0.25);
+}
+
+@media (prefers-color-scheme: dark) {
+  .glass-panel:hover {
+    box-shadow: 0 12px 40px 0 rgba(0, 0, 0, 0.4);
+    border-color: rgba(99, 102, 241, 0.35);
+  }
+}
+
+/* Gradient text */
+.gradient-text {
+  background: var(--accent-gradient);
+  -webkit-background-clip: text;
+  -webkit-text-fill-color: transparent;
+  background-clip: text;
+  font-weight: 700;
+}
+
+/* Pulse Glowing Button */
+.btn-glow {
+  background: var(--accent-gradient) !important;
+  color: #fff !important;
+  border: none !important;
+  border-radius: 12px !important;
+  font-weight: 600 !important;
+  text-transform: none !important;
+  letter-spacing: -0.01em !important;
+  box-shadow: 0 4px 14px 0 rgba(99, 102, 241, 0.35) !important;
+  transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1) !important;
+  position: relative;
+  overflow: hidden;
+}
+
+.btn-glow:hover {
+  transform: translateY(-2px);
+  box-shadow: 0 6px 20px 0 rgba(99, 102, 241, 0.5), var(--glow-shadow-primary) !important;
+}
+
+.btn-glow:active {
+  transform: translateY(1px);
+}
+
+/* Pulsating shadow animation */
+@keyframes pulseGlow {
+  0% {
+    box-shadow: 0 4px 14px 0 rgba(99, 102, 241, 0.35);
+  }
+  50% {
+    box-shadow: 0 4px 20px 10px rgba(99, 102, 241, 0.2);
+  }
+  100% {
+    box-shadow: 0 4px 14px 0 rgba(99, 102, 241, 0.35);
+  }
+}
+
+.btn-pulse {
+  animation: pulseGlow 2.5s infinite ease-in-out;
+}
+
+/* Metric custom cards */
+.metric-card-indigo {
+  position: relative;
+  overflow: hidden;
+}
+.metric-card-indigo::before {
+  content: '';
+  position: absolute;
+  top: 0;
+  left: 0;
+  width: 4px;
+  height: 100%;
+  background: var(--primary);
+}
+
+.metric-card-pink {
+  position: relative;
+  overflow: hidden;
+}
+.metric-card-pink::before {
+  content: '';
+  position: absolute;
+  top: 0;
+  left: 0;
+  width: 4px;
+  height: 100%;
+  background: var(--secondary);
+}
+
+.metric-card-success {
+  position: relative;
+  overflow: hidden;
+}
+.metric-card-success::before {
+  content: '';
+  position: absolute;
+  top: 0;
+  left: 0;
+  width: 4px;
+  height: 100%;
+  background: var(--success);
+}
+
+/* Custom indicator styles */
+.metric-icon-bg {
+  width: 48px;
+  height: 48px;
+  border-radius: 12px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  transition: all 0.3s ease;
+}
+
+.metric-card-indigo:hover .metric-icon-bg {
+  background-color: rgba(99, 102, 241, 0.15);
+  transform: scale(1.1) rotate(5deg);
+}
+
+.metric-card-pink:hover .metric-icon-bg {
+  background-color: rgba(236, 72, 153, 0.15);
+  transform: scale(1.1) rotate(5deg);
+}
+
+.metric-card-success:hover .metric-icon-bg {
+  background-color: rgba(16, 185, 129, 0.15);
+  transform: scale(1.1) rotate(5deg);
+}
+
+/* Table Row Smooth Transformations */
+.smooth-table-row {
+  transition: all 0.2s cubic-bezier(0.4, 0, 0.2, 1) !important;
+}
+
+.smooth-table-row:hover {
+  background-color: rgba(99, 102, 241, 0.04) !important;
+}
+
+@media (prefers-color-scheme: dark) {
+  .smooth-table-row:hover {
+    background-color: rgba(255, 255, 255, 0.02) !important;
+  }
+}
+
+/* Modern Pill Badges */
+.pill-badge {
+  font-weight: 600 !important;
+  border-radius: 8px !important;
+  padding: 4px 10px !important;
+  font-size: 0.8rem !important;
+}
+
+/* Custom Scrollbar for Modern Grid elements */
+.custom-scrollbar::-webkit-scrollbar {
+  width: 8px;
+  height: 8px;
+}
+
+.custom-scrollbar::-webkit-scrollbar-track {
+  background: transparent;
+}
+
+.custom-scrollbar::-webkit-scrollbar-thumb {
+  background: var(--border);
+  border-radius: 9999px;
+}
+
+.custom-scrollbar::-webkit-scrollbar-thumb:hover {
+  background: #94a3b8;
+}
+
+/* Drawer navigation active marker */
+.drawer-active-item {
+  border-right: 4px solid var(--primary) !important;
+  background-color: rgba(99, 102, 241, 0.06) !important;
+  font-weight: 600 !important;
+}
+
+.drawer-active-item svg {
+  color: var(--primary) !important;
+}
+
+/* Override WordPress admin styles collapsing MUI checkboxes */
+#frank-seo-audit-root input[type="checkbox"] {
+  width: 100% !important;
+  height: 100% !important;
+  opacity: 0 !important;
+  position: absolute !important;
+  margin: 0 !important;
+  padding: 0 !important;
+  cursor: pointer !important;
+  top: 0 !important;
+  left: 0 !important;
+}
