@@ -129,6 +129,12 @@ class Frank_SEO_REST_API {
 			'callback'            => array( $this, 'update_settings' ),
 			'permission_callback' => array( $this, 'check_permission' ),
 		) );
+
+		register_rest_route( $namespace, '/reset', array(
+			'methods'             => WP_REST_Server::CREATABLE,
+			'callback'            => array( $this, 'reset_plugin' ),
+			'permission_callback' => array( $this, 'check_permission' ),
+		) );
 	}
 
 	public function check_permission() {
@@ -437,6 +443,33 @@ class Frank_SEO_REST_API {
 		update_option( 'frank_seo_settings', $sanitized_settings );
 
 		return rest_ensure_response( array( 'success' => true, 'settings' => $sanitized_settings ) );
+	}
+
+	/**
+	 * Reset the plugin by deleting all data and options.
+	 */
+	public function reset_plugin( $request ) {
+		global $wpdb;
+		
+		$table_pages = $wpdb->prefix . 'frank_audit_pages';
+		$table_issues = $wpdb->prefix . 'frank_audit_issues';
+		$table_links = $wpdb->prefix . 'frank_audit_links';
+		$table_history = $wpdb->prefix . 'frank_audit_history';
+
+		// Empty all tables
+		$table_exists = $wpdb->get_var("SHOW TABLES LIKE '$table_pages'") === $table_pages;
+		if ( $table_exists ) {
+			$wpdb->query( "TRUNCATE TABLE $table_pages" );
+			$wpdb->query( "TRUNCATE TABLE $table_issues" );
+			$wpdb->query( "TRUNCATE TABLE $table_links" );
+			$wpdb->query( "TRUNCATE TABLE $table_history" );
+		}
+
+		// Delete options
+		delete_option( 'frank_seo_settings' );
+		delete_option( 'frank_seo_db_version' );
+
+		return rest_ensure_response( array( 'success' => true, 'message' => 'Plugin reset successfully.' ) );
 	}
 }
 

@@ -3,7 +3,7 @@
  * Plugin Name:       Frank Website SEO Checker And Audit
  * Plugin URI:        https://wpfrank.com/
  * Description:       A complete on-page SEO audit plugin with a React-powered dashboard. Crawls pages, detects SEO issues, and maintains history.
- * Version:           1.0.0
+ * Version:           1.0.1
  * Author:            WPFrank
  * Author URI:        https://wpfrank.com/
  * License:           GPL-2.0+
@@ -20,7 +20,7 @@ if ( ! defined( 'WPINC' ) ) {
 /**
  * Currently plugin version.
  */
-define( 'FRANK_SEO_AUDIT_VERSION', '1.0.0' );
+define( 'FRANK_SEO_AUDIT_VERSION', '1.0.1' );
 
 /**
  * Plugin directory path.

@@ -12,7 +12,12 @@ import {
   Grid,
   Snackbar,
   Alert,
-  CircularProgress
+  CircularProgress,
+  Dialog,
+  DialogActions,
+  DialogContent,
+  DialogContentText,
+  DialogTitle
 } from '@mui/material';
 import SettingsIcon from '@mui/icons-material/Settings';
 import SaveIcon from '@mui/icons-material/Save';
@@ -20,7 +25,8 @@ import TuneIcon from '@mui/icons-material/Tune';
 import CodeIcon from '@mui/icons-material/Code';
 import AccessTimeIcon from '@mui/icons-material/AccessTime';
 import LinkIcon from '@mui/icons-material/Link';
-import { getSettings, updateSettings } from '../api';
+import DeleteIcon from '@mui/icons-material/Delete';
+import { getSettings, updateSettings, resetPlugin } from '../api';
 
 function Settings() {
   const [loading, setLoading] = useState(true);
@@ -40,8 +46,11 @@ function Settings() {
 
   const [saving, setSaving] = useState(false);
   const [openToast, setOpenToast] = useState(false);
+  const [toastMessage, setToastMessage] = useState('Configuration applied and saved successfully!');
   const [errorToast, setErrorToast] = useState(false);
   const [errorMessage, setErrorMessage] = useState('');
+  const [openResetDialog, setOpenResetDialog] = useState(false);
+  const [resetting, setResetting] = useState(false);
 
   useEffect(() => {
     const fetchSettings = async () => {
@@ -78,6 +87,7 @@ function Settings() {
     try {
       const response = await updateSettings(settings);
       if (response && response.success) {
+        setToastMessage('Configuration applied and saved successfully!');
         setOpenToast(true);
       } else {
         setErrorMessage(response?.message || 'Failed to update configurations.');
@@ -92,9 +102,39 @@ function Settings() {
     }
   };
 
+  const handleReset = async () => {
+    setResetting(true);
+    try {
+      const response = await resetPlugin();
+      if (response && response.success) {
+        setToastMessage('Plugin has been completely reset.');
+        setOpenToast(true);
+        setOpenResetDialog(false);
+        // Refresh page to clear out react states and re-fetch settings
+        setTimeout(() => {
+          window.location.reload();
+        }, 1500);
+      } else {
+        setErrorMessage(response?.message || 'Failed to reset plugin.');
+        setErrorToast(true);
+      }
+    } catch (err) {
+      console.error("Failed to reset plugin via API:", err);
+      setErrorMessage('A network error occurred while resetting.');
+      setErrorToast(true);
+    } finally {
+      setResetting(false);
+    }
+  };
+
   const handleCloseToast = (event, reason) => {
     if (reason === 'clickaway') return;
     setOpenToast(false);
+  };
+
+  const handleCloseErrorToast = (event, reason) => {
+    if (reason === 'clickaway') return;
+    setErrorToast(false);
   };
 
   if (loading) {
@@ -202,10 +242,22 @@ function Settings() {
                     ]}
                     onChange={(e, val) => setSettings({ ...settings, crawlDepth: val })}
                     sx={{
+                      mx: 1.5,
+                      width: 'calc(100% - 24px)',
                       color: 'var(--primary)',
                       '& .MuiSlider-thumb': {
                         '&:hover, &.Mui-focusVisible': {
                           boxShadow: '0px 0px 0px 8px rgba(99, 102, 241, 0.16)',
+                        },
+                      },
+                      '& .MuiSlider-markLabel': {
+                        fontFamily: 'var(--sans)',
+                        fontSize: '0.8rem',
+                        '&[data-index="0"]': {
+                          transform: 'translateX(0%)',
+                        },
+                        '&[data-index="4"]': {
+                          transform: 'translateX(-100%)',
                         },
                       },
                     }}
@@ -228,10 +280,22 @@ function Settings() {
                     ]}
                     onChange={(e, val) => setSettings({ ...settings, crawlInterval: val })}
                     sx={{
+                      mx: 1.5,
+                      width: 'calc(100% - 24px)',
                       color: 'var(--primary)',
                       '& .MuiSlider-thumb': {
                         '&:hover, &.Mui-focusVisible': {
                           boxShadow: '0px 0px 0px 8px rgba(99, 102, 241, 0.16)',
+                        },
+                      },
+                      '& .MuiSlider-markLabel': {
+                        fontFamily: 'var(--sans)',
+                        fontSize: '0.8rem',
+                        '&[data-index="0"]': {
+                          transform: 'translateX(0%)',
+                        },
+                        '&[data-index="2"]': {
+                          transform: 'translateX(-100%)',
                         },
                       },
                     }}
@@ -423,6 +487,31 @@ function Settings() {
               </Button>
             </Box>
 
+            {/* Reset card */}
+            <Box className="glass-panel" sx={{ p: 4, borderRadius: '20px', textAlign: 'center', borderColor: 'rgba(239, 68, 68, 0.2)', borderWidth: '1px', borderStyle: 'solid' }}>
+              <Typography variant="h6" sx={{ fontWeight: 700, fontFamily: 'var(--sans)', color: '#ef4444', mb: 1 }}>
+                Danger Zone
+              </Typography>
+              <Typography variant="body2" sx={{ color: 'var(--text)', fontFamily: 'var(--sans)', mb: 3 }}>
+                Completely reset all plugin data, including audit history, settings, and scanned pages. This action cannot be undone.
+              </Typography>
+              <Button
+                variant="outlined"
+                color="error"
+                startIcon={<DeleteIcon />}
+                onClick={() => setOpenResetDialog(true)}
+                sx={{
+                  width: '100%',
+                  py: 1.5,
+                  fontSize: '0.95rem',
+                  fontFamily: 'var(--sans)',
+                  borderRadius: '10px'
+                }}
+              >
+                Reset Plugin Data
+              </Button>
+            </Box>
+
             {/* Schedule configuration */}
             <Box className="glass-panel" sx={{ p: 4, borderRadius: '20px' }}>
               <Box sx={{ display: 'flex', alignItems: 'center', gap: 1.5, mb: 2.5 }}>
@@ -517,9 +606,92 @@ function Settings() {
             border: '1px solid rgba(16, 185, 129, 0.25)'
           }}
         >
-          Configuration applied and saved successfully!
+          {toastMessage}
         </Alert>
       </Snackbar>
+
+      <Snackbar 
+        open={errorToast} 
+        autoHideDuration={6000} 
+        onClose={handleCloseErrorToast}
+        anchorOrigin={{ vertical: 'bottom', horizontal: 'right' }}
+      >
+        <Alert 
+          onClose={handleCloseErrorToast} 
+          severity="error" 
+          sx={{ 
+            borderRadius: '12px', 
+            fontFamily: 'var(--sans)', 
+            fontWeight: 600,
+            boxShadow: '0 8px 32px 0 rgba(239, 68, 68, 0.15)',
+            border: '1px solid rgba(239, 68, 68, 0.25)'
+          }}
+        >
+          {errorMessage}
+        </Alert>
+      </Snackbar>
+
+      {/* Reset Confirmation Dialog */}
+      <Dialog
+        open={openResetDialog}
+        onClose={() => !resetting && setOpenResetDialog(false)}
+        PaperProps={{
+          sx: {
+            borderRadius: '20px',
+            padding: '16px',
+            backgroundColor: 'var(--bg)',
+            backgroundImage: 'none',
+            border: '1px solid var(--border)',
+            boxShadow: '0 25px 50px -12px rgba(0,0,0,0.25)'
+          }
+        }}
+        slotProps={{
+          backdrop: {
+            sx: {
+              backdropFilter: 'blur(4px)',
+              backgroundColor: 'rgba(15, 23, 42, 0.3)'
+            }
+          }
+        }}
+      >
+        <DialogTitle sx={{ fontFamily: 'var(--sans)', fontWeight: 700, color: '#ef4444' }}>
+          Reset Plugin?
+        </DialogTitle>
+        <DialogContent>
+          <DialogContentText sx={{ fontFamily: 'var(--sans)', color: 'var(--text)' }}>
+            Are you absolutely sure you want to reset the plugin? This will delete all your settings, page audit history, and detected issues permanently.
+          </DialogContentText>
+        </DialogContent>
+        <DialogActions sx={{ padding: '16px 24px' }}>
+          <Button 
+            onClick={() => setOpenResetDialog(false)} 
+            disabled={resetting}
+            sx={{ 
+              color: 'var(--text-h)', 
+              fontFamily: 'var(--sans)',
+              fontWeight: 600
+            }}
+          >
+            Cancel
+          </Button>
+          <Button 
+            onClick={handleReset} 
+            color="error" 
+            variant="contained" 
+            disabled={resetting}
+            startIcon={resetting ? <CircularProgress size={16} color="inherit" /> : <DeleteIcon />}
+            sx={{ 
+              fontFamily: 'var(--sans)', 
+              fontWeight: 600,
+              borderRadius: '8px',
+              padding: '8px 16px',
+              boxShadow: 'none'
+            }}
+          >
+            {resetting ? 'Resetting...' : 'Yes, Reset Plugin'}
+          </Button>
+        </DialogActions>
+      </Dialog>
     </Box>
   );
 }

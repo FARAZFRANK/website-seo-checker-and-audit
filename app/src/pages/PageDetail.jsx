@@ -15,7 +15,9 @@ import {
   FormControl,
   Grid,
   Tabs,
-  Tab
+  Tab,
+  Snackbar,
+  Alert
 } from '@mui/material';
 import ArrowBackIcon from '@mui/icons-material/ArrowBack';
 import LaunchIcon from '@mui/icons-material/Launch';
@@ -23,8 +25,9 @@ import ErrorOutlineIcon from '@mui/icons-material/ErrorOutline';
 import WarningAmberIcon from '@mui/icons-material/WarningAmber';
 import InfoOutlinedIcon from '@mui/icons-material/InfoOutlined';
 import CheckCircleOutlineIcon from '@mui/icons-material/CheckCircleOutline';
+import RefreshIcon from '@mui/icons-material/Refresh';
 import { useParams, useNavigate } from 'react-router-dom';
-import { getPageDetails, updateIssueStatus } from '../api';
+import { getPageDetails, updateIssueStatus, triggerScan } from '../api';
 
 function PageDetail() {
   const { id } = useParams();
@@ -33,6 +36,8 @@ function PageDetail() {
   const [loading, setLoading] = useState(true);
   const [updating, setUpdating] = useState(null);
   const [activeTab, setActiveTab] = useState(0);
+  const [rescanning, setRescanning] = useState(false);
+  const [rescanToast, setRescanToast] = useState({ open: false, severity: 'success', message: '' });
 
   const fetchData = async () => {
     setLoading(true);
@@ -43,6 +48,21 @@ function PageDetail() {
       console.error("Failed to fetch page details:", error);
     }
     setLoading(false);
+  };
+
+  const handleRescan = async () => {
+    setRescanning(true);
+    try {
+      await triggerScan([parseInt(id)]);
+      // Re-fetch fresh data after scan completes
+      const details = await getPageDetails(id);
+      setData(details);
+      setRescanToast({ open: true, severity: 'success', message: 'Page rescanned successfully! Data has been refreshed.' });
+    } catch (error) {
+      console.error('Rescan failed:', error);
+      setRescanToast({ open: true, severity: 'error', message: 'Rescan failed. Please try again.' });
+    }
+    setRescanning(false);
   };
 
   useEffect(() => {
@@ -245,6 +265,35 @@ function PageDetail() {
                 {data.page.url}
                 <LaunchIcon sx={{ fontSize: 14 }} />
               </a>
+            </Box>
+
+            {/* Rescan Button */}
+            <Box sx={{ mt: 2 }}>
+              <Button
+                variant="contained"
+                className="btn-glow"
+                startIcon={rescanning ? <CircularProgress size={16} color="inherit" /> : <RefreshIcon />}
+                onClick={handleRescan}
+                disabled={rescanning}
+                sx={{
+                  textTransform: 'none',
+                  fontFamily: 'var(--sans)',
+                  fontWeight: 600,
+                  fontSize: '0.88rem',
+                  borderRadius: '12px',
+                  px: 3,
+                  py: 1,
+                  background: rescanning ? 'rgba(99, 102, 241, 0.5)' : 'linear-gradient(135deg, var(--primary), var(--secondary))',
+                  boxShadow: '0 4px 15px rgba(99, 102, 241, 0.25)',
+                  '&:hover': {
+                    boxShadow: '0 6px 20px rgba(99, 102, 241, 0.35)',
+                    transform: 'translateY(-1px)',
+                  },
+                  transition: 'all 0.2s ease',
+                }}
+              >
+                {rescanning ? 'Rescanning...' : 'Rescan This Page'}
+              </Button>
             </Box>
           </Grid>
 
@@ -634,6 +683,32 @@ function PageDetail() {
           </TableContainer>
         </Box>
       )}
+
+      {/* Rescan Toast Notification */}
+      <Snackbar
+        open={rescanToast.open}
+        autoHideDuration={4000}
+        onClose={() => setRescanToast(prev => ({ ...prev, open: false }))}
+        anchorOrigin={{ vertical: 'bottom', horizontal: 'right' }}
+      >
+        <Alert
+          onClose={() => setRescanToast(prev => ({ ...prev, open: false }))}
+          severity={rescanToast.severity}
+          sx={{
+            borderRadius: '12px',
+            fontFamily: 'var(--sans)',
+            fontWeight: 600,
+            boxShadow: rescanToast.severity === 'success'
+              ? '0 8px 32px 0 rgba(16, 185, 129, 0.15)'
+              : '0 8px 32px 0 rgba(239, 68, 68, 0.15)',
+            border: rescanToast.severity === 'success'
+              ? '1px solid rgba(16, 185, 129, 0.25)'
+              : '1px solid rgba(239, 68, 68, 0.25)',
+          }}
+        >
+          {rescanToast.message}
+        </Alert>
+      </Snackbar>
     </Box>
   );
 }

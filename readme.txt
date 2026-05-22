@@ -4,7 +4,7 @@ Tags: seo, audit, seo-checker, on-page-seo, seo-audit
 Requires at least: 5.8
 Tested up to: 6.8
 Requires PHP: 7.4
-Stable tag: 1.0.0
+Stable tag: 1.0.1
 License: GPLv2 or later
 License URI: https://www.gnu.org/licenses/gpl-2.0.html
 
@@ -67,6 +67,11 @@ No. All auditing is performed locally on your server. No data is sent to externa
 
 == Changelog ==
 
+= 1.0.1 =
+* Fixed dialog readability issues by making backgrounds solid and adding backdrop blur.
+* Updated WP Admin menu and page title to "Frank SEO Checker & Audit".
+* Version bump.
+
 = 1.0.0 =
 * Initial release.
 * On-page SEO audit with score calculation.
@@ -79,6 +84,9 @@ No. All auditing is performed locally on your server. No data is sent to externa
 * Settings panel with crawl configuration.
 
 == Upgrade Notice ==
+
+= 1.0.1 =
+Minor update fixing dialog readability issues and naming consistency.
 
 = 1.0.0 =
 Initial release — install to begin auditing your site's on-page SEO.

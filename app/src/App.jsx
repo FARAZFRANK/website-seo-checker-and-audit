@@ -104,7 +104,7 @@ function Layout() {
           }}
         >
           <Typography variant="h6" noWrap component="div" sx={{ fontFamily: 'var(--sans)', fontWeight: 700, letterSpacing: '-0.02em', color: 'var(--text-h)' }}>
-            Frank <span className="gradient-text">SEO Checker & Audit</span>
+            Frank <span className="gradient-text">SEO Checker & Audit</span> v1.0.1
           </Typography>
         </Box>
         <Routes>

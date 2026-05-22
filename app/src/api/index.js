@@ -64,4 +64,9 @@ export const updateSettings = async (settings) => {
   return response.data;
 };
 
+export const resetPlugin = async () => {
+  const response = await apiClient.post('reset');
+  return response.data;
+};
+
 export default apiClient;

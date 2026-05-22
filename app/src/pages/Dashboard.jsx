@@ -1,4 +1,4 @@
-import React, { useEffect, useState } from 'react';
+import React, { useEffect, useState, useMemo } from 'react';
 import { 
   Typography, 
   Paper, 
@@ -27,7 +27,9 @@ import {
   MenuItem,
   ListItemIcon,
   ListItemText,
-  TableSortLabel
+  TableSortLabel,
+  Select,
+  FormControl
 } from '@mui/material';
 import PlayArrowIcon from '@mui/icons-material/PlayArrow';
 import SearchIcon from '@mui/icons-material/Search';
@@ -36,6 +38,7 @@ import BugReportIcon from '@mui/icons-material/BugReport';
 import SpeedIcon from '@mui/icons-material/Speed';
 import LaunchIcon from '@mui/icons-material/Launch';
 import RefreshIcon from '@mui/icons-material/Refresh';
+import FilterListIcon from '@mui/icons-material/FilterList';
 import DeleteIcon from '@mui/icons-material/Delete';
 import ViewColumnIcon from '@mui/icons-material/ViewColumn';
 
@@ -49,6 +52,7 @@ function Dashboard() {
   const [scanning, setScanning] = useState(false);
   const [searchQuery, setSearchQuery] = useState('');
   const [scoreFilter, setScoreFilter] = useState('all'); // 'all', 'excellent', 'warning', 'critical'
+  const [postTypeFilter, setPostTypeFilter] = useState('all');
   
   // Pagination & deletion states
   const [page, setPage] = useState(0);
@@ -92,6 +96,12 @@ function Dashboard() {
   };
 
   const navigate = useNavigate();
+
+  // Dynamically extract unique post types from loaded data
+  const uniquePostTypes = useMemo(() => {
+    const types = new Set(pages.map(p => (p.post_type || 'post').toLowerCase()));
+    return Array.from(types).sort();
+  }, [pages]);
 
   const fetchData = async () => {
     setLoading(true);
@@ -199,8 +209,11 @@ function Dashboard() {
     } else if (scoreFilter === 'critical') {
       matchesScore = page.seo_score < 70;
     }
+
+    const matchesPostType = postTypeFilter === 'all' || 
+      (page.post_type || 'post').toLowerCase() === postTypeFilter;
     
-    return matchesSearch && matchesScore;
+    return matchesSearch && matchesScore && matchesPostType;
   });
 
   if (orderBy) {
@@ -475,8 +488,82 @@ function Dashboard() {
 
             {/* Score Filters Pills */}
             <Box sx={{ display: 'flex', alignItems: 'center', gap: 1, flexWrap: 'wrap' }}>
+              {/* Post Type Filter */}
+              <Box sx={{ display: 'flex', alignItems: 'center', gap: 1, mr: 1 }}>
+                <FilterListIcon sx={{ fontSize: 18, color: 'var(--text)', opacity: 0.7 }} />
+                <FormControl size="small" sx={{ minWidth: 130 }}>
+                  <Select
+                    value={postTypeFilter}
+                    onChange={(e) => {
+                      setPostTypeFilter(e.target.value);
+                      setPage(0);
+                    }}
+                    displayEmpty
+                    sx={{
+                      fontFamily: 'var(--sans)',
+                      fontSize: '0.85rem',
+                      fontWeight: 600,
+                      color: 'var(--text-h)',
+                      borderRadius: '10px',
+                      height: 38,
+                      bgcolor: postTypeFilter !== 'all' ? 'rgba(99, 102, 241, 0.06)' : 'transparent',
+                      '& .MuiOutlinedInput-notchedOutline': {
+                        borderColor: postTypeFilter !== 'all' ? 'rgba(99, 102, 241, 0.3)' : 'var(--border)',
+                      },
+                      '&:hover .MuiOutlinedInput-notchedOutline': {
+                        borderColor: 'var(--primary)',
+                      },
+                      '&.Mui-focused .MuiOutlinedInput-notchedOutline': {
+                        borderColor: 'var(--primary)',
+                      },
+                      '& .MuiSvgIcon-root': {
+                        color: 'var(--text)',
+                      }
+                    }}
+                    MenuProps={{
+                      PaperProps: {
+                        sx: {
+                          mt: 0.5,
+                          bgcolor: 'var(--glass-bg)',
+                          backdropFilter: 'blur(20px)',
+                          border: '1px solid var(--glass-border)',
+                          boxShadow: 'var(--glass-shadow)',
+                          borderRadius: '12px',
+                          '& .MuiMenuItem-root': {
+                            fontFamily: 'var(--sans)',
+                            fontSize: '0.85rem',
+                            color: 'var(--text-h)',
+                            borderRadius: '8px',
+                            mx: 0.5,
+                            '&:hover': {
+                              bgcolor: 'rgba(99, 102, 241, 0.06)',
+                            },
+                            '&.Mui-selected': {
+                              bgcolor: 'rgba(99, 102, 241, 0.1)',
+                              fontWeight: 700,
+                              '&:hover': {
+                                bgcolor: 'rgba(99, 102, 241, 0.14)',
+                              },
+                            }
+                          }
+                        }
+                      }
+                    }}
+                  >
+                    <MenuItem value="all">All Types</MenuItem>
+                    {uniquePostTypes.map((type) => (
+                      <MenuItem key={type} value={type}>
+                        {type.charAt(0).toUpperCase() + type.slice(1)}
+                      </MenuItem>
+                    ))}
+                  </Select>
+                </FormControl>
+              </Box>
+
+              <Box sx={{ width: '1px', height: 24, bgcolor: 'var(--border)', mx: 0.5 }} />
+
               <Typography variant="body2" sx={{ color: 'var(--text)', fontWeight: 600, mr: 1 }}>
-                Filter Score:
+                Score:
               </Typography>
               <ButtonGroup 
                 variant="outlined" 
@@ -1016,13 +1103,20 @@ function Dashboard() {
         onClose={() => setDeleteConfirmOpen(false)}
         PaperProps={{
           sx: {
-            bgcolor: 'var(--glass-bg)',
-            backdropFilter: 'blur(20px)',
+            bgcolor: 'var(--bg)',
             borderRadius: '20px',
-            border: '1px solid var(--glass-border)',
+            border: '1px solid var(--border)',
             boxShadow: 'var(--glass-shadow)',
             maxWidth: '440px',
             p: 1.5
+          }
+        }}
+        slotProps={{
+          backdrop: {
+            sx: {
+              backdropFilter: 'blur(4px)',
+              backgroundColor: 'rgba(15, 23, 42, 0.3)'
+            }
           }
         }}
       >
