@@ -23,8 +23,8 @@ class Frank_SEO_Admin {
 	 */
 	public function add_plugin_admin_menu() {
 		add_menu_page(
-			__( 'Frank SEO Audit', 'frank-website-seo-checker-and-audit' ),
-			__( 'Frank SEO Audit', 'frank-website-seo-checker-and-audit' ),
+			__( 'Frank SEO Checker & Audit', 'frank-website-seo-checker-and-audit' ),
+			__( 'Frank SEO Checker & Audit', 'frank-website-seo-checker-and-audit' ),
 			'manage_options',
 			'frank-seo-audit',
 			array( $this, 'display_plugin_setup_page' ),
