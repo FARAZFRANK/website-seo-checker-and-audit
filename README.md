@@ -1,4 +1,4 @@
-# Frank Website SEO Checker And Audit
+# Website SEO Checker And Audit
 
 A comprehensive on-page SEO audit plugin for WordPress with a modern React-powered admin dashboard.
 
