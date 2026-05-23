@@ -1,10 +1,9 @@
 <?php
 /**
  * Plugin Name:       Frank Website SEO Checker And Audit
- * Plugin URI:        https://wpfrank.com/
  * Description:       A complete on-page SEO audit plugin with a React-powered dashboard. Crawls pages, detects SEO issues, and maintains history.
- * Version:           1.0.1
- * Author:            WPFrank
+ * Version:           1.0.2
+ * Author:			  FARAZFRANK
  * Author URI:        https://wpfrank.com/
  * License:           GPL-2.0+
  * License URI:       http://www.gnu.org/licenses/gpl-2.0.txt
@@ -13,29 +12,30 @@
  */
 
 // If this file is called directly, abort.
-if ( ! defined( 'WPINC' ) ) {
-	die;
+if (!defined('ABSPATH')) {
+	exit;
 }
 
 /**
  * Currently plugin version.
  */
-define( 'FRANK_SEO_AUDIT_VERSION', '1.0.1' );
+define('FRANK_SEO_AUDIT_VERSION', '1.0.2');
 
 /**
  * Plugin directory path.
  */
-define( 'FRANK_SEO_AUDIT_DIR', plugin_dir_path( __FILE__ ) );
+define('FRANK_SEO_AUDIT_DIR', plugin_dir_path(__FILE__));
 
 /**
  * Plugin directory URL.
  */
-define( 'FRANK_SEO_AUDIT_URL', plugin_dir_url( __FILE__ ) );
+define('FRANK_SEO_AUDIT_URL', plugin_dir_url(__FILE__));
 
 /**
  * The code that runs during plugin activation.
  */
-function activate_frank_seo_audit() {
+function frank_seo_audit_activate()
+{
 	require_once FRANK_SEO_AUDIT_DIR . 'includes/class-frank-seo-activator.php';
 	Frank_SEO_Activator::activate();
 }
@@ -43,12 +43,13 @@ function activate_frank_seo_audit() {
 /**
  * The code that runs during plugin deactivation.
  */
-function deactivate_frank_seo_audit() {
+function frank_seo_audit_deactivate()
+{
 	// Require deactivator if needed in the future
 }
 
-register_activation_hook( __FILE__, 'activate_frank_seo_audit' );
-register_deactivation_hook( __FILE__, 'deactivate_frank_seo_audit' );
+register_activation_hook(__FILE__, 'frank_seo_audit_activate');
+register_deactivation_hook(__FILE__, 'frank_seo_audit_deactivate');
 
 /**
  * The core plugin class that is used to define internationalization,
@@ -61,11 +62,12 @@ require_once FRANK_SEO_AUDIT_DIR . 'includes/class-frank-seo-auditor.php';
 /**
  * Begins execution of the plugin.
  */
-function run_frank_seo_audit() {
+function frank_seo_audit_run()
+{
 	$plugin_admin = new Frank_SEO_Admin();
 	$plugin_admin->init();
 
 	$plugin_rest_api = new Frank_SEO_REST_API();
 	$plugin_rest_api->init();
 }
-run_frank_seo_audit();
+frank_seo_audit_run();

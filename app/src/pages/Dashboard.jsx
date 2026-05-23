@@ -42,7 +42,7 @@ import FilterListIcon from '@mui/icons-material/FilterList';
 import DeleteIcon from '@mui/icons-material/Delete';
 import ViewColumnIcon from '@mui/icons-material/ViewColumn';
 
-import { getSummary, getPages, triggerScan, deletePage, bulkDeletePages } from '../api';
+import { getSummary, getPages, triggerScan, deletePage, bulkDeletePages, getPagesToScan, getSettings } from '../api';
 import { useNavigate } from 'react-router-dom';
 
 function Dashboard() {
@@ -54,6 +54,18 @@ function Dashboard() {
   const [scoreFilter, setScoreFilter] = useState('all'); // 'all', 'excellent', 'warning', 'critical'
   const [postTypeFilter, setPostTypeFilter] = useState('all');
   
+  // Scan progress states
+  const [scanProgress, setScanProgress] = useState(0);
+  const [scanTotal, setScanTotal] = useState(0);
+  const [scanCurrent, setScanCurrent] = useState(0);
+  const [scanStatusText, setScanStatusText] = useState('');
+  const scanCancelledRef = React.useRef(false);
+
+  const handleCancelScan = () => {
+    scanCancelledRef.current = true;
+    setScanStatusText("Cancelling scan...");
+  };
+
   // Pagination & deletion states
   const [page, setPage] = useState(0);
   const [rowsPerPage, setRowsPerPage] = useState(10);
@@ -128,14 +140,83 @@ function Dashboard() {
   }, []);
 
   const handleScan = async () => {
+    scanCancelledRef.current = false;
     setScanning(true);
+    setScanProgress(0);
+    setScanCurrent(0);
+    setScanTotal(0);
+    setScanStatusText("Initializing audit...");
+
     try {
-      await triggerScan();
-      await fetchData(); // Refresh data after scan
+      // 1. Fetch settings to get crawl interval
+      const settingsData = await getSettings();
+      const delayMs = settingsData && settingsData.crawlInterval ? settingsData.crawlInterval * 1000 : 2000;
+
+      // 2. Fetch all publish page IDs
+      const pagesToScanResponse = await getPagesToScan();
+      const allIds = pagesToScanResponse.ids || [];
+      
+      if (allIds.length === 0) {
+        setScanStatusText("No pages found to audit.");
+        await new Promise(r => setTimeout(r, 1500));
+        setScanning(false);
+        return;
+      }
+
+      setScanTotal(allIds.length);
+      setScanStatusText(`Preparing audit for ${allIds.length} pages...`);
+
+      // 3. Scan in batches of 2
+      const batchSize = 2;
+      let completed = 0;
+
+      for (let i = 0; i < allIds.length; i += batchSize) {
+        // Check if user cancelled
+        if (scanCancelledRef.current) {
+          setScanStatusText("Audit cancelled by user.");
+          break;
+        }
+
+        const batch = allIds.slice(i, i + batchSize);
+        setScanStatusText(`Auditing pages ${i + 1}-${Math.min(i + batchSize, allIds.length)} of ${allIds.length}...`);
+        
+        await triggerScan(batch);
+        
+        completed += batch.length;
+        setScanCurrent(completed);
+        setScanProgress(Math.min(100, Math.round((completed / allIds.length) * 100)));
+
+        // If there's another batch, respect crawlInterval
+        if (i + batchSize < allIds.length) {
+          // Wait in small steps so cancellation is responsive during the delay
+          const delayStep = 250; // check every 250ms
+          const steps = Math.ceil(delayMs / delayStep);
+          for (let step = 0; step < steps; step++) {
+            if (scanCancelledRef.current) {
+              break;
+            }
+            setScanStatusText(`Auditing page ${completed} of ${allIds.length}... Delaying next request for ${Math.max(0, ((delayMs - (step * delayStep)) / 1000).toFixed(1))}s...`);
+            await new Promise(r => setTimeout(r, delayStep));
+          }
+        }
+      }
+
+      if (scanCancelledRef.current) {
+        setScanStatusText("Audit cancelled.");
+      } else {
+        setScanStatusText("Audit complete! Updating dashboard...");
+      }
+
+      // Refresh data
+      await fetchData();
     } catch (error) {
       console.error("Scan failed:", error);
+      setScanStatusText("Scan failed. Check console logs.");
+    } finally {
+      // Let the status message rest so the user can read the result
+      await new Promise(r => setTimeout(r, 2000));
+      setScanning(false);
     }
-    setScanning(false);
   };
 
   const getScoreColor = (score) => {
@@ -365,6 +446,69 @@ function Dashboard() {
           </Button>
         </Box>
       </Box>
+
+      {/* Progress Bar Panel when scanning */}
+      {scanning && (
+        <Box 
+          className="glass-panel" 
+          sx={{ 
+            p: 3, 
+            mb: 4, 
+            borderRadius: '20px',
+            borderLeft: '4px solid var(--primary)',
+            background: 'var(--glass-bg)',
+            boxShadow: 'var(--glass-shadow)',
+          }}
+        >
+          <Box sx={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', mb: 1.5 }}>
+            <Box sx={{ display: 'flex', alignItems: 'center', gap: 1.5 }}>
+              <CircularProgress size={20} sx={{ color: 'var(--primary)' }} />
+              <Typography variant="subtitle1" sx={{ fontWeight: 700, color: 'var(--text-h)', fontFamily: 'var(--sans)' }}>
+                {scanStatusText}
+              </Typography>
+            </Box>
+            {scanTotal > 0 && (
+              <Typography variant="body2" sx={{ fontWeight: 600, color: 'var(--text)', fontFamily: 'var(--sans)' }}>
+                {scanCurrent} of {scanTotal} Pages Audited ({scanProgress}%)
+              </Typography>
+            )}
+          </Box>
+          
+          <Box sx={{ display: 'flex', alignItems: 'center', gap: 2 }}>
+            <Box sx={{ flexGrow: 1, height: 8, bgcolor: 'rgba(99, 102, 241, 0.1)', borderRadius: 4, overflow: 'hidden', position: 'relative' }}>
+              <Box 
+                sx={{ 
+                  height: '100%', 
+                  width: `${scanProgress}%`, 
+                  bgcolor: 'var(--primary)', 
+                  background: 'var(--accent-gradient)',
+                  borderRadius: 4, 
+                  transition: 'width 0.4s ease' 
+                }} 
+              />
+            </Box>
+            <Button
+              variant="outlined"
+              size="small"
+              onClick={handleCancelScan}
+              sx={{
+                borderColor: 'var(--error)',
+                color: 'var(--error)',
+                borderRadius: '8px',
+                textTransform: 'none',
+                fontFamily: 'var(--sans)',
+                fontWeight: 600,
+                '&:hover': {
+                  bgcolor: 'rgba(239, 68, 68, 0.05)',
+                  borderColor: 'var(--error)'
+                }
+              }}
+            >
+              Cancel Scan
+            </Button>
+          </Box>
+        </Box>
+      )}
 
       {loading ? (
         <Box className="glass-panel" sx={{ display: 'flex', justifyContent: 'center', alignItems: 'center', p: 8, borderRadius: '20px' }}>
