@@ -4,7 +4,7 @@ Tags: seo, audit, seo-checker, on-page-seo, seo-audit
 Requires at least: 5.8
 Tested up to: 7.0
 Requires PHP: 7.4
-Stable tag: 1.0.3
+Stable tag: 1.0.4
 License: GPLv2 or later
 License URI: https://www.gnu.org/licenses/gpl-2.0.html
 
@@ -80,6 +80,11 @@ No. All auditing is performed locally on your server. No data is sent to externa
 
 == Changelog ==
 
+= 1.0.4 =
+* Added a persistent Light/Dark mode switcher option to the admin dashboard header.
+* Persisted selection across sessions using localStorage.
+* Supported automated dark mode fallback based on system preferences.
+
 = 1.0.3 =
 * Added scan-completion email report setting to notify the admin with audit metrics.
 * Added automated scheduled scans with Daily, Weekly, and Monthly background WP Cron options.
@@ -111,6 +116,9 @@ No. All auditing is performed locally on your server. No data is sent to externa
 * Settings panel with crawl configuration.
 
 == Upgrade Notice ==
+
+= 1.0.4 =
+Introduces a custom theme switcher toggle for Light/Dark modes in the dashboard header.
 
 = 1.0.3 =
 Introduces email reporting settings (manual completion reports & scheduled background runs), custom recipient emails list, and schedules.

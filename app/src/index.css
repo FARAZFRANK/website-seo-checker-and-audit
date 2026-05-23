@@ -42,8 +42,35 @@
   -moz-osx-font-smoothing: grayscale;
 }
 
+/* Explicit Dark Theme */
+:root[data-theme="dark"] {
+  --text: #94a3b8;
+  --text-h: #f8fafc;
+  --bg: #0f172a;
+  --border: #1e293b;
+
+  --glass-bg: rgba(15, 23, 42, 0.55);
+  --glass-border: rgba(255, 255, 255, 0.06);
+  --glass-shadow: 0 8px 32px 0 rgba(0, 0, 0, 0.3);
+  --accent-glow: rgba(99, 102, 241, 0.25);
+}
+
+/* Explicit Light Theme */
+:root[data-theme="light"] {
+  --text: #4b5563;
+  --text-h: #111827;
+  --bg: #f8fafc;
+  --border: #e2e8f0;
+  
+  --glass-bg: rgba(255, 255, 255, 0.45);
+  --glass-border: rgba(255, 255, 255, 0.6);
+  --glass-shadow: 0 8px 32px 0 rgba(31, 38, 135, 0.04);
+  --accent-glow: rgba(99, 102, 241, 0.15);
+}
+
+/* System Dark Theme Fallback */
 @media (prefers-color-scheme: dark) {
-  :root {
+  :root:not([data-theme="light"]) {
     --text: #94a3b8;
     --text-h: #f8fafc;
     --bg: #0f172a;
@@ -64,11 +91,13 @@ body {
 /* Beautiful custom container background glow */
 .seo-dashboard-wrapper {
   position: relative;
-  background: radial-gradient(circle at 10% 20%, rgba(99, 102, 241, 0.05) 0%, transparent 40%),
-              radial-gradient(circle at 90% 80%, rgba(236, 72, 153, 0.05) 0%, transparent 40%);
+  background-color: var(--bg);
+  background-image: radial-gradient(circle at 10% 20%, rgba(99, 102, 241, 0.05) 0%, transparent 40%),
+                    radial-gradient(circle at 90% 80%, rgba(236, 72, 153, 0.05) 0%, transparent 40%);
   min-height: 100vh;
   border-radius: 12px;
   overflow: hidden;
+  transition: background-color 0.3s ease;
 }
 
 /* Glassmorphic Panel Design */
@@ -87,8 +116,13 @@ body {
   border-color: rgba(99, 102, 241, 0.25);
 }
 
+:root[data-theme="dark"] .glass-panel:hover {
+  box-shadow: 0 12px 40px 0 rgba(0, 0, 0, 0.4);
+  border-color: rgba(99, 102, 241, 0.35);
+}
+
 @media (prefers-color-scheme: dark) {
-  .glass-panel:hover {
+  :root:not([data-theme="light"]) .glass-panel:hover {
     box-shadow: 0 12px 40px 0 rgba(0, 0, 0, 0.4);
     border-color: rgba(99, 102, 241, 0.35);
   }
@@ -222,8 +256,12 @@ body {
   background-color: rgba(99, 102, 241, 0.04) !important;
 }
 
+:root[data-theme="dark"] .smooth-table-row:hover {
+  background-color: rgba(255, 255, 255, 0.02) !important;
+}
+
 @media (prefers-color-scheme: dark) {
-  .smooth-table-row:hover {
+  :root:not([data-theme="light"]) .smooth-table-row:hover {
     background-color: rgba(255, 255, 255, 0.02) !important;
   }
 }
@@ -277,4 +315,108 @@ body {
   cursor: pointer !important;
   top: 0 !important;
   left: 0 !important;
+}
+
+/* ==========================================
+   WordPress Admin Styling Overrides & Theme Fixes
+   ========================================== */
+
+/* Ensure the entire WordPress admin content pane inherits the theme background color */
+.toplevel_page_frank-seo-audit #wpcontent,
+.toplevel_page_frank-seo-audit #wpbody,
+.toplevel_page_frank-seo-audit #wpbody-content {
+  background-color: var(--bg) !important;
+  transition: background-color 0.3s ease;
+}
+
+/* Keep WordPress footer in theme color */
+.toplevel_page_frank-seo-audit #wpfooter {
+  background-color: var(--bg) !important;
+  color: var(--text) !important;
+  border-top: 1px solid var(--border) !important;
+  margin: 0 !important;
+  padding: 15px 20px !important;
+}
+.toplevel_page_frank-seo-audit #wpfooter a {
+  color: var(--primary) !important;
+}
+
+/* Reset WordPress's generic input/textarea background and borders inside MUI components */
+#frank-seo-audit-root .MuiInputBase-input,
+#frank-seo-audit-root .MuiInputBase-root input,
+#frank-seo-audit-root .MuiInputBase-root textarea,
+#frank-seo-audit-root .MuiInputBase-root select {
+  background: transparent !important;
+  border: none !important;
+  color: var(--text-h) !important;
+  box-shadow: none !important;
+  padding: 0 !important;
+  height: auto !important;
+}
+
+/* Style MUI TextFields (OutlinedInput) to have a beautiful glass container background */
+#frank-seo-audit-root .MuiOutlinedInput-root {
+  background-color: rgba(255, 255, 255, 0.03) !important;
+  color: var(--text-h) !important;
+  transition: all 0.2s ease !important;
+}
+
+:root[data-theme="light"] #frank-seo-audit-root .MuiOutlinedInput-root {
+  background-color: rgba(0, 0, 0, 0.02) !important;
+}
+
+/* Handle autofill and standard browser adjustments */
+#frank-seo-audit-root input:-webkit-autofill,
+#frank-seo-audit-root input:-webkit-autofill:hover,
+#frank-seo-audit-root input:-webkit-autofill:focus {
+  -webkit-text-fill-color: var(--text-h) !important;
+  -webkit-box-shadow: 0 0 0px 1000px var(--bg) inset !important;
+  transition: background-color 5000s ease-in-out 0s;
+}
+
+/* Ensure scrollbars match the theme in the admin wrapper */
+.toplevel_page_frank-seo-audit ::-webkit-scrollbar {
+  width: 10px;
+  height: 10px;
+}
+.toplevel_page_frank-seo-audit ::-webkit-scrollbar-track {
+  background: var(--bg);
+}
+.toplevel_page_frank-seo-audit ::-webkit-scrollbar-thumb {
+  background: var(--border);
+  border-radius: 5px;
+  border: 2px solid var(--bg);
+}
+.toplevel_page_frank-seo-audit ::-webkit-scrollbar-thumb:hover {
+  background: var(--text);
+}
+
+/* ==========================================
+   MUI Text and Typography Legibility Overrides
+   ========================================== */
+
+/* MUI Slider mark labels legibility */
+#frank-seo-audit-root .MuiSlider-markLabel {
+  color: var(--text) !important;
+  font-family: var(--sans) !important;
+}
+#frank-seo-audit-root .MuiSlider-markLabelActive {
+  color: var(--text-h) !important;
+}
+
+/* MUI Input Labels & Helper Text legibility */
+#frank-seo-audit-root .MuiInputLabel-root {
+  color: var(--text) !important;
+}
+#frank-seo-audit-root .MuiInputLabel-root.Mui-focused {
+  color: var(--primary) !important;
+}
+#frank-seo-audit-root .MuiFormHelperText-root {
+  color: var(--text) !important;
+  opacity: 0.8;
+}
+
+/* MUI Select Icon arrow legibility */
+#frank-seo-audit-root .MuiSelect-icon {
+  color: var(--text) !important;
 }

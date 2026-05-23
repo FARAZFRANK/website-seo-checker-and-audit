@@ -1,9 +1,11 @@
-import React from 'react';
+import React, { useState, useEffect } from 'react';
 import { HashRouter as Router, Routes, Route, Link, useLocation } from 'react-router-dom';
-import { Typography, Drawer, List, ListItem, ListItemButton, ListItemIcon, ListItemText, CssBaseline, Box, Toolbar } from '@mui/material';
+import { Typography, Drawer, List, ListItem, ListItemButton, ListItemIcon, ListItemText, CssBaseline, Box, Toolbar, IconButton } from '@mui/material';
 import DashboardIcon from '@mui/icons-material/Dashboard';
 import SettingsIcon from '@mui/icons-material/Settings';
 import HistoryIcon from '@mui/icons-material/History';
+import LightModeIcon from '@mui/icons-material/LightMode';
+import DarkModeIcon from '@mui/icons-material/DarkMode';
 
 import Dashboard from './pages/Dashboard';
 import Settings from './pages/Settings';
@@ -14,6 +16,23 @@ const drawerWidth = 260;
 
 function Layout() {
   const location = useLocation();
+
+  const [theme, setTheme] = useState(() => {
+    const saved = localStorage.getItem('frank-seo-theme');
+    if (saved) return saved;
+    const prefersDark = window.matchMedia('(prefers-color-scheme: dark)').matches;
+    return prefersDark ? 'dark' : 'light';
+  });
+
+  useEffect(() => {
+    const root = document.documentElement;
+    root.setAttribute('data-theme', theme);
+    localStorage.setItem('frank-seo-theme', theme);
+  }, [theme]);
+
+  const toggleTheme = () => {
+    setTheme(prev => prev === 'light' ? 'dark' : 'light');
+  };
 
   const menuItems = [
     { text: 'Dashboard', icon: <DashboardIcon />, path: '/' },
@@ -43,7 +62,7 @@ function Layout() {
         anchor="left"
       >
         <Toolbar sx={{ display: 'flex', alignItems: 'center', justifyContent: 'center', py: 2 }}>
-          <Typography variant="h5" sx={{ fontFamily: 'var(--sans)', fontWeight: 800, letterSpacing: '-0.03em' }}>
+          <Typography variant="h5" sx={{ fontFamily: 'var(--sans)', fontWeight: 800, letterSpacing: '-0.03em', color: 'var(--text-h)' }}>
             📊 FrankSEO
           </Typography>
         </Toolbar>
@@ -100,12 +119,32 @@ function Layout() {
           sx={{ 
             mb: 3,
             pb: 2,
-            borderBottom: '1px solid var(--border)'
+            borderBottom: '1px solid var(--border)',
+            display: 'flex',
+            alignItems: 'center',
+            justifyContent: 'space-between'
           }}
         >
           <Typography variant="h6" noWrap component="div" sx={{ fontFamily: 'var(--sans)', fontWeight: 700, letterSpacing: '-0.02em', color: 'var(--text-h)' }}>
-            Frank <span className="gradient-text">SEO Checker & Audit</span> v1.0.3
+            Frank <span className="gradient-text">SEO Checker & Audit</span> v1.0.4
           </Typography>
+          <IconButton 
+            onClick={toggleTheme} 
+            sx={{ 
+              color: 'var(--text)',
+              bgcolor: 'var(--glass-bg)',
+              border: '1px solid var(--border)',
+              borderRadius: '10px',
+              transition: 'all 0.2s ease',
+              '&:hover': {
+                bgcolor: 'rgba(99, 102, 241, 0.08)',
+                color: 'var(--text-h)',
+                transform: 'scale(1.05)'
+              }
+            }}
+          >
+            {theme === 'dark' ? <LightModeIcon /> : <DarkModeIcon />}
+          </IconButton>
         </Box>
         <Routes>
           <Route path="/" element={<Dashboard />} />
