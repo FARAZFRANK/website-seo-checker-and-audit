@@ -1,10 +1,10 @@
 === Frank Website SEO Checker And Audit ===
-Contributors: wpfrank
+Contributors: FARAZFRANK
 Tags: seo, audit, seo-checker, on-page-seo, seo-audit
 Requires at least: 5.8
-Tested up to: 6.8
+Tested up to: 7.0
 Requires PHP: 7.4
-Stable tag: 1.0.1
+Stable tag: 1.0.2
 License: GPLv2 or later
 License URI: https://www.gnu.org/licenses/gpl-2.0.html
 
@@ -41,6 +41,19 @@ A complete on-page SEO audit plugin with a React dashboard. Crawl pages, detect 
 2. Activate the plugin through the **Plugins** menu in WordPress.
 3. Navigate to **Frank SEO Audit** in the admin sidebar to begin auditing.
 
+== Build Instructions ==
+
+The source code for the React single-page application is included inside the plugin package under the `app/` directory. If you wish to study, modify, or compile the JavaScript and CSS assets, follow these steps:
+
+1. Navigate to the `app/` directory:
+   `cd app`
+2. Install npm dependencies:
+   `npm install`
+3. Compile the production bundles to `assets/dist/`:
+   `npm run build`
+4. For interactive development with hot module replacement (HMR), run:
+   `npm run dev`
+
 == Frequently Asked Questions ==
 
 = What post types does the plugin audit? =
@@ -67,6 +80,13 @@ No. All auditing is performed locally on your server. No data is sent to externa
 
 == Changelog ==
 
+= 1.0.2 =
+* Resolved 20-page crawl limit to scan all published content.
+* Implemented batch-based crawl processing to prevent timeouts.
+* Added a beautiful visual scan progress bar (0-100%).
+* Added "Cancel Scan" button to abort audits in real-time.
+* Respected delay rate settings during scanning.
+
 = 1.0.1 =
 * Fixed dialog readability issues by making backgrounds solid and adding backdrop blur.
 * Updated WP Admin menu and page title to "Frank SEO Checker & Audit".
@@ -84,6 +104,9 @@ No. All auditing is performed locally on your server. No data is sent to externa
 * Settings panel with crawl configuration.
 
 == Upgrade Notice ==
+
+= 1.0.2 =
+Adds batch-based crawl processing, real-time visual progress bar, cancel button, and removes the 20-page limit.
 
 = 1.0.1 =
 Minor update fixing dialog readability issues and naming consistency.

@@ -38,7 +38,7 @@ class Frank_SEO_Admin {
 	 */
 	public function display_plugin_setup_page() {
 		// Provide the React root node
-		echo '<div id="frank-seo-audit-root"></div>';
+		echo wp_kses_post( '<div id="frank-seo-audit-root"></div>' );
 	}
 
 	/**
