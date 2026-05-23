@@ -4,7 +4,7 @@ Tags: seo, audit, seo-checker, on-page-seo, seo-audit
 Requires at least: 5.8
 Tested up to: 7.0
 Requires PHP: 7.4
-Stable tag: 1.0.2
+Stable tag: 1.0.3
 License: GPLv2 or later
 License URI: https://www.gnu.org/licenses/gpl-2.0.html
 
@@ -80,6 +80,13 @@ No. All auditing is performed locally on your server. No data is sent to externa
 
 == Changelog ==
 
+= 1.0.3 =
+* Added scan-completion email report setting to notify the admin with audit metrics.
+* Added automated scheduled scans with Daily, Weekly, and Monthly background WP Cron options.
+* Set Monthly background runs as the default frequency.
+* Enabled multiple email recipients via a comma-separated setting.
+* Created "Email & Report Preferences" UI card in settings.
+
 = 1.0.2 =
 * Resolved 20-page crawl limit to scan all published content.
 * Implemented batch-based crawl processing to prevent timeouts.
@@ -104,6 +111,9 @@ No. All auditing is performed locally on your server. No data is sent to externa
 * Settings panel with crawl configuration.
 
 == Upgrade Notice ==
+
+= 1.0.3 =
+Introduces email reporting settings (manual completion reports & scheduled background runs), custom recipient emails list, and schedules.
 
 = 1.0.2 =
 Adds batch-based crawl processing, real-time visual progress bar, cancel button, and removes the 20-page limit.
