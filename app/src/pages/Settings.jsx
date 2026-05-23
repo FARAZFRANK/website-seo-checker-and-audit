@@ -26,6 +26,7 @@ import CodeIcon from '@mui/icons-material/Code';
 import AccessTimeIcon from '@mui/icons-material/AccessTime';
 import LinkIcon from '@mui/icons-material/Link';
 import DeleteIcon from '@mui/icons-material/Delete';
+import MailOutlineIcon from '@mui/icons-material/MailOutline';
 import { getSettings, updateSettings, resetPlugin } from '../api';
 
 function Settings() {
@@ -35,13 +36,16 @@ function Settings() {
     excludePatterns: "*/wp-admin/*\n*/wp-includes/*\n*?replytocom=*",
     crawlDepth: 3,
     crawlInterval: 2,
-    schedule: "Weekly",
+    schedule: "Monthly",
     checkMetaData: true,
     checkAltTags: true,
     checkBrokenLinks: false,
     excludeMenus: true,
     excludeFooters: true,
     excludeSidebars: true,
+    emailRecipients: "",
+    enableScanEmail: false,
+    enableScheduledEmail: false,
   });
 
   const [saving, setSaving] = useState(false);
@@ -71,6 +75,9 @@ function Settings() {
             excludeMenus: apiSettings.excludeMenus !== undefined ? !!apiSettings.excludeMenus : prev.excludeMenus,
             excludeFooters: apiSettings.excludeFooters !== undefined ? !!apiSettings.excludeFooters : prev.excludeFooters,
             excludeSidebars: apiSettings.excludeSidebars !== undefined ? !!apiSettings.excludeSidebars : prev.excludeSidebars,
+            emailRecipients: apiSettings.emailRecipients !== undefined ? apiSettings.emailRecipients : prev.emailRecipients,
+            enableScanEmail: apiSettings.enableScanEmail !== undefined ? !!apiSettings.enableScanEmail : prev.enableScanEmail,
+            enableScheduledEmail: apiSettings.enableScheduledEmail !== undefined ? !!apiSettings.enableScheduledEmail : prev.enableScheduledEmail,
           }));
         }
       } catch (err) {
@@ -455,6 +462,86 @@ function Settings() {
                         </Typography>
                       </Box>
                     }
+                  />
+                </Grid>
+              </Grid>
+            </Box>
+
+            {/* Email & Report Preferences Card */}
+            <Box className="glass-panel" sx={{ p: 4, borderRadius: '20px' }}>
+              <Box sx={{ display: 'flex', alignItems: 'center', gap: 1.5, mb: 3 }}>
+                <MailOutlineIcon sx={{ color: 'var(--primary)' }} />
+                <Typography variant="h6" sx={{ fontWeight: 700, fontFamily: 'var(--sans)', color: 'var(--text-h)' }}>
+                  Email & Report Preferences
+                </Typography>
+              </Box>
+
+              <Grid container spacing={3}>
+                <Grid item xs={12}>
+                  <FormControlLabel
+                    control={
+                      <Switch 
+                        checked={settings.enableScanEmail || false} 
+                        onChange={(e) => setSettings({ ...settings, enableScanEmail: e.target.checked })}
+                        sx={{ '& .MuiSwitch-switchBase.Mui-checked': { color: 'var(--primary)', '& + .MuiSwitch-track': { backgroundColor: 'var(--primary)' } } }}
+                      />
+                    }
+                    label={
+                      <Box>
+                        <Typography sx={{ fontWeight: 600, fontFamily: 'var(--sans)', fontSize: '0.95rem', color: 'var(--text-h)' }}>
+                          Email Report on Scan Completion
+                        </Typography>
+                        <Typography sx={{ color: 'var(--text)', opacity: 0.8, fontSize: '0.82rem', fontFamily: 'var(--sans)' }}>
+                          Automatically send an email to the admin with key stats when a scan completes.
+                        </Typography>
+                      </Box>
+                    }
+                  />
+                </Grid>
+
+                <Grid item xs={12}>
+                  <FormControlLabel
+                    control={
+                      <Switch 
+                        checked={settings.enableScheduledEmail || false} 
+                        onChange={(e) => setSettings({ ...settings, enableScheduledEmail: e.target.checked })}
+                        sx={{ '& .MuiSwitch-switchBase.Mui-checked': { color: 'var(--primary)', '& + .MuiSwitch-track': { backgroundColor: 'var(--primary)' } } }}
+                      />
+                    }
+                    label={
+                      <Box>
+                        <Typography sx={{ fontWeight: 600, fontFamily: 'var(--sans)', fontSize: '0.95rem', color: 'var(--text-h)' }}>
+                          Enable Scheduled Email Reports
+                        </Typography>
+                        <Typography sx={{ color: 'var(--text)', opacity: 0.8, fontSize: '0.82rem', fontFamily: 'var(--sans)' }}>
+                          Send automated background reports based on the Audit Trigger Schedule.
+                        </Typography>
+                      </Box>
+                    }
+                  />
+                </Grid>
+
+                <Grid item xs={12}>
+                  <TextField
+                    label="Email Recipients"
+                    variant="outlined"
+                    fullWidth
+                    value={settings.emailRecipients || ''}
+                    onChange={(e) => setSettings({ ...settings, emailRecipients: e.target.value })}
+                    placeholder="admin@example.com, seo@example.com"
+                    helperText="Comma-separated list of email addresses that will receive the reports."
+                    sx={{
+                      '& .MuiOutlinedInput-root': {
+                        borderRadius: '12px',
+                        fontFamily: 'var(--sans)',
+                        fontSize: '0.9rem',
+                        '& fieldset': { borderColor: 'var(--border)' },
+                        '&:hover fieldset': { borderColor: 'var(--primary)' },
+                        '&.Mui-focused fieldset': { borderColor: 'var(--primary)', borderWidth: '1px' }
+                      },
+                      '& .MuiInputLabel-root': { fontFamily: 'var(--sans)', fontSize: '0.9rem' },
+                      '& .MuiFormHelperText-root': { fontFamily: 'var(--sans)', fontSize: '0.78rem' }
+                    }}
                   />
                 </Grid>
               </Grid>

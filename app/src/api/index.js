@@ -39,6 +39,11 @@ export const getPagesToScan = async () => {
   return response.data;
 };
 
+export const triggerScanComplete = async () => {
+  const response = await apiClient.post('scan/complete');
+  return response.data;
+};
+
 export const updateIssueStatus = async (issueId, status) => {
   const response = await apiClient.post(`issues/${issueId}/status`, { status });
   return response.data;

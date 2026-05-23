@@ -42,7 +42,7 @@ import FilterListIcon from '@mui/icons-material/FilterList';
 import DeleteIcon from '@mui/icons-material/Delete';
 import ViewColumnIcon from '@mui/icons-material/ViewColumn';
 
-import { getSummary, getPages, triggerScan, deletePage, bulkDeletePages, getPagesToScan, getSettings } from '../api';
+import { getSummary, getPages, triggerScan, deletePage, bulkDeletePages, getPagesToScan, getSettings, triggerScanComplete } from '../api';
 import { useNavigate } from 'react-router-dom';
 
 function Dashboard() {
@@ -204,6 +204,12 @@ function Dashboard() {
       if (scanCancelledRef.current) {
         setScanStatusText("Audit cancelled.");
       } else {
+        setScanStatusText("Audit complete! Sending email reports...");
+        try {
+          await triggerScanComplete();
+        } catch (emailErr) {
+          console.error("Failed to send scan completion email:", emailErr);
+        }
         setScanStatusText("Audit complete! Updating dashboard...");
       }
 

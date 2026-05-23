@@ -103,6 +103,12 @@ class Frank_SEO_REST_API {
 			'permission_callback' => array( $this, 'check_permission' ),
 		) );
 
+		register_rest_route( $namespace, '/scan/complete', array(
+			'methods'             => WP_REST_Server::CREATABLE,
+			'callback'            => array( $this, 'scan_complete_report' ),
+			'permission_callback' => array( $this, 'check_permission' ),
+		) );
+
 		register_rest_route( $namespace, '/issues/(?P<id>\d+)/status', array(
 			'methods'             => WP_REST_Server::CREATABLE,
 			'callback'            => array( $this, 'update_issue_status' ),
@@ -412,13 +418,16 @@ class Frank_SEO_REST_API {
 			'excludePatterns'  => "*/wp-admin/*\n*/wp-includes/*\n*?replytocom=*",
 			'crawlDepth'       => 3,
 			'crawlInterval'    => 2,
-			'schedule'         => 'Weekly',
+			'schedule'         => 'Monthly',
 			'checkMetaData'    => true,
 			'checkAltTags'     => true,
 			'checkBrokenLinks' => false,
 			'excludeMenus'     => true,
 			'excludeFooters'   => true,
 			'excludeSidebars'  => true,
+			'emailRecipients'  => get_option( 'admin_email' ),
+			'enableScanEmail'  => false,
+			'enableScheduledEmail' => false,
 		);
 
 		$settings = wp_parse_args( $settings, $defaults );
@@ -433,6 +442,9 @@ class Frank_SEO_REST_API {
 		$settings['excludeMenus']     = (bool) $settings['excludeMenus'];
 		$settings['excludeFooters']   = (bool) $settings['excludeFooters'];
 		$settings['excludeSidebars']  = (bool) $settings['excludeSidebars'];
+		$settings['enableScanEmail']  = (bool) $settings['enableScanEmail'];
+		$settings['enableScheduledEmail'] = (bool) $settings['enableScheduledEmail'];
+		$settings['emailRecipients']  = sanitize_text_field( $settings['emailRecipients'] );
 
 		return rest_ensure_response( $settings );
 	}
@@ -453,9 +465,9 @@ class Frank_SEO_REST_API {
 		$sanitized_settings['crawlDepth']       = isset( $params['crawlDepth'] ) ? min( 5, max( 1, intval( $params['crawlDepth'] ) ) ) : 3;
 		$sanitized_settings['crawlInterval']    = isset( $params['crawlInterval'] ) ? min( 5.0, max( 0.5, floatval( $params['crawlInterval'] ) ) ) : 2.0;
 
-		$schedule = isset( $params['schedule'] ) ? sanitize_text_field( $params['schedule'] ) : 'Weekly';
+		$schedule = isset( $params['schedule'] ) ? sanitize_text_field( $params['schedule'] ) : 'Monthly';
 		if ( ! in_array( $schedule, array( 'Disabled', 'Daily', 'Weekly', 'Monthly' ) ) ) {
-			$schedule = 'Weekly';
+			$schedule = 'Monthly';
 		}
 		$sanitized_settings['schedule'] = $schedule;
 
@@ -466,7 +478,14 @@ class Frank_SEO_REST_API {
 		$sanitized_settings['excludeFooters']   = isset( $params['excludeFooters'] ) ? (bool) $params['excludeFooters'] : true;
 		$sanitized_settings['excludeSidebars']  = isset( $params['excludeSidebars'] ) ? (bool) $params['excludeSidebars'] : true;
 
+		$sanitized_settings['emailRecipients']  = isset( $params['emailRecipients'] ) ? sanitize_text_field( $params['emailRecipients'] ) : get_option( 'admin_email' );
+		$sanitized_settings['enableScanEmail']  = isset( $params['enableScanEmail'] ) ? (bool) $params['enableScanEmail'] : false;
+		$sanitized_settings['enableScheduledEmail'] = isset( $params['enableScheduledEmail'] ) ? (bool) $params['enableScheduledEmail'] : false;
+
 		update_option( 'frank_seo_settings', $sanitized_settings );
+
+		// Update background cron schedule
+		$this->update_cron_schedule( $sanitized_settings );
 
 		return rest_ensure_response( array( 'success' => true, 'settings' => $sanitized_settings ) );
 	}
@@ -497,6 +516,25 @@ class Frank_SEO_REST_API {
 		delete_option( 'frank_seo_db_version' );
 
 		return rest_ensure_response( array( 'success' => true, 'message' => 'Plugin reset successfully.' ) );
+	}
+
+	public function scan_complete_report( $request ) {
+		if ( function_exists( 'frank_seo_send_email_report' ) ) {
+			$sent = frank_seo_send_email_report( 'manual' );
+			return rest_ensure_response( array( 'success' => true, 'email_sent' => $sent ) );
+		}
+		return rest_ensure_response( array( 'success' => false, 'message' => 'Email reporter function missing.' ) );
+	}
+
+	private function update_cron_schedule( $settings ) {
+		// Clear existing scheduled hook
+		wp_clear_scheduled_hook( 'frank_seo_scheduled_scan' );
+
+		// If scheduled emails are enabled and schedule is not Disabled
+		if ( ! empty( $settings['enableScheduledEmail'] ) && isset( $settings['schedule'] ) && $settings['schedule'] !== 'Disabled' ) {
+			$frequency = strtolower( $settings['schedule'] ); // 'daily', 'weekly', 'monthly'
+			wp_schedule_event( time() + 10, $frequency, 'frank_seo_scheduled_scan' );
+		}
 	}
 }
 
