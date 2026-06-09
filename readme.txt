@@ -4,7 +4,7 @@ Tags: seo, audit, seo-checker, on-page-seo, seo-audit
 Requires at least: 5.8
 Tested up to: 7.0
 Requires PHP: 7.4
-Stable tag: 1.0.4
+Stable tag: 1.0.5
 License: GPLv2 or later
 License URI: https://www.gnu.org/licenses/gpl-2.0.html
 
@@ -80,6 +80,14 @@ No. All auditing is performed locally on your server. No data is sent to externa
 
 == Changelog ==
 
+= 1.0.5 =
+* June 9, 2026
+* Added a detailed "How To Use" documentation submenu page.
+* Added a competitive "Comparison" submenu page.
+* Fixed a critical Minified React Error #31 by decoupling the Dashboard React 19 app from WordPress's native React 18 element global.
+* Fixed a styling bug where popup dialogs, inputs, and dropdown menus had unreadable white backgrounds in dark mode by applying a global Material UI ThemeProvider.
+* Fixed a crash in the 404 Monitor page during redirect creation.
+
 = 1.0.4 =
 * Added a persistent Light/Dark mode switcher option to the admin dashboard header.
 * Persisted selection across sessions using localStorage.
@@ -116,6 +124,9 @@ No. All auditing is performed locally on your server. No data is sent to externa
 * Settings panel with crawl configuration.
 
 == Upgrade Notice ==
+
+= 1.0.5 =
+Introduces the new "How To Use" and "Comparison" pages, plus major stability and dark mode UI fixes for the React dashboard.
 
 = 1.0.4 =
 Introduces a custom theme switcher toggle for Light/Dark modes in the dashboard header.

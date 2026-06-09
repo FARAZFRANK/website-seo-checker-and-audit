@@ -7,7 +7,6 @@ if ( ! defined( 'ABSPATH' ) ) {
 /**
  * Fired during plugin activation.
  */
-
 class Frank_SEO_Activator {
 
 	/**
@@ -77,10 +76,41 @@ class Frank_SEO_Activator {
 			KEY url (url(255))
 		) $charset_collate;";
 
+		// Redirects table
+		$table_redirects = $wpdb->prefix . 'frank_seo_redirects';
+		$sql_redirects = "CREATE TABLE $table_redirects (
+			id bigint(20) unsigned NOT NULL AUTO_INCREMENT,
+			url_from varchar(2048) NOT NULL,
+			url_to varchar(2048) NOT NULL,
+			status int(3) NOT NULL DEFAULT 301,
+			hits bigint(20) unsigned NOT NULL DEFAULT 0,
+			created_at datetime DEFAULT '0000-00-00 00:00:00' NOT NULL,
+			PRIMARY KEY  (id),
+			KEY url_from (url_from(255))
+		) $charset_collate;";
+
+		// 404 Logs table
+		$table_404 = $wpdb->prefix . 'frank_seo_404_logs';
+		$sql_404 = "CREATE TABLE $table_404 (
+			id bigint(20) unsigned NOT NULL AUTO_INCREMENT,
+			url varchar(2048) NOT NULL,
+			referer varchar(2048) DEFAULT NULL,
+			user_agent varchar(512) DEFAULT NULL,
+			hits bigint(20) unsigned NOT NULL DEFAULT 1,
+			last_hit datetime DEFAULT '0000-00-00 00:00:00' NOT NULL,
+			PRIMARY KEY  (id),
+			KEY url (url(255))
+		) $charset_collate;";
+
 		require_once( ABSPATH . 'wp-admin/includes/upgrade.php' );
 		dbDelta( $sql_pages );
 		dbDelta( $sql_issues );
 		dbDelta( $sql_history );
 		dbDelta( $sql_links );
+		dbDelta( $sql_redirects );
+		dbDelta( $sql_404 );
+
+		// Flush rewrite rules to register /sitemap.xml immediately
+		flush_rewrite_rules();
 	}
 }

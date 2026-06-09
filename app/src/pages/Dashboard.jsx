@@ -29,7 +29,10 @@ import {
   ListItemText,
   TableSortLabel,
   Select,
-  FormControl
+  FormControl,
+  Tabs,
+  Tab,
+  TextField
 } from '@mui/material';
 import PlayArrowIcon from '@mui/icons-material/PlayArrow';
 import SearchIcon from '@mui/icons-material/Search';
@@ -42,7 +45,7 @@ import FilterListIcon from '@mui/icons-material/FilterList';
 import DeleteIcon from '@mui/icons-material/Delete';
 import ViewColumnIcon from '@mui/icons-material/ViewColumn';
 
-import { getSummary, getPages, triggerScan, deletePage, bulkDeletePages, getPagesToScan, getSettings, triggerScanComplete } from '../api';
+import { getSummary, getPages, triggerScan, deletePage, bulkDeletePages, getPagesToScan, getSettings, triggerScanComplete, runCompetitorAudit } from '../api';
 import { useNavigate } from 'react-router-dom';
 
 function Dashboard() {
@@ -382,6 +385,45 @@ function Dashboard() {
     setLoading(false);
   };
 
+  const [activeTab, setActiveTab] = useState('site-audit');
+  
+  // Competitor Audit States
+  const [competitorUrl, setCompetitorUrl] = useState('');
+  const [auditingCompetitor, setAuditingCompetitor] = useState(false);
+  const [competitorResult, setCompetitorResult] = useState(null);
+  const [competitorError, setCompetitorError] = useState('');
+
+  const handleCompetitorAudit = async () => {
+    if (!competitorUrl) return;
+    
+    // Simple URL validation
+    try {
+      new URL(competitorUrl);
+    } catch (_) {
+      setCompetitorError('Please enter a valid absolute URL (e.g., https://example.com)');
+      return;
+    }
+
+    setAuditingCompetitor(true);
+    setCompetitorError('');
+    setCompetitorResult(null);
+
+    try {
+      const response = await runCompetitorAudit(competitorUrl);
+      if (response && response.success) {
+        setCompetitorResult(response);
+      } else {
+        setCompetitorError(response?.message || 'Competitor audit failed.');
+      }
+    } catch (err) {
+      console.error("Competitor audit API error:", err);
+      const message = err.response?.data?.message || err.message || 'An error occurred during competitor audit.';
+      setCompetitorError(message);
+    } finally {
+      setAuditingCompetitor(false);
+    }
+  };
+
   return (
     <Box sx={{ fontFamily: 'var(--sans)' }}>
       {/* Dashboard Top Header Banner */}
@@ -453,7 +495,41 @@ function Dashboard() {
         </Box>
       </Box>
 
-      {/* Progress Bar Panel when scanning */}
+      {/* Tabs Switcher */}
+      <Box sx={{ borderBottom: '1px solid var(--border)', mb: 4 }}>
+        <Tabs 
+          value={activeTab} 
+          onChange={(e, val) => {
+            setActiveTab(val);
+            setCompetitorError('');
+          }}
+          sx={{
+            '& .MuiTabs-indicator': {
+              backgroundColor: 'var(--primary)',
+              height: '3px',
+              borderRadius: '3px 3px 0 0'
+            },
+            '& .MuiTab-root': {
+              fontFamily: 'var(--sans)',
+              fontWeight: 700,
+              fontSize: '0.95rem',
+              color: 'var(--text)',
+              textTransform: 'none',
+              pb: 1.5,
+              '&.Mui-selected': {
+                color: 'var(--primary)'
+              }
+            }
+          }}
+        >
+          <Tab label="Site Audit Overview" value="site-audit" />
+          <Tab label="Competitor Analysis" value="competitor-analysis" />
+        </Tabs>
+      </Box>
+
+      {activeTab === 'site-audit' && (
+        <>
+          {/* Progress Bar Panel when scanning */}
       {scanning && (
         <Box 
           className="glass-panel" 
@@ -1246,11 +1322,283 @@ function Dashboard() {
           />
         </>
       )}
+      </>
+      )}
+
+      {/* Competitor Analysis Tab View */}
+      {activeTab === 'competitor-analysis' && (
+        <Box>
+          <Grid container spacing={4}>
+            {/* Input Card */}
+            <Grid item xs={12}>
+              <Box className="glass-panel" sx={{ p: 4, borderRadius: '20px' }}>
+                <Typography variant="h6" sx={{ fontWeight: 700, color: 'var(--text-h)', mb: 1.5, fontFamily: 'var(--sans)' }}>
+                  Analyze Competitor Page
+                </Typography>
+                <Typography variant="body2" sx={{ color: 'var(--text)', opacity: 0.8, mb: 3, fontFamily: 'var(--sans)' }}>
+                  Enter the full URL of a competitor's page to run a live SEO check and compare it side-by-side with your own site's performance.
+                </Typography>
+                
+                <Box sx={{ display: 'flex', gap: 2, flexDirection: { xs: 'column', sm: 'row' } }}>
+                  <TextField
+                    placeholder="https://competitor.com/blog-post"
+                    fullWidth
+                    value={competitorUrl}
+                    onChange={(e) => setCompetitorUrl(e.target.value)}
+                    error={!!competitorError}
+                    helperText={competitorError}
+                    sx={{
+                      '& .MuiOutlinedInput-root': {
+                        borderRadius: '12px',
+                        fontFamily: 'var(--sans)',
+                        fontSize: '0.95rem',
+                        backgroundColor: 'rgba(255, 255, 255, 0.02)',
+                        '& fieldset': { borderColor: 'var(--border)' },
+                        '&:hover fieldset': { borderColor: 'var(--primary)' },
+                        '&.Mui-focused fieldset': { borderColor: 'var(--primary)', borderWidth: '1px' }
+                      },
+                      '& .MuiFormHelperText-root': { fontFamily: 'var(--sans)', fontSize: '0.78rem' }
+                    }}
+                  />
+                  <Button
+                    variant="contained"
+                    className={`btn-glow ${auditingCompetitor ? '' : 'btn-pulse'}`}
+                    onClick={handleCompetitorAudit}
+                    disabled={auditingCompetitor || !competitorUrl}
+                    startIcon={auditingCompetitor ? <CircularProgress size={18} color="inherit" /> : <PlayArrowIcon />}
+                    sx={{
+                      px: 4,
+                      py: 1.5,
+                      fontFamily: 'var(--sans)',
+                      borderRadius: '12px',
+                      textTransform: 'none',
+                      fontWeight: 600,
+                      whiteSpace: 'nowrap'
+                    }}
+                  >
+                    {auditingCompetitor ? 'Analyzing URL...' : 'Start Comparison'}
+                  </Button>
+                </Box>
+              </Box>
+            </Grid>
+
+            {/* Audit Results Comparison */}
+            {competitorResult && (
+              <>
+                {/* Score Cards Side-by-Side */}
+                <Grid item xs={12} md={6}>
+                  <Box className="glass-panel" sx={{ p: 4, borderRadius: '20px', height: '100%' }}>
+                    <Typography variant="subtitle2" sx={{ color: 'var(--primary)', fontWeight: 700, mb: 1, fontFamily: 'var(--sans)', textTransform: 'uppercase' }}>
+                      Your Site Average
+                    </Typography>
+                    <Typography variant="h5" sx={{ fontWeight: 800, color: 'var(--text-h)', mb: 3, fontFamily: 'var(--sans)' }}>
+                      Performance Scorecard
+                    </Typography>
+                    
+                    <Box sx={{ display: 'flex', alignItems: 'center', gap: 3, mb: 4 }}>
+                      <Box 
+                        sx={{ 
+                          width: 90, 
+                          height: 90, 
+                          borderRadius: '50%', 
+                          border: `6px solid ${getScoreColor(summary.average_score)}`, 
+                          display: 'flex', 
+                          alignItems: 'center', 
+                          justifyContent: 'center', 
+                          fontSize: '24px', 
+                          fontWeight: 800, 
+                          color: 'var(--text-h)',
+                          boxShadow: `0 0 20px ${getScoreColor(summary.average_score)}20`
+                        }}
+                      >
+                        {summary.average_score}%
+                      </Box>
+                      <Box>
+                        <Typography variant="body2" sx={{ color: 'var(--text)', opacity: 0.8, fontFamily: 'var(--sans)' }}>
+                          Average of all {summary.total_pages} audited pages across your site.
+                        </Typography>
+                      </Box>
+                    </Box>
+
+                    {/* Issue Breakdown */}
+                    <Box sx={{ display: 'flex', flexDirection: 'column', gap: 2 }}>
+                      <Box sx={{ display: 'flex', justifyContent: 'space-between', borderBottom: '1px solid var(--border)', pb: 1 }}>
+                        <Typography variant="body2" sx={{ color: 'var(--text)', fontFamily: 'var(--sans)' }}>Average Errors</Typography>
+                        <Typography variant="body2" sx={{ fontWeight: 700, color: 'var(--error)', fontFamily: 'var(--sans)' }}>
+                          {pages.length ? (pages.reduce((acc, p) => acc + (p.errors_count || 0), 0) / pages.length).toFixed(1) : 0}
+                        </Typography>
+                      </Box>
+                      <Box sx={{ display: 'flex', justifyContent: 'space-between', borderBottom: '1px solid var(--border)', pb: 1 }}>
+                        <Typography variant="body2" sx={{ color: 'var(--text)', fontFamily: 'var(--sans)' }}>Average Warnings</Typography>
+                        <Typography variant="body2" sx={{ fontWeight: 700, color: 'var(--warning)', fontFamily: 'var(--sans)' }}>
+                          {pages.length ? (pages.reduce((acc, p) => acc + (p.warnings_count || 0), 0) / pages.length).toFixed(1) : 0}
+                        </Typography>
+                      </Box>
+                      <Box sx={{ display: 'flex', justifyContent: 'space-between', pb: 1 }}>
+                        <Typography variant="body2" sx={{ color: 'var(--text)', fontFamily: 'var(--sans)' }}>Average Notices</Typography>
+                        <Typography variant="body2" sx={{ fontWeight: 700, color: 'var(--text-h)', fontFamily: 'var(--sans)' }}>
+                          {pages.length ? (pages.reduce((acc, p) => acc + (p.notices_count || 0), 0) / pages.length).toFixed(1) : 0}
+                        </Typography>
+                      </Box>
+                    </Box>
+                  </Box>
+                </Grid>
+
+                <Grid item xs={12} md={6}>
+                  <Box className="glass-panel" sx={{ p: 4, borderRadius: '20px', height: '100%' }}>
+                    <Typography variant="subtitle2" sx={{ color: 'var(--secondary)', fontWeight: 700, mb: 1, fontFamily: 'var(--sans)', textTransform: 'uppercase' }}>
+                      Competitor Page
+                    </Typography>
+                    <Typography variant="h5" sx={{ fontWeight: 800, color: 'var(--text-h)', mb: 3, fontFamily: 'var(--sans)', overflow: 'hidden', textOverflow: 'ellipsis', whiteSpace: 'nowrap' }} title={competitorResult.url}>
+                      {competitorResult.url}
+                    </Typography>
+                    
+                    <Box sx={{ display: 'flex', alignItems: 'center', gap: 3, mb: 4 }}>
+                      <Box 
+                        sx={{ 
+                          width: 90, 
+                          height: 90, 
+                          borderRadius: '50%', 
+                          border: `6px solid ${getScoreColor(competitorResult.seo_score)}`, 
+                          display: 'flex', 
+                          alignItems: 'center', 
+                          justifyContent: 'center', 
+                          fontSize: '24px', 
+                          fontWeight: 800, 
+                          color: 'var(--text-h)',
+                          boxShadow: `0 0 20px ${getScoreColor(competitorResult.seo_score)}20`
+                        }}
+                      >
+                        {competitorResult.seo_score}%
+                      </Box>
+                      <Box>
+                        <Typography variant="body2" sx={{ color: 'var(--text)', opacity: 0.8, fontFamily: 'var(--sans)' }}>
+                          {competitorResult.seo_score > summary.average_score 
+                            ? 'This page currently outscores your website average. Review their setup below to improve.' 
+                            : 'You are currently outperforming this competitor page on average! Keep it up.'}
+                        </Typography>
+                      </Box>
+                    </Box>
+
+                    {/* Issue Breakdown */}
+                    <Box sx={{ display: 'flex', flexDirection: 'column', gap: 2 }}>
+                      <Box sx={{ display: 'flex', justifyContent: 'space-between', borderBottom: '1px solid var(--border)', pb: 1 }}>
+                        <Typography variant="body2" sx={{ color: 'var(--text)', fontFamily: 'var(--sans)' }}>Errors</Typography>
+                        <Typography variant="body2" sx={{ fontWeight: 700, color: 'var(--error)', fontFamily: 'var(--sans)' }}>
+                          {competitorResult.errors_count}
+                        </Typography>
+                      </Box>
+                      <Box sx={{ display: 'flex', justifyContent: 'space-between', borderBottom: '1px solid var(--border)', pb: 1 }}>
+                        <Typography variant="body2" sx={{ color: 'var(--text)', fontFamily: 'var(--sans)' }}>Warnings</Typography>
+                        <Typography variant="body2" sx={{ fontWeight: 700, color: 'var(--warning)', fontFamily: 'var(--sans)' }}>
+                          {competitorResult.warnings_count}
+                        </Typography>
+                      </Box>
+                      <Box sx={{ display: 'flex', justifyContent: 'space-between', pb: 1 }}>
+                        <Typography variant="body2" sx={{ color: 'var(--text)', fontFamily: 'var(--sans)' }}>Notices</Typography>
+                        <Typography variant="body2" sx={{ fontWeight: 700, color: 'var(--text-h)', fontFamily: 'var(--sans)' }}>
+                          {competitorResult.notices_count}
+                        </Typography>
+                      </Box>
+                    </Box>
+                  </Box>
+                </Grid>
+
+                {/* Competitor Page Issues Details */}
+                <Grid item xs={12}>
+                  <Box className="glass-panel" sx={{ p: 4, borderRadius: '20px' }}>
+                    <Typography variant="h6" sx={{ fontWeight: 700, color: 'var(--text-h)', mb: 3, fontFamily: 'var(--sans)' }}>
+                      Competitor SEO Audit Log & Beat-Them Strategy
+                    </Typography>
+
+                    {competitorResult.issues && competitorResult.issues.length > 0 ? (
+                      <TableContainer>
+                        <Table sx={{ minWidth: 600 }}>
+                          <TableHead>
+                            <TableRow sx={{ borderBottom: '1px solid var(--border)' }}>
+                              <TableCell sx={{ fontFamily: 'var(--sans)', fontWeight: 700, color: 'var(--text-h)' }}>Issue Type</TableCell>
+                              <TableCell sx={{ fontFamily: 'var(--sans)', fontWeight: 700, color: 'var(--text-h)' }}>Severity</TableCell>
+                              <TableCell sx={{ fontFamily: 'var(--sans)', fontWeight: 700, color: 'var(--text-h)' }}>Details</TableCell>
+                              <TableCell sx={{ fontFamily: 'var(--sans)', fontWeight: 700, color: 'var(--text-h)' }}>Strategy to Outrank</TableCell>
+                            </TableRow>
+                          </TableHead>
+                          <TableBody>
+                            {competitorResult.issues.map((issue, index) => {
+                              // Beat them strategy mapper
+                              let strategy = "Ensure your page is correctly optimized for this aspect.";
+                              if (issue.type === 'missing_title') {
+                                strategy = "Make sure all your pages have clean, keyword-rich titles between 40-60 characters.";
+                              } else if (issue.type === 'short_title' || issue.type === 'long_title') {
+                                strategy = "Write an optimal length title (40-60 characters) with your main keyword at the beginning.";
+                              } else if (issue.type === 'missing_meta_desc') {
+                                strategy = "Write a compelling meta description between 120-160 characters containing your focus keyword.";
+                              } else if (issue.type === 'short_meta_desc' || issue.type === 'long_meta_desc') {
+                                strategy = "Write an optimized description (120-160 characters) with a clear call-to-action.";
+                              } else if (issue.type === 'missing_h1' || issue.type === 'multiple_h1') {
+                                strategy = "Ensure your target page contains exactly one clear <h1> header defining the main topic.";
+                              } else if (issue.type === 'missing_img_alt') {
+                                strategy = "Use descriptive keywords in your image 'alt' tags; this competitor misses them, giving you an edge in Image Search.";
+                              } else if (issue.type === 'broken_link') {
+                                strategy = "Perform periodic link sweeps to keep internal/external links healthy. Broken links ruin competitor authority.";
+                              } else if (issue.type === 'no_internal_links') {
+                                strategy = "Link to other relevant pages on your site to pass Link Juice. Competitor lacks internal linkage structure.";
+                              } else if (issue.type === 'low_word_count') {
+                                strategy = "Write deep, helpful content (aim for 1000+ words). Competitor page content is thin.";
+                              } else if (issue.type === 'missing_schema') {
+                                strategy = "Deploy Schema.org JSON-LD (handled automatically by our hooks engine) to secure Rich Snippets.";
+                              } else if (issue.type === 'missing_canonical') {
+                                strategy = "Verify your canonical tags are outputting correctly (default in our plugin) to prevent duplicate content hits.";
+                              }
+
+                              return (
+                                <TableRow key={index} sx={{ borderBottom: '1px solid var(--border)', '&:last-child': { borderBottom: 0 } }}>
+                                  <TableCell sx={{ fontFamily: 'var(--sans)', fontWeight: 600, color: 'var(--text-h)' }}>
+                                    {issue.type ? issue.type.split('_').map(w => w.charAt(0).toUpperCase() + w.slice(1)).join(' ') : 'General Audit Check'}
+                                  </TableCell>
+                                  <TableCell>
+                                    <span 
+                                      style={{
+                                        color: issue.severity === 'Error' ? 'var(--error)' : issue.severity === 'Warning' ? 'var(--warning)' : 'var(--text)',
+                                        fontWeight: 700,
+                                        fontSize: '0.8rem',
+                                        textTransform: 'uppercase'
+                                      }}
+                                    >
+                                      {issue.severity || 'Notice'}
+                                    </span>
+                                  </TableCell>
+                                  <TableCell sx={{ fontFamily: 'var(--sans)', color: 'var(--text)' }}>
+                                    {issue.details}
+                                  </TableCell>
+                                  <TableCell sx={{ fontFamily: 'var(--sans)', color: 'var(--primary)', fontWeight: 500, fontStyle: 'italic' }}>
+                                    💡 {strategy}
+                                  </TableCell>
+                                </TableRow>
+                              );
+                            })}
+                          </TableBody>
+                        </Table>
+                      </TableContainer>
+                    ) : (
+                      <Box sx={{ py: 2, textAlign: 'center' }}>
+                        <Typography sx={{ color: 'var(--success)', fontWeight: 600, fontFamily: 'var(--sans)' }}>
+                          🎉 Excellent! This competitor page has 0 open SEO issues. To beat them, focus on deep backlinking and content quality.
+                        </Typography>
+                      </Box>
+                    )}
+                  </Box>
+                </Grid>
+              </>
+            )}
+          </Grid>
+        </Box>
+      )}
 
       {/* Premium Glass Delete Confirmation Dialog */}
       <Dialog
         open={deleteConfirmOpen}
         onClose={() => setDeleteConfirmOpen(false)}
+        container={() => document.getElementById('frank-seo-audit-root')}
         PaperProps={{
           sx: {
             bgcolor: 'var(--bg)',

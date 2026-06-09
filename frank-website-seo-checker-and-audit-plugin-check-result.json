@@ -1,0 +1,1238 @@
+{
+    "generated_at": "2026-05-23 07:28:02",
+    "plugin": "Frank Website SEO Checker And Audit",
+    "results": {
+        "D:\\wamp64\\www\\dev\\wp-content\\plugins\\frank-website-seo-checker-and-audit\\includes\\class-frank-seo-auditor.php": [
+            {
+                "message": "Use of a direct database call is discouraged.",
+                "code": "WordPress.DB.DirectDatabaseQuery.DirectQuery",
+                "link": null,
+                "docs": "",
+                "severity": 5,
+                "type": "WARNING",
+                "line": 25,
+                "column": 14
+            },
+            {
+                "message": "Direct database call without caching detected. Consider using wp_cache_get() / wp_cache_set() or wp_cache_delete().",
+                "code": "WordPress.DB.DirectDatabaseQuery.NoCaching",
+                "link": null,
+                "docs": "",
+                "severity": 5,
+                "type": "WARNING",
+                "line": 25,
+                "column": 14
+            },
+            {
+                "message": "Unescaped parameter $table_links used in $wpdb-&gt;get_var()\\n$table_links assigned unsafely at line 24.",
+                "code": "PluginCheck.Security.DirectDB.UnescapedDBParameter",
+                "link": null,
+                "docs": "",
+                "severity": 5,
+                "type": "WARNING",
+                "line": 25,
+                "column": 15
+            },
+            {
+                "message": "Use placeholders and $wpdb-&gt;prepare(); found interpolated variable $table_links at &quot;SHOW TABLES LIKE &#039;$table_links&#039;&quot;",
+                "code": "WordPress.DB.PreparedSQL.InterpolatedNotPrepared",
+                "link": null,
+                "docs": "",
+                "severity": 5,
+                "type": "WARNING",
+                "line": 25,
+                "column": 24
+            },
+            {
+                "message": "strip_tags() is discouraged. Use the more comprehensive wp_strip_all_tags() instead.",
+                "code": "WordPress.WP.AlternativeFunctions.strip_tags_strip_tags",
+                "link": null,
+                "docs": "",
+                "severity": 5,
+                "type": "ERROR",
+                "line": 270,
+                "column": 12
+            },
+            {
+                "message": "Use of a direct database call is discouraged.",
+                "code": "WordPress.DB.DirectDatabaseQuery.DirectQuery",
+                "link": null,
+                "docs": "",
+                "severity": 5,
+                "type": "WARNING",
+                "line": 295,
+                "column": 9
+            },
+            {
+                "message": "Direct database call without caching detected. Consider using wp_cache_get() / wp_cache_set() or wp_cache_delete().",
+                "code": "WordPress.DB.DirectDatabaseQuery.NoCaching",
+                "link": null,
+                "docs": "",
+                "severity": 5,
+                "type": "WARNING",
+                "line": 295,
+                "column": 9
+            },
+            {
+                "message": "Use of a direct database call is discouraged.",
+                "code": "WordPress.DB.DirectDatabaseQuery.DirectQuery",
+                "link": null,
+                "docs": "",
+                "severity": 5,
+                "type": "WARNING",
+                "line": 300,
+                "column": 17
+            },
+            {
+                "message": "Use of a direct database call is discouraged.",
+                "code": "WordPress.DB.DirectDatabaseQuery.DirectQuery",
+                "link": null,
+                "docs": "",
+                "severity": 5,
+                "type": "WARNING",
+                "line": 329,
+                "column": 26
+            },
+            {
+                "message": "Direct database call without caching detected. Consider using wp_cache_get() / wp_cache_set() or wp_cache_delete().",
+                "code": "WordPress.DB.DirectDatabaseQuery.NoCaching",
+                "link": null,
+                "docs": "",
+                "severity": 5,
+                "type": "WARNING",
+                "line": 329,
+                "column": 26
+            },
+            {
+                "message": "Unescaped parameter $table_pages used in $wpdb-&gt;get_var()\\n$table_pages assigned unsafely at line 290.",
+                "code": "PluginCheck.Security.DirectDB.UnescapedDBParameter",
+                "link": null,
+                "docs": "",
+                "severity": 5,
+                "type": "WARNING",
+                "line": 329,
+                "column": 27
+            },
+            {
+                "message": "Use placeholders and $wpdb-&gt;prepare(); found interpolated variable $table_pages at &quot;SELECT page_id FROM $table_pages WHERE page_id = %d&quot;",
+                "code": "WordPress.DB.PreparedSQL.InterpolatedNotPrepared",
+                "link": null,
+                "docs": "",
+                "severity": 5,
+                "type": "WARNING",
+                "line": 329,
+                "column": 50
+            },
+            {
+                "message": "Use of a direct database call is discouraged.",
+                "code": "WordPress.DB.DirectDatabaseQuery.DirectQuery",
+                "link": null,
+                "docs": "",
+                "severity": 5,
+                "type": "WARNING",
+                "line": 333,
+                "column": 13
+            },
+            {
+                "message": "Direct database call without caching detected. Consider using wp_cache_get() / wp_cache_set() or wp_cache_delete().",
+                "code": "WordPress.DB.DirectDatabaseQuery.NoCaching",
+                "link": null,
+                "docs": "",
+                "severity": 5,
+                "type": "WARNING",
+                "line": 333,
+                "column": 13
+            },
+            {
+                "message": "Use of a direct database call is discouraged.",
+                "code": "WordPress.DB.DirectDatabaseQuery.DirectQuery",
+                "link": null,
+                "docs": "",
+                "severity": 5,
+                "type": "WARNING",
+                "line": 347,
+                "column": 13
+            },
+            {
+                "message": "Use of a direct database call is discouraged.",
+                "code": "WordPress.DB.DirectDatabaseQuery.DirectQuery",
+                "link": null,
+                "docs": "",
+                "severity": 5,
+                "type": "WARNING",
+                "line": 366,
+                "column": 32
+            },
+            {
+                "message": "Direct database call without caching detected. Consider using wp_cache_get() / wp_cache_set() or wp_cache_delete().",
+                "code": "WordPress.DB.DirectDatabaseQuery.NoCaching",
+                "link": null,
+                "docs": "",
+                "severity": 5,
+                "type": "WARNING",
+                "line": 366,
+                "column": 32
+            },
+            {
+                "message": "Unescaped parameter $table_issues used in $wpdb-&gt;get_results()\\n$table_issues assigned unsafely at line 291.",
+                "code": "PluginCheck.Security.DirectDB.UnescapedDBParameter",
+                "link": null,
+                "docs": "",
+                "severity": 5,
+                "type": "WARNING",
+                "line": 366,
+                "column": 33
+            },
+            {
+                "message": "Use placeholders and $wpdb-&gt;prepare(); found interpolated variable $table_issues at &quot;SELECT issue_id, issue_type, status FROM $table_issues WHERE page_id = %d AND status != &#039;Fixed&#039;&quot;",
+                "code": "WordPress.DB.PreparedSQL.InterpolatedNotPrepared",
+                "link": null,
+                "docs": "",
+                "severity": 5,
+                "type": "WARNING",
+                "line": 366,
+                "column": 60
+            },
+            {
+                "message": "Use of a direct database call is discouraged.",
+                "code": "WordPress.DB.DirectDatabaseQuery.DirectQuery",
+                "link": null,
+                "docs": "",
+                "severity": 5,
+                "type": "WARNING",
+                "line": 383,
+                "column": 17
+            },
+            {
+                "message": "Direct database call without caching detected. Consider using wp_cache_get() / wp_cache_set() or wp_cache_delete().",
+                "code": "WordPress.DB.DirectDatabaseQuery.NoCaching",
+                "link": null,
+                "docs": "",
+                "severity": 5,
+                "type": "WARNING",
+                "line": 383,
+                "column": 17
+            },
+            {
+                "message": "Use of a direct database call is discouraged.",
+                "code": "WordPress.DB.DirectDatabaseQuery.DirectQuery",
+                "link": null,
+                "docs": "",
+                "severity": 5,
+                "type": "WARNING",
+                "line": 393,
+                "column": 17
+            },
+            {
+                "message": "Use of a direct database call is discouraged.",
+                "code": "WordPress.DB.DirectDatabaseQuery.DirectQuery",
+                "link": null,
+                "docs": "",
+                "severity": 5,
+                "type": "WARNING",
+                "line": 413,
+                "column": 21
+            },
+            {
+                "message": "Direct database call without caching detected. Consider using wp_cache_get() / wp_cache_set() or wp_cache_delete().",
+                "code": "WordPress.DB.DirectDatabaseQuery.NoCaching",
+                "link": null,
+                "docs": "",
+                "severity": 5,
+                "type": "WARNING",
+                "line": 413,
+                "column": 21
+            }
+        ],
+        "readme.txt": [
+            {
+                "message": "Tested up to: 6.8 < 7.0. The \"Tested up to\" value in your plugin is not set to the current version of WordPress. This means your plugin will not show up in searches, as we require plugins to be compatible and documented as tested up to the most recent version of WordPress.",
+                "code": "outdated_tested_upto_header",
+                "link": "http://localhost/dev/wp-admin/plugin-editor.php?plugin=frank-website-seo-checker-and-audit%2Ffrank-website-seo-checker-and-audit.php&file=frank-website-seo-checker-and-audit%2Freadme.txt",
+                "docs": "https://developer.wordpress.org/plugins/wordpress-org/how-your-readme-txt-works/#readme-header-information",
+                "severity": 7,
+                "type": "ERROR",
+                "line": 0,
+                "column": 0
+            }
+        ],
+        ".gitignore": [
+            {
+                "message": "Hidden files are not permitted.",
+                "code": "hidden_files",
+                "link": null,
+                "docs": "",
+                "severity": 8,
+                "type": "WARNING",
+                "line": 0,
+                "column": 0
+            }
+        ],
+        "app/.gitignore": [
+            {
+                "message": "Hidden files are not permitted.",
+                "code": "hidden_files",
+                "link": null,
+                "docs": "",
+                "severity": 8,
+                "type": "WARNING",
+                "line": 0,
+                "column": 0
+            }
+        ],
+        "frank-website-seo-checker-and-audit.php": [
+            {
+                "message": "The \"Domain Path\" header in the plugin file must point to an existing folder. Found: \"languages\"",
+                "code": "plugin_header_nonexistent_domain_path",
+                "link": "http://localhost/dev/wp-admin/plugin-editor.php?plugin=frank-website-seo-checker-and-audit%2Ffrank-website-seo-checker-and-audit.php&file=frank-website-seo-checker-and-audit%2Ffrank-website-seo-checker-and-audit.php",
+                "docs": "https://developer.wordpress.org/plugins/internationalization/how-to-internationalize-your-plugin/#domain-path",
+                "severity": 6,
+                "type": "WARNING",
+                "line": 0,
+                "column": 0
+            }
+        ],
+        "D:\\wamp64\\www\\dev\\wp-content\\plugins\\frank-website-seo-checker-and-audit\\includes\\class-frank-seo-rest-api.php": [
+            {
+                "message": "Use of a direct database call is discouraged.",
+                "code": "WordPress.DB.DirectDatabaseQuery.DirectQuery",
+                "link": null,
+                "docs": "",
+                "severity": 5,
+                "type": "WARNING",
+                "line": 149,
+                "column": 25
+            },
+            {
+                "message": "Direct database call without caching detected. Consider using wp_cache_get() / wp_cache_set() or wp_cache_delete().",
+                "code": "WordPress.DB.DirectDatabaseQuery.NoCaching",
+                "link": null,
+                "docs": "",
+                "severity": 5,
+                "type": "WARNING",
+                "line": 149,
+                "column": 25
+            },
+            {
+                "message": "Unescaped parameter $table_pages used in $wpdb-&gt;get_var()\\n$table_pages assigned unsafely at line 146.",
+                "code": "PluginCheck.Security.DirectDB.UnescapedDBParameter",
+                "link": null,
+                "docs": "",
+                "severity": 5,
+                "type": "WARNING",
+                "line": 149,
+                "column": 26
+            },
+            {
+                "message": "Use placeholders and $wpdb-&gt;prepare(); found interpolated variable $table_pages at &quot;SHOW TABLES LIKE &#039;$table_pages&#039;&quot;",
+                "code": "WordPress.DB.PreparedSQL.InterpolatedNotPrepared",
+                "link": null,
+                "docs": "",
+                "severity": 5,
+                "type": "WARNING",
+                "line": 149,
+                "column": 34
+            },
+            {
+                "message": "Use of a direct database call is discouraged.",
+                "code": "WordPress.DB.DirectDatabaseQuery.DirectQuery",
+                "link": null,
+                "docs": "",
+                "severity": 5,
+                "type": "WARNING",
+                "line": 158,
+                "column": 24
+            },
+            {
+                "message": "Direct database call without caching detected. Consider using wp_cache_get() / wp_cache_set() or wp_cache_delete().",
+                "code": "WordPress.DB.DirectDatabaseQuery.NoCaching",
+                "link": null,
+                "docs": "",
+                "severity": 5,
+                "type": "WARNING",
+                "line": 158,
+                "column": 24
+            },
+            {
+                "message": "Unescaped parameter $table_pages used in $wpdb-&gt;get_var()\\n$table_pages assigned unsafely at line 146.",
+                "code": "PluginCheck.Security.DirectDB.UnescapedDBParameter",
+                "link": null,
+                "docs": "",
+                "severity": 5,
+                "type": "WARNING",
+                "line": 158,
+                "column": 25
+            },
+            {
+                "message": "Use placeholders and $wpdb-&gt;prepare(); found interpolated variable $table_pages at &quot;SELECT COUNT(*) FROM $table_pages&quot;",
+                "code": "WordPress.DB.PreparedSQL.InterpolatedNotPrepared",
+                "link": null,
+                "docs": "",
+                "severity": 5,
+                "type": "WARNING",
+                "line": 158,
+                "column": 34
+            },
+            {
+                "message": "Use of a direct database call is discouraged.",
+                "code": "WordPress.DB.DirectDatabaseQuery.DirectQuery",
+                "link": null,
+                "docs": "",
+                "severity": 5,
+                "type": "WARNING",
+                "line": 159,
+                "column": 25
+            },
+            {
+                "message": "Direct database call without caching detected. Consider using wp_cache_get() / wp_cache_set() or wp_cache_delete().",
+                "code": "WordPress.DB.DirectDatabaseQuery.NoCaching",
+                "link": null,
+                "docs": "",
+                "severity": 5,
+                "type": "WARNING",
+                "line": 159,
+                "column": 25
+            },
+            {
+                "message": "Unescaped parameter $table_issues used in $wpdb-&gt;get_var()\\n$table_issues assigned unsafely at line 147.",
+                "code": "PluginCheck.Security.DirectDB.UnescapedDBParameter",
+                "link": null,
+                "docs": "",
+                "severity": 5,
+                "type": "WARNING",
+                "line": 159,
+                "column": 26
+            },
+            {
+                "message": "Use placeholders and $wpdb-&gt;prepare(); found interpolated variable $table_issues at &quot;SELECT COUNT(*) FROM $table_issues WHERE status = %s&quot;",
+                "code": "WordPress.DB.PreparedSQL.InterpolatedNotPrepared",
+                "link": null,
+                "docs": "",
+                "severity": 5,
+                "type": "WARNING",
+                "line": 159,
+                "column": 51
+            },
+            {
+                "message": "Use of a direct database call is discouraged.",
+                "code": "WordPress.DB.DirectDatabaseQuery.DirectQuery",
+                "link": null,
+                "docs": "",
+                "severity": 5,
+                "type": "WARNING",
+                "line": 160,
+                "column": 26
+            },
+            {
+                "message": "Direct database call without caching detected. Consider using wp_cache_get() / wp_cache_set() or wp_cache_delete().",
+                "code": "WordPress.DB.DirectDatabaseQuery.NoCaching",
+                "link": null,
+                "docs": "",
+                "severity": 5,
+                "type": "WARNING",
+                "line": 160,
+                "column": 26
+            },
+            {
+                "message": "Unescaped parameter $table_pages used in $wpdb-&gt;get_var()\\n$table_pages assigned unsafely at line 146.",
+                "code": "PluginCheck.Security.DirectDB.UnescapedDBParameter",
+                "link": null,
+                "docs": "",
+                "severity": 5,
+                "type": "WARNING",
+                "line": 160,
+                "column": 27
+            },
+            {
+                "message": "Use placeholders and $wpdb-&gt;prepare(); found interpolated variable $table_pages at &quot;SELECT AVG(seo_score) FROM $table_pages&quot;",
+                "code": "WordPress.DB.PreparedSQL.InterpolatedNotPrepared",
+                "link": null,
+                "docs": "",
+                "severity": 5,
+                "type": "WARNING",
+                "line": 160,
+                "column": 36
+            },
+            {
+                "message": "Use of a direct database call is discouraged.",
+                "code": "WordPress.DB.DirectDatabaseQuery.DirectQuery",
+                "link": null,
+                "docs": "",
+                "severity": 5,
+                "type": "WARNING",
+                "line": 173,
+                "column": 25
+            },
+            {
+                "message": "Direct database call without caching detected. Consider using wp_cache_get() / wp_cache_set() or wp_cache_delete().",
+                "code": "WordPress.DB.DirectDatabaseQuery.NoCaching",
+                "link": null,
+                "docs": "",
+                "severity": 5,
+                "type": "WARNING",
+                "line": 173,
+                "column": 25
+            },
+            {
+                "message": "Unescaped parameter $table_pages used in $wpdb-&gt;get_var()\\n$table_pages assigned unsafely at line 171.",
+                "code": "PluginCheck.Security.DirectDB.UnescapedDBParameter",
+                "link": null,
+                "docs": "",
+                "severity": 5,
+                "type": "WARNING",
+                "line": 173,
+                "column": 26
+            },
+            {
+                "message": "Use placeholders and $wpdb-&gt;prepare(); found interpolated variable $table_pages at &quot;SHOW TABLES LIKE &#039;$table_pages&#039;&quot;",
+                "code": "WordPress.DB.PreparedSQL.InterpolatedNotPrepared",
+                "link": null,
+                "docs": "",
+                "severity": 5,
+                "type": "WARNING",
+                "line": 173,
+                "column": 34
+            },
+            {
+                "message": "Use of a direct database call is discouraged.",
+                "code": "WordPress.DB.DirectDatabaseQuery.DirectQuery",
+                "link": null,
+                "docs": "",
+                "severity": 5,
+                "type": "WARNING",
+                "line": 178,
+                "column": 18
+            },
+            {
+                "message": "Direct database call without caching detected. Consider using wp_cache_get() / wp_cache_set() or wp_cache_delete().",
+                "code": "WordPress.DB.DirectDatabaseQuery.NoCaching",
+                "link": null,
+                "docs": "",
+                "severity": 5,
+                "type": "WARNING",
+                "line": 178,
+                "column": 18
+            },
+            {
+                "message": "Unescaped parameter $table_pages used in $wpdb-&gt;get_results()\\n$table_pages assigned unsafely at line 171.",
+                "code": "PluginCheck.Security.DirectDB.UnescapedDBParameter",
+                "link": null,
+                "docs": "",
+                "severity": 5,
+                "type": "WARNING",
+                "line": 178,
+                "column": 19
+            },
+            {
+                "message": "Use placeholders and $wpdb-&gt;prepare(); found interpolated variable $table_pages at \\t\\t\\tFROM $table_pages p \\n",
+                "code": "WordPress.DB.PreparedSQL.InterpolatedNotPrepared",
+                "link": null,
+                "docs": "",
+                "severity": 5,
+                "type": "WARNING",
+                "line": 182,
+                "column": 1
+            },
+            {
+                "message": "Use of a direct database call is discouraged.",
+                "code": "WordPress.DB.DirectDatabaseQuery.DirectQuery",
+                "link": null,
+                "docs": "",
+                "severity": 5,
+                "type": "WARNING",
+                "line": 190,
+                "column": 18
+            },
+            {
+                "message": "Direct database call without caching detected. Consider using wp_cache_get() / wp_cache_set() or wp_cache_delete().",
+                "code": "WordPress.DB.DirectDatabaseQuery.NoCaching",
+                "link": null,
+                "docs": "",
+                "severity": 5,
+                "type": "WARNING",
+                "line": 190,
+                "column": 18
+            },
+            {
+                "message": "Unescaped parameter $table_pages used in $wpdb-&gt;get_var()\\n$table_pages assigned unsafely at line 171.",
+                "code": "PluginCheck.Security.DirectDB.UnescapedDBParameter",
+                "link": null,
+                "docs": "",
+                "severity": 5,
+                "type": "WARNING",
+                "line": 190,
+                "column": 19
+            },
+            {
+                "message": "Use placeholders and $wpdb-&gt;prepare(); found interpolated variable $table_pages at &quot;SELECT COUNT(*) FROM $table_pages&quot;",
+                "code": "WordPress.DB.PreparedSQL.InterpolatedNotPrepared",
+                "link": null,
+                "docs": "",
+                "severity": 5,
+                "type": "WARNING",
+                "line": 190,
+                "column": 28
+            },
+            {
+                "message": "Use of a direct database call is discouraged.",
+                "code": "WordPress.DB.DirectDatabaseQuery.DirectQuery",
+                "link": null,
+                "docs": "",
+                "severity": 5,
+                "type": "WARNING",
+                "line": 204,
+                "column": 25
+            },
+            {
+                "message": "Direct database call without caching detected. Consider using wp_cache_get() / wp_cache_set() or wp_cache_delete().",
+                "code": "WordPress.DB.DirectDatabaseQuery.NoCaching",
+                "link": null,
+                "docs": "",
+                "severity": 5,
+                "type": "WARNING",
+                "line": 204,
+                "column": 25
+            },
+            {
+                "message": "Unescaped parameter $table_history used in $wpdb-&gt;get_var()\\n$table_history assigned unsafely at line 200.",
+                "code": "PluginCheck.Security.DirectDB.UnescapedDBParameter",
+                "link": null,
+                "docs": "",
+                "severity": 5,
+                "type": "WARNING",
+                "line": 204,
+                "column": 26
+            },
+            {
+                "message": "Use placeholders and $wpdb-&gt;prepare(); found interpolated variable $table_history at &quot;SHOW TABLES LIKE &#039;$table_history&#039;&quot;",
+                "code": "WordPress.DB.PreparedSQL.InterpolatedNotPrepared",
+                "link": null,
+                "docs": "",
+                "severity": 5,
+                "type": "WARNING",
+                "line": 204,
+                "column": 34
+            },
+            {
+                "message": "Use of a direct database call is discouraged.",
+                "code": "WordPress.DB.DirectDatabaseQuery.DirectQuery",
+                "link": null,
+                "docs": "",
+                "severity": 5,
+                "type": "WARNING",
+                "line": 209,
+                "column": 20
+            },
+            {
+                "message": "Direct database call without caching detected. Consider using wp_cache_get() / wp_cache_set() or wp_cache_delete().",
+                "code": "WordPress.DB.DirectDatabaseQuery.NoCaching",
+                "link": null,
+                "docs": "",
+                "severity": 5,
+                "type": "WARNING",
+                "line": 209,
+                "column": 20
+            },
+            {
+                "message": "Unescaped parameter $table_history used in $wpdb-&gt;get_results()\\n$table_history assigned unsafely at line 200.",
+                "code": "PluginCheck.Security.DirectDB.UnescapedDBParameter",
+                "link": null,
+                "docs": "",
+                "severity": 5,
+                "type": "WARNING",
+                "line": 209,
+                "column": 21
+            },
+            {
+                "message": "Use placeholders and $wpdb-&gt;prepare(); found interpolated variable $table_history at \\t\\t\\tFROM $table_history h\\n",
+                "code": "WordPress.DB.PreparedSQL.InterpolatedNotPrepared",
+                "link": null,
+                "docs": "",
+                "severity": 5,
+                "type": "WARNING",
+                "line": 211,
+                "column": 1
+            },
+            {
+                "message": "Use placeholders and $wpdb-&gt;prepare(); found interpolated variable $table_pages at \\t\\t\\tLEFT JOIN $table_pages p ON h.page_id = p.page_id\\n",
+                "code": "WordPress.DB.PreparedSQL.InterpolatedNotPrepared",
+                "link": null,
+                "docs": "",
+                "severity": 5,
+                "type": "WARNING",
+                "line": 212,
+                "column": 1
+            },
+            {
+                "message": "Use placeholders and $wpdb-&gt;prepare(); found interpolated variable $table_issues at \\t\\t\\tLEFT JOIN $table_issues i ON h.issue_id = i.issue_id\\n",
+                "code": "WordPress.DB.PreparedSQL.InterpolatedNotPrepared",
+                "link": null,
+                "docs": "",
+                "severity": 5,
+                "type": "WARNING",
+                "line": 213,
+                "column": 1
+            },
+            {
+                "message": "Use of a direct database call is discouraged.",
+                "code": "WordPress.DB.DirectDatabaseQuery.DirectQuery",
+                "link": null,
+                "docs": "",
+                "severity": 5,
+                "type": "WARNING",
+                "line": 236,
+                "column": 17
+            },
+            {
+                "message": "Direct database call without caching detected. Consider using wp_cache_get() / wp_cache_set() or wp_cache_delete().",
+                "code": "WordPress.DB.DirectDatabaseQuery.NoCaching",
+                "link": null,
+                "docs": "",
+                "severity": 5,
+                "type": "WARNING",
+                "line": 236,
+                "column": 17
+            },
+            {
+                "message": "Unescaped parameter $table_pages used in $wpdb-&gt;get_row()\\n$table_pages assigned unsafely at line 231.",
+                "code": "PluginCheck.Security.DirectDB.UnescapedDBParameter",
+                "link": null,
+                "docs": "",
+                "severity": 5,
+                "type": "WARNING",
+                "line": 236,
+                "column": 18
+            },
+            {
+                "message": "Use placeholders and $wpdb-&gt;prepare(); found interpolated variable $table_pages at &quot;SELECT * FROM $table_pages WHERE page_id = %d&quot;",
+                "code": "WordPress.DB.PreparedSQL.InterpolatedNotPrepared",
+                "link": null,
+                "docs": "",
+                "severity": 5,
+                "type": "WARNING",
+                "line": 236,
+                "column": 43
+            },
+            {
+                "message": "Use of a direct database call is discouraged.",
+                "code": "WordPress.DB.DirectDatabaseQuery.DirectQuery",
+                "link": null,
+                "docs": "",
+                "severity": 5,
+                "type": "WARNING",
+                "line": 241,
+                "column": 45
+            },
+            {
+                "message": "Direct database call without caching detected. Consider using wp_cache_get() / wp_cache_set() or wp_cache_delete().",
+                "code": "WordPress.DB.DirectDatabaseQuery.NoCaching",
+                "link": null,
+                "docs": "",
+                "severity": 5,
+                "type": "WARNING",
+                "line": 241,
+                "column": 45
+            },
+            {
+                "message": "Unescaped parameter $table_links used in $wpdb-&gt;get_var()\\n$table_links assigned unsafely at line 233.",
+                "code": "PluginCheck.Security.DirectDB.UnescapedDBParameter",
+                "link": null,
+                "docs": "",
+                "severity": 5,
+                "type": "WARNING",
+                "line": 241,
+                "column": 46
+            },
+            {
+                "message": "Use placeholders and $wpdb-&gt;prepare(); found interpolated variable $table_links at &quot;SELECT COUNT(DISTINCT page_id) FROM $table_links WHERE url = %s AND link_type = &#039;internal&#039;&quot;",
+                "code": "WordPress.DB.PreparedSQL.InterpolatedNotPrepared",
+                "link": null,
+                "docs": "",
+                "severity": 5,
+                "type": "WARNING",
+                "line": 241,
+                "column": 71
+            },
+            {
+                "message": "Use of a direct database call is discouraged.",
+                "code": "WordPress.DB.DirectDatabaseQuery.DirectQuery",
+                "link": null,
+                "docs": "",
+                "severity": 5,
+                "type": "WARNING",
+                "line": 243,
+                "column": 19
+            },
+            {
+                "message": "Direct database call without caching detected. Consider using wp_cache_get() / wp_cache_set() or wp_cache_delete().",
+                "code": "WordPress.DB.DirectDatabaseQuery.NoCaching",
+                "link": null,
+                "docs": "",
+                "severity": 5,
+                "type": "WARNING",
+                "line": 243,
+                "column": 19
+            },
+            {
+                "message": "Unescaped parameter $table_history used in $wpdb-&gt;get_results()\\n$table_history assigned unsafely at line 234.",
+                "code": "PluginCheck.Security.DirectDB.UnescapedDBParameter",
+                "link": null,
+                "docs": "",
+                "severity": 5,
+                "type": "WARNING",
+                "line": 243,
+                "column": 20
+            },
+            {
+                "message": "Use placeholders and $wpdb-&gt;prepare(); found interpolated variable $table_history at \\t\\t\\t\\t(SELECT MAX(created_at) FROM $table_history WHERE issue_id = i.issue_id AND action = &#039;Status Change&#039;) as status_updated_at\\n",
+                "code": "WordPress.DB.PreparedSQL.InterpolatedNotPrepared",
+                "link": null,
+                "docs": "",
+                "severity": 5,
+                "type": "WARNING",
+                "line": 245,
+                "column": 1
+            },
+            {
+                "message": "Use placeholders and $wpdb-&gt;prepare(); found interpolated variable $table_issues at \\t\\t\\tFROM $table_issues i \\n",
+                "code": "WordPress.DB.PreparedSQL.InterpolatedNotPrepared",
+                "link": null,
+                "docs": "",
+                "severity": 5,
+                "type": "WARNING",
+                "line": 246,
+                "column": 1
+            },
+            {
+                "message": "Use of a direct database call is discouraged.",
+                "code": "WordPress.DB.DirectDatabaseQuery.DirectQuery",
+                "link": null,
+                "docs": "",
+                "severity": 5,
+                "type": "WARNING",
+                "line": 250,
+                "column": 18
+            },
+            {
+                "message": "Direct database call without caching detected. Consider using wp_cache_get() / wp_cache_set() or wp_cache_delete().",
+                "code": "WordPress.DB.DirectDatabaseQuery.NoCaching",
+                "link": null,
+                "docs": "",
+                "severity": 5,
+                "type": "WARNING",
+                "line": 250,
+                "column": 18
+            },
+            {
+                "message": "Unescaped parameter $table_links used in $wpdb-&gt;get_results()\\n$table_links assigned unsafely at line 233.",
+                "code": "PluginCheck.Security.DirectDB.UnescapedDBParameter",
+                "link": null,
+                "docs": "",
+                "severity": 5,
+                "type": "WARNING",
+                "line": 250,
+                "column": 19
+            },
+            {
+                "message": "Use placeholders and $wpdb-&gt;prepare(); found interpolated variable $table_links at &quot;SELECT * FROM $table_links WHERE page_id = %d ORDER BY link_id ASC&quot;",
+                "code": "WordPress.DB.PreparedSQL.InterpolatedNotPrepared",
+                "link": null,
+                "docs": "",
+                "severity": 5,
+                "type": "WARNING",
+                "line": 250,
+                "column": 48
+            },
+            {
+                "message": "Use of a direct database call is discouraged.",
+                "code": "WordPress.DB.DirectDatabaseQuery.DirectQuery",
+                "link": null,
+                "docs": "",
+                "severity": 5,
+                "type": "WARNING",
+                "line": 268,
+                "column": 17
+            },
+            {
+                "message": "Direct database call without caching detected. Consider using wp_cache_get() / wp_cache_set() or wp_cache_delete().",
+                "code": "WordPress.DB.DirectDatabaseQuery.NoCaching",
+                "link": null,
+                "docs": "",
+                "severity": 5,
+                "type": "WARNING",
+                "line": 268,
+                "column": 17
+            },
+            {
+                "message": "Unescaped parameter $table_pages used in $wpdb-&gt;get_row()\\n$table_pages assigned unsafely at line 262.",
+                "code": "PluginCheck.Security.DirectDB.UnescapedDBParameter",
+                "link": null,
+                "docs": "",
+                "severity": 5,
+                "type": "WARNING",
+                "line": 268,
+                "column": 18
+            },
+            {
+                "message": "Use placeholders and $wpdb-&gt;prepare(); found interpolated variable $table_pages at &quot;SELECT * FROM $table_pages WHERE page_id = %d&quot;",
+                "code": "WordPress.DB.PreparedSQL.InterpolatedNotPrepared",
+                "link": null,
+                "docs": "",
+                "severity": 5,
+                "type": "WARNING",
+                "line": 268,
+                "column": 43
+            },
+            {
+                "message": "Use of a direct database call is discouraged.",
+                "code": "WordPress.DB.DirectDatabaseQuery.DirectQuery",
+                "link": null,
+                "docs": "",
+                "severity": 5,
+                "type": "WARNING",
+                "line": 274,
+                "column": 9
+            },
+            {
+                "message": "Direct database call without caching detected. Consider using wp_cache_get() / wp_cache_set() or wp_cache_delete().",
+                "code": "WordPress.DB.DirectDatabaseQuery.NoCaching",
+                "link": null,
+                "docs": "",
+                "severity": 5,
+                "type": "WARNING",
+                "line": 274,
+                "column": 9
+            },
+            {
+                "message": "Use of a direct database call is discouraged.",
+                "code": "WordPress.DB.DirectDatabaseQuery.DirectQuery",
+                "link": null,
+                "docs": "",
+                "severity": 5,
+                "type": "WARNING",
+                "line": 275,
+                "column": 9
+            },
+            {
+                "message": "Direct database call without caching detected. Consider using wp_cache_get() / wp_cache_set() or wp_cache_delete().",
+                "code": "WordPress.DB.DirectDatabaseQuery.NoCaching",
+                "link": null,
+                "docs": "",
+                "severity": 5,
+                "type": "WARNING",
+                "line": 275,
+                "column": 9
+            },
+            {
+                "message": "Use of a direct database call is discouraged.",
+                "code": "WordPress.DB.DirectDatabaseQuery.DirectQuery",
+                "link": null,
+                "docs": "",
+                "severity": 5,
+                "type": "WARNING",
+                "line": 276,
+                "column": 9
+            },
+            {
+                "message": "Direct database call without caching detected. Consider using wp_cache_get() / wp_cache_set() or wp_cache_delete().",
+                "code": "WordPress.DB.DirectDatabaseQuery.NoCaching",
+                "link": null,
+                "docs": "",
+                "severity": 5,
+                "type": "WARNING",
+                "line": 276,
+                "column": 9
+            },
+            {
+                "message": "Use of a direct database call is discouraged.",
+                "code": "WordPress.DB.DirectDatabaseQuery.DirectQuery",
+                "link": null,
+                "docs": "",
+                "severity": 5,
+                "type": "WARNING",
+                "line": 277,
+                "column": 9
+            },
+            {
+                "message": "Direct database call without caching detected. Consider using wp_cache_get() / wp_cache_set() or wp_cache_delete().",
+                "code": "WordPress.DB.DirectDatabaseQuery.NoCaching",
+                "link": null,
+                "docs": "",
+                "severity": 5,
+                "type": "WARNING",
+                "line": 277,
+                "column": 9
+            },
+            {
+                "message": "Use of a direct database call is discouraged.",
+                "code": "WordPress.DB.DirectDatabaseQuery.DirectQuery",
+                "link": null,
+                "docs": "",
+                "severity": 5,
+                "type": "WARNING",
+                "line": 298,
+                "column": 30
+            },
+            {
+                "message": "Direct database call without caching detected. Consider using wp_cache_get() / wp_cache_set() or wp_cache_delete().",
+                "code": "WordPress.DB.DirectDatabaseQuery.NoCaching",
+                "link": null,
+                "docs": "",
+                "severity": 5,
+                "type": "WARNING",
+                "line": 298,
+                "column": 30
+            },
+            {
+                "message": "Use of a direct database call is discouraged.",
+                "code": "WordPress.DB.DirectDatabaseQuery.DirectQuery",
+                "link": null,
+                "docs": "",
+                "severity": 5,
+                "type": "WARNING",
+                "line": 300,
+                "column": 17
+            },
+            {
+                "message": "Direct database call without caching detected. Consider using wp_cache_get() / wp_cache_set() or wp_cache_delete().",
+                "code": "WordPress.DB.DirectDatabaseQuery.NoCaching",
+                "link": null,
+                "docs": "",
+                "severity": 5,
+                "type": "WARNING",
+                "line": 300,
+                "column": 17
+            },
+            {
+                "message": "Use of a direct database call is discouraged.",
+                "code": "WordPress.DB.DirectDatabaseQuery.DirectQuery",
+                "link": null,
+                "docs": "",
+                "severity": 5,
+                "type": "WARNING",
+                "line": 301,
+                "column": 17
+            },
+            {
+                "message": "Direct database call without caching detected. Consider using wp_cache_get() / wp_cache_set() or wp_cache_delete().",
+                "code": "WordPress.DB.DirectDatabaseQuery.NoCaching",
+                "link": null,
+                "docs": "",
+                "severity": 5,
+                "type": "WARNING",
+                "line": 301,
+                "column": 17
+            },
+            {
+                "message": "Use of a direct database call is discouraged.",
+                "code": "WordPress.DB.DirectDatabaseQuery.DirectQuery",
+                "link": null,
+                "docs": "",
+                "severity": 5,
+                "type": "WARNING",
+                "line": 302,
+                "column": 17
+            },
+            {
+                "message": "Direct database call without caching detected. Consider using wp_cache_get() / wp_cache_set() or wp_cache_delete().",
+                "code": "WordPress.DB.DirectDatabaseQuery.NoCaching",
+                "link": null,
+                "docs": "",
+                "severity": 5,
+                "type": "WARNING",
+                "line": 302,
+                "column": 17
+            },
+            {
+                "message": "Use of a direct database call is discouraged.",
+                "code": "WordPress.DB.DirectDatabaseQuery.DirectQuery",
+                "link": null,
+                "docs": "",
+                "severity": 5,
+                "type": "WARNING",
+                "line": 317,
+                "column": 18
+            },
+            {
+                "message": "Direct database call without caching detected. Consider using wp_cache_get() / wp_cache_set() or wp_cache_delete().",
+                "code": "WordPress.DB.DirectDatabaseQuery.NoCaching",
+                "link": null,
+                "docs": "",
+                "severity": 5,
+                "type": "WARNING",
+                "line": 317,
+                "column": 18
+            },
+            {
+                "message": "Unescaped parameter $table_issues used in $wpdb-&gt;get_row()\\n$table_issues assigned unsafely at line 314.",
+                "code": "PluginCheck.Security.DirectDB.UnescapedDBParameter",
+                "link": null,
+                "docs": "",
+                "severity": 5,
+                "type": "WARNING",
+                "line": 317,
+                "column": 19
+            },
+            {
+                "message": "Use placeholders and $wpdb-&gt;prepare(); found interpolated variable $table_issues at &quot;SELECT * FROM $table_issues WHERE issue_id = %d&quot;",
+                "code": "WordPress.DB.PreparedSQL.InterpolatedNotPrepared",
+                "link": null,
+                "docs": "",
+                "severity": 5,
+                "type": "WARNING",
+                "line": 317,
+                "column": 44
+            },
+            {
+                "message": "Use of a direct database call is discouraged.",
+                "code": "WordPress.DB.DirectDatabaseQuery.DirectQuery",
+                "link": null,
+                "docs": "",
+                "severity": 5,
+                "type": "WARNING",
+                "line": 324,
+                "column": 20
+            },
+            {
+                "message": "Direct database call without caching detected. Consider using wp_cache_get() / wp_cache_set() or wp_cache_delete().",
+                "code": "WordPress.DB.DirectDatabaseQuery.NoCaching",
+                "link": null,
+                "docs": "",
+                "severity": 5,
+                "type": "WARNING",
+                "line": 324,
+                "column": 20
+            },
+            {
+                "message": "Use of a direct database call is discouraged.",
+                "code": "WordPress.DB.DirectDatabaseQuery.DirectQuery",
+                "link": null,
+                "docs": "",
+                "severity": 5,
+                "type": "WARNING",
+                "line": 331,
+                "column": 13
+            },
+            {
+                "message": "Use of a direct database call is discouraged.",
+                "code": "WordPress.DB.DirectDatabaseQuery.DirectQuery",
+                "link": null,
+                "docs": "",
+                "severity": 5,
+                "type": "WARNING",
+                "line": 460,
+                "column": 25
+            },
+            {
+                "message": "Direct database call without caching detected. Consider using wp_cache_get() / wp_cache_set() or wp_cache_delete().",
+                "code": "WordPress.DB.DirectDatabaseQuery.NoCaching",
+                "link": null,
+                "docs": "",
+                "severity": 5,
+                "type": "WARNING",
+                "line": 460,
+                "column": 25
+            },
+            {
+                "message": "Unescaped parameter $table_pages used in $wpdb-&gt;get_var()\\n$table_pages assigned unsafely at line 454.",
+                "code": "PluginCheck.Security.DirectDB.UnescapedDBParameter",
+                "link": null,
+                "docs": "",
+                "severity": 5,
+                "type": "WARNING",
+                "line": 460,
+                "column": 26
+            },
+            {
+                "message": "Use placeholders and $wpdb-&gt;prepare(); found interpolated variable $table_pages at &quot;SHOW TABLES LIKE &#039;$table_pages&#039;&quot;",
+                "code": "WordPress.DB.PreparedSQL.InterpolatedNotPrepared",
+                "link": null,
+                "docs": "",
+                "severity": 5,
+                "type": "WARNING",
+                "line": 460,
+                "column": 34
+            },
+            {
+                "message": "Unescaped parameter $table_pages used in $wpdb-&gt;query()\\n$table_pages assigned unsafely at line 454.",
+                "code": "PluginCheck.Security.DirectDB.UnescapedDBParameter",
+                "link": null,
+                "docs": "",
+                "severity": 5,
+                "type": "WARNING",
+                "line": 462,
+                "column": 11
+            },
+            {
+                "message": "Use placeholders and $wpdb-&gt;prepare(); found interpolated variable $table_pages at &quot;TRUNCATE TABLE $table_pages&quot;",
+                "code": "WordPress.DB.PreparedSQL.InterpolatedNotPrepared",
+                "link": null,
+                "docs": "",
+                "severity": 5,
+                "type": "WARNING",
+                "line": 462,
+                "column": 18
+            },
+            {
+                "message": "Unescaped parameter $table_issues used in $wpdb-&gt;query()\\n$table_issues assigned unsafely at line 455.",
+                "code": "PluginCheck.Security.DirectDB.UnescapedDBParameter",
+                "link": null,
+                "docs": "",
+                "severity": 5,
+                "type": "WARNING",
+                "line": 463,
+                "column": 11
+            },
+            {
+                "message": "Use placeholders and $wpdb-&gt;prepare(); found interpolated variable $table_issues at &quot;TRUNCATE TABLE $table_issues&quot;",
+                "code": "WordPress.DB.PreparedSQL.InterpolatedNotPrepared",
+                "link": null,
+                "docs": "",
+                "severity": 5,
+                "type": "WARNING",
+                "line": 463,
+                "column": 18
+            },
+            {
+                "message": "Unescaped parameter $table_links used in $wpdb-&gt;query()\\n$table_links assigned unsafely at line 456.",
+                "code": "PluginCheck.Security.DirectDB.UnescapedDBParameter",
+                "link": null,
+                "docs": "",
+                "severity": 5,
+                "type": "WARNING",
+                "line": 464,
+                "column": 11
+            },
+            {
+                "message": "Use placeholders and $wpdb-&gt;prepare(); found interpolated variable $table_links at &quot;TRUNCATE TABLE $table_links&quot;",
+                "code": "WordPress.DB.PreparedSQL.InterpolatedNotPrepared",
+                "link": null,
+                "docs": "",
+                "severity": 5,
+                "type": "WARNING",
+                "line": 464,
+                "column": 18
+            },
+            {
+                "message": "Unescaped parameter $table_history used in $wpdb-&gt;query()\\n$table_history assigned unsafely at line 457.",
+                "code": "PluginCheck.Security.DirectDB.UnescapedDBParameter",
+                "link": null,
+                "docs": "",
+                "severity": 5,
+                "type": "WARNING",
+                "line": 465,
+                "column": 11
+            },
+            {
+                "message": "Use placeholders and $wpdb-&gt;prepare(); found interpolated variable $table_history at &quot;TRUNCATE TABLE $table_history&quot;",
+                "code": "WordPress.DB.PreparedSQL.InterpolatedNotPrepared",
+                "link": null,
+                "docs": "",
+                "severity": 5,
+                "type": "WARNING",
+                "line": 465,
+                "column": 18
+            }
+        ]
+    }
+}

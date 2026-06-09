@@ -79,4 +79,44 @@ export const resetPlugin = async () => {
   return response.data;
 };
 
+export const getRedirects = async () => {
+  const response = await apiClient.get('redirects');
+  return response.data;
+};
+
+export const saveRedirect = async (redirect) => {
+  const response = await apiClient.post('redirects', redirect);
+  return response.data;
+};
+
+export const deleteRedirect = async (id) => {
+  const response = await apiClient.delete(`redirects/${id}`);
+  return response.data;
+};
+
+export const get404Logs = async () => {
+  const response = await apiClient.get('logs-404');
+  return response.data;
+};
+
+export const delete404Log = async (id) => {
+  const response = await apiClient.delete(`logs-404/${id}`);
+  return response.data;
+};
+
+export const clear404Logs = async () => {
+  const response = await apiClient.post('logs-404/clear');
+  return response.data;
+};
+
+export const runCompetitorAudit = async (url) => {
+  const response = await apiClient.post('competitor-audit', { url });
+  return response.data;
+};
+
+export const generateSeoMetaAi = async (title, content, keyword) => {
+  const response = await apiClient.post('seo-ai/generate', { title, content, keyword });
+  return response.data;
+};
+
 export default apiClient;

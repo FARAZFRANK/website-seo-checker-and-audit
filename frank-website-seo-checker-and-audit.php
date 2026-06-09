@@ -2,7 +2,7 @@
 /**
  * Plugin Name:       Frank Website SEO Checker And Audit
  * Description:       A complete on-page SEO audit plugin with a React-powered dashboard. Crawls pages, detects SEO issues, and maintains history.
- * Version:           1.0.4
+ * Version:           1.0.5
  * Author:			  FARAZFRANK
  * Author URI:        https://wpfrank.com/
  * License:           GPL-2.0+
@@ -19,7 +19,7 @@ if (!defined('ABSPATH')) {
 /**
  * Currently plugin version.
  */
-define('FRANK_SEO_AUDIT_VERSION', '1.0.4');
+define('FRANK_SEO_AUDIT_VERSION', '1.0.5');
 
 /**
  * Plugin directory path.
@@ -58,6 +58,10 @@ register_deactivation_hook(__FILE__, 'frank_seo_audit_deactivate');
 require_once FRANK_SEO_AUDIT_DIR . 'includes/class-frank-seo-admin.php';
 require_once FRANK_SEO_AUDIT_DIR . 'includes/class-frank-seo-rest-api.php';
 require_once FRANK_SEO_AUDIT_DIR . 'includes/class-frank-seo-auditor.php';
+require_once FRANK_SEO_AUDIT_DIR . 'includes/class-frank-seo-meta-renderer.php';
+require_once FRANK_SEO_AUDIT_DIR . 'includes/class-frank-seo-schema-builder.php';
+require_once FRANK_SEO_AUDIT_DIR . 'includes/class-frank-seo-redirect-manager.php';
+require_once FRANK_SEO_AUDIT_DIR . 'includes/class-frank-seo-sitemap.php';
 
 /**
  * Begins execution of the plugin.
@@ -69,6 +73,29 @@ function frank_seo_audit_run()
 
 	$plugin_rest_api = new Frank_SEO_REST_API();
 	$plugin_rest_api->init();
+
+	// Initialize Front-End rendering engines
+	$meta_renderer = new Frank_SEO_Meta_Renderer();
+	$meta_renderer->init();
+
+	$schema_builder = new Frank_SEO_Schema_Builder();
+	$schema_builder->init();
+
+	// Initialize Redirection & 404 Interceptor
+	$redirect_manager = new Frank_SEO_Redirect_Manager();
+	$redirect_manager->init();
+
+	// Initialize Dynamic XML Sitemap Engine
+	$sitemap_engine = new Frank_SEO_Sitemap();
+	$sitemap_engine->init();
+
+	// Run automatic DB upgrades on version mismatch
+	$db_version = get_option( 'frank_seo_db_version' );
+	if ( ! $db_version || $db_version !== FRANK_SEO_AUDIT_VERSION ) {
+		require_once FRANK_SEO_AUDIT_DIR . 'includes/class-frank-seo-activator.php';
+		Frank_SEO_Activator::activate();
+		update_option( 'frank_seo_db_version', FRANK_SEO_AUDIT_VERSION );
+	}
 }
 frank_seo_audit_run();
 

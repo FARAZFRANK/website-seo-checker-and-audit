@@ -54,6 +54,54 @@ class Frank_SEO_Auditor {
 	}
 
 	/**
+	 * Run audit for an external/competitor URL.
+	 *
+	 * @param string $url The URL of the competitor page.
+	 * @return array The audit results (score, issues).
+	 */
+	public function audit_external_url( $url ) {
+		$response = wp_remote_get( $url, array( 
+			'timeout'    => 15,
+			'user-agent' => 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/120.0.0.0 Safari/537.36'
+		) );
+		
+		if ( is_wp_error( $response ) ) {
+			return array( 'success' => false, 'message' => $response->get_error_message() );
+		}
+
+		$html = wp_remote_retrieve_body( $response );
+		if ( empty( $html ) ) {
+			return array( 'success' => false, 'message' => 'Empty response from URL.' );
+		}
+		
+		// Run checks on HTML (pass null for WordPress post object)
+		$issues = $this->analyze_html( $html, $url, null );
+
+		$errors_count = 0;
+		$warnings_count = 0;
+		$notices_count = 0;
+
+		foreach ($issues as $issue) {
+			if ($issue['severity'] === 'Error') $errors_count++;
+			elseif ($issue['severity'] === 'Warning') $warnings_count++;
+			elseif ($issue['severity'] === 'Notice') $notices_count++;
+		}
+
+		$seo_score = 100 - ($errors_count * 15) - ($warnings_count * 5) - ($notices_count * 2);
+		$seo_score = max(0, min(100, $seo_score));
+
+		return array(
+			'success'        => true,
+			'url'            => $url,
+			'seo_score'      => $seo_score,
+			'errors_count'   => $errors_count,
+			'warnings_count' => $warnings_count,
+			'notices_count'  => $notices_count,
+			'issues'         => $issues,
+		);
+	}
+
+	/**
 	 * Analyze HTML string and return an array of issues.
 	 */
 	private function analyze_html( $html, $url, $post ) {

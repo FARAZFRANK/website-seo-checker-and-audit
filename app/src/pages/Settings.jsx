@@ -17,7 +17,9 @@ import {
   DialogActions,
   DialogContent,
   DialogContentText,
-  DialogTitle
+  DialogTitle,
+  InputAdornment,
+  IconButton
 } from '@mui/material';
 import SettingsIcon from '@mui/icons-material/Settings';
 import SaveIcon from '@mui/icons-material/Save';
@@ -27,6 +29,9 @@ import AccessTimeIcon from '@mui/icons-material/AccessTime';
 import LinkIcon from '@mui/icons-material/Link';
 import DeleteIcon from '@mui/icons-material/Delete';
 import MailOutlineIcon from '@mui/icons-material/MailOutline';
+import VpnKeyIcon from '@mui/icons-material/VpnKey';
+import Visibility from '@mui/icons-material/Visibility';
+import VisibilityOff from '@mui/icons-material/VisibilityOff';
 import { getSettings, updateSettings, resetPlugin } from '../api';
 
 function Settings() {
@@ -46,8 +51,10 @@ function Settings() {
     emailRecipients: "",
     enableScanEmail: false,
     enableScheduledEmail: false,
+    geminiApiKey: "",
   });
 
+  const [showApiKey, setShowApiKey] = useState(false);
   const [saving, setSaving] = useState(false);
   const [openToast, setOpenToast] = useState(false);
   const [toastMessage, setToastMessage] = useState('Configuration applied and saved successfully!');
@@ -78,6 +85,7 @@ function Settings() {
             emailRecipients: apiSettings.emailRecipients !== undefined ? apiSettings.emailRecipients : prev.emailRecipients,
             enableScanEmail: apiSettings.enableScanEmail !== undefined ? !!apiSettings.enableScanEmail : prev.enableScanEmail,
             enableScheduledEmail: apiSettings.enableScheduledEmail !== undefined ? !!apiSettings.enableScheduledEmail : prev.enableScheduledEmail,
+            geminiApiKey: apiSettings.geminiApiKey !== undefined ? apiSettings.geminiApiKey : prev.geminiApiKey,
           }));
         }
       } catch (err) {
@@ -305,6 +313,71 @@ function Settings() {
                           transform: 'translateX(-100%)',
                         },
                       },
+                    }}
+                  />
+                </Grid>
+              </Grid>
+            </Box>
+
+            {/* AI Assistant Settings Card */}
+            <Box className="glass-panel" sx={{ p: 4, borderRadius: '20px' }}>
+              <Box sx={{ display: 'flex', alignItems: 'center', gap: 1.5, mb: 3 }}>
+                <VpnKeyIcon sx={{ color: 'var(--primary)' }} />
+                <Typography variant="h6" sx={{ fontWeight: 700, fontFamily: 'var(--sans)', color: 'var(--text-h)' }}>
+                  AI Assistant Settings
+                </Typography>
+              </Box>
+
+              <Grid container spacing={3}>
+                <Grid item xs={12}>
+                  <Typography sx={{ color: 'var(--text)', opacity: 0.8, fontSize: '0.85rem', fontFamily: 'var(--sans)', mb: 2 }}>
+                    Configure the Google Gemini AI API key to enable automated meta titles and descriptions generation inside the editor.
+                  </Typography>
+                  <TextField
+                    label="Gemini API Key"
+                    type={showApiKey ? 'text' : 'password'}
+                    variant="outlined"
+                    fullWidth
+                    value={settings.geminiApiKey || ''}
+                    onChange={(e) => setSettings({ ...settings, geminiApiKey: e.target.value })}
+                    placeholder="AIzaSy..."
+                    InputProps={{
+                      endAdornment: (
+                        <InputAdornment position="end">
+                          <IconButton
+                            onClick={() => setShowApiKey(!showApiKey)}
+                            edge="end"
+                            sx={{ color: 'var(--text)' }}
+                          >
+                            {showApiKey ? <VisibilityOff /> : <Visibility />}
+                          </IconButton>
+                        </InputAdornment>
+                      ),
+                    }}
+                    helperText={
+                      <span>
+                        Need an API key? You can get a free key from the{' '}
+                        <a 
+                          href="https://aistudio.google.com/" 
+                          target="_blank" 
+                          rel="noopener noreferrer"
+                          style={{ color: 'var(--primary)', textDecoration: 'none', fontWeight: 600 }}
+                        >
+                          Google AI Studio
+                        </a>.
+                      </span>
+                    }
+                    sx={{
+                      '& .MuiOutlinedInput-root': {
+                        borderRadius: '12px',
+                        fontFamily: 'var(--sans)',
+                        fontSize: '0.9rem',
+                        '& fieldset': { borderColor: 'var(--border)' },
+                        '&:hover fieldset': { borderColor: 'var(--primary)' },
+                        '&.Mui-focused fieldset': { borderColor: 'var(--primary)', borderWidth: '1px' }
+                      },
+                      '& .MuiInputLabel-root': { fontFamily: 'var(--sans)', fontSize: '0.9rem' },
+                      '& .MuiFormHelperText-root': { fontFamily: 'var(--sans)', fontSize: '0.78rem' }
                     }}
                   />
                 </Grid>
@@ -722,6 +795,7 @@ function Settings() {
       <Dialog
         open={openResetDialog}
         onClose={() => !resetting && setOpenResetDialog(false)}
+        container={() => document.getElementById('frank-seo-audit-root')}
         PaperProps={{
           sx: {
             borderRadius: '20px',
