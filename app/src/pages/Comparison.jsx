@@ -41,7 +41,7 @@ function RenderStatus({ status }) {
 
 function Comparison() {
   return (
-    <Box sx={{ maxWidth: 1200, margin: '0 auto', pb: 5 }}>
+    <Box sx={{ width: '100%', pb: 5 }}>
       <Box sx={{ mb: 5, textAlign: 'center' }}>
         <Typography variant="h4" sx={{ fontWeight: 800, mb: 2, color: 'var(--text-h)' }}>
           Frank SEO vs <span className="gradient-text">The Competition</span>
