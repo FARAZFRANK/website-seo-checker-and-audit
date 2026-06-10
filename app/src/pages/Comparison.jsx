@@ -56,7 +56,7 @@ function Comparison() {
           <TableHead>
             <TableRow>
               <TableCell sx={{ fontWeight: 700, fontSize: '1.1rem', borderBottom: '2px solid var(--border)', color: 'var(--text-h)', width: '22%' }}>Feature</TableCell>
-              <TableCell align="center" sx={{ fontWeight: 800, fontSize: '1.1rem', borderBottom: '2px solid var(--border)', background: 'rgba(99, 102, 241, 0.05)', color: 'var(--primary)', width: '12%' }}>
+              <TableCell align="center" sx={{ fontWeight: 800, fontSize: '1.1rem', borderTop: '2px solid var(--primary)', borderLeft: '2px solid var(--primary)', borderRight: '2px solid var(--primary)', borderBottom: '1px solid rgba(99, 102, 241, 0.2)', background: 'rgba(99, 102, 241, 0.08)', color: 'var(--primary)', width: '12%', borderTopLeftRadius: '8px', borderTopRightRadius: '8px' }}>
                 <Box sx={{ display: 'flex', flexDirection: 'column', alignItems: 'center', gap: 0.5 }}>
                   <StarIcon fontSize="small" />
                   Frank SEO
@@ -73,7 +73,9 @@ function Comparison() {
             </TableRow>
           </TableHead>
           <TableBody>
-            {rows.map((row) => (
+            {rows.map((row, index) => {
+              const isLast = index === rows.length - 1;
+              return (
               <TableRow
                 key={row.feature}
                 sx={{ '&:last-child td, &:last-child th': { border: 0 }, '&:hover': { backgroundColor: 'rgba(255, 255, 255, 0.02)' } }}
@@ -81,7 +83,14 @@ function Comparison() {
                 <TableCell component="th" scope="row" sx={{ fontWeight: 600, color: 'var(--text)', borderBottom: '1px solid var(--border)' }}>
                   {row.feature}
                 </TableCell>
-                <TableCell align="center" sx={{ borderBottom: '1px solid var(--border)', background: 'rgba(99, 102, 241, 0.02)', borderRight: '1px solid var(--border)' }}>
+                <TableCell align="center" sx={{ 
+                  borderBottom: isLast ? '2px solid var(--primary) !important' : '1px solid rgba(99, 102, 241, 0.2)', 
+                  background: 'rgba(99, 102, 241, 0.04)', 
+                  borderLeft: '2px solid var(--primary) !important',
+                  borderRight: '2px solid var(--primary) !important',
+                  borderBottomLeftRadius: isLast ? '8px' : '0',
+                  borderBottomRightRadius: isLast ? '8px' : '0'
+                }}>
                   <RenderStatus status={row.frank} />
                 </TableCell>
                 <TableCell align="center" sx={{ borderBottom: '1px solid var(--border)' }}><RenderStatus status={row.rankMath} /></TableCell>
@@ -93,7 +102,8 @@ function Comparison() {
                 <TableCell align="center" sx={{ borderBottom: '1px solid var(--border)' }}><RenderStatus status={row.siteseo} /></TableCell>
                 <TableCell align="center" sx={{ borderBottom: '1px solid var(--border)' }}><RenderStatus status={row.surerank} /></TableCell>
               </TableRow>
-            ))}
+              );
+            })}
           </TableBody>
         </Table>
       </TableContainer>
