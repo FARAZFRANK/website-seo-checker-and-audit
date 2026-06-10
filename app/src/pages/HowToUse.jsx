@@ -9,6 +9,7 @@ import SettingsIcon from '@mui/icons-material/Settings';
 import AutoAwesomeIcon from '@mui/icons-material/AutoAwesome';
 import FindInPageIcon from '@mui/icons-material/FindInPage';
 import MapIcon from '@mui/icons-material/Map';
+import TuneIcon from '@mui/icons-material/Tune';
 
 function TabPanel(props) {
   const { children, value, index, ...other } = props;
