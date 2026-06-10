@@ -350,8 +350,6 @@ body {
   border: none !important;
   color: var(--text-h) !important;
   box-shadow: none !important;
-  padding: 0 !important;
-  height: auto !important;
 }
 
 /* Style MUI TextFields (OutlinedInput) to have a beautiful glass container background */
@@ -359,6 +357,14 @@ body {
   background-color: rgba(255, 255, 255, 0.03) !important;
   color: var(--text-h) !important;
   transition: all 0.2s ease !important;
+}
+
+/* Ensure WP Admin styles don't crush the MUI internal padding */
+#frank-seo-audit-root .MuiOutlinedInput-input,
+#frank-seo-audit-root .MuiSelect-select {
+  padding: 14px 14px !important;
+  height: auto !important;
+  box-sizing: border-box !important;
 }
 
 :root[data-theme="light"] #frank-seo-audit-root .MuiOutlinedInput-root {

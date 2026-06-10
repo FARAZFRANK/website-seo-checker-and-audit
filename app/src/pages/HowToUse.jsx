@@ -153,10 +153,13 @@ function HowToUse() {
           </AccordionSummary>
           <AccordionDetails sx={{ color: 'var(--text)', fontFamily: 'var(--sans)' }}>
             <Typography variant="body1" paragraph>
-              <strong>What it does:</strong> A sitemap is like a map of your website that Google uses to find all your pages.
+              <strong>What it does:</strong> A sitemap is like a map of your website that Google uses to find all your pages. Unlike old plugins that generate a slow physical file, Frank SEO generates your sitemap entirely on-the-fly dynamically. This guarantees it is updated the exact second you publish a new post!
+            </Typography>
+            <Typography variant="body1" paragraph>
+              <strong>How to use it:</strong> Go to the <strong>Settings tab</strong> and make sure "Discover & Crawl XML Sitemaps" is toggled ON. <strong>IMPORTANT:</strong> You must click the "Save Configuration" button at the bottom of the Settings page at least once so that WordPress registers the dynamic link! 
             </Typography>
             <Typography variant="body1">
-              <strong>How to use it:</strong> You don't have to do anything! Frank SEO automatically creates and updates your sitemap in the background. You can find it by typing <code>yourwebsite.com/sitemap.xml</code> in your browser. Just submit that link to Google Search Console once, and you're done forever!
+              Once saved, you can find your beautiful sitemap by typing <code>yourwebsite.com/sitemap.xml</code> in your browser. Just submit that link to Google Search Console once, and you're done forever!
             </Typography>
           </AccordionDetails>
         </Accordion>

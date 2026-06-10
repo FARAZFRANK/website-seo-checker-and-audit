@@ -597,6 +597,9 @@ class Frank_SEO_REST_API {
 		// Update background cron schedule
 		$this->update_cron_schedule( $sanitized_settings );
 
+		// Flush rewrite rules so dynamic endpoints like /sitemap.xml take effect
+		flush_rewrite_rules();
+
 		return rest_ensure_response( array( 'success' => true, 'settings' => $sanitized_settings ) );
 	}
 
