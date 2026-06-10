@@ -1,152 +1,270 @@
-import React from 'react';
-import { Box, Typography, Paper, Grid, Accordion, AccordionSummary, AccordionDetails, Divider, Chip } from '@mui/material';
+import React, { useState } from 'react';
+import { Box, Typography, Tabs, Tab, Accordion, AccordionSummary, AccordionDetails } from '@mui/material';
 import ExpandMoreIcon from '@mui/icons-material/ExpandMore';
+import DashboardIcon from '@mui/icons-material/Dashboard';
+import HistoryIcon from '@mui/icons-material/History';
+import SwapCallsIcon from '@mui/icons-material/SwapCalls';
+import ReportProblemIcon from '@mui/icons-material/ReportProblem';
+import SettingsIcon from '@mui/icons-material/Settings';
 import AutoAwesomeIcon from '@mui/icons-material/AutoAwesome';
 import FindInPageIcon from '@mui/icons-material/FindInPage';
-import CompareArrowsIcon from '@mui/icons-material/CompareArrows';
 import MapIcon from '@mui/icons-material/Map';
-import SettingsIcon from '@mui/icons-material/Settings';
-import LinkOffIcon from '@mui/icons-material/LinkOff';
+
+function TabPanel(props) {
+  const { children, value, index, ...other } = props;
+  return (
+    <div
+      role="tabpanel"
+      hidden={value !== index}
+      id={`how-to-tabpanel-${index}`}
+      {...other}
+    >
+      {value === index && (
+        <Box sx={{ py: 3 }}>
+          {children}
+        </Box>
+      )}
+    </div>
+  );
+}
 
 function HowToUse() {
+  const [value, setValue] = useState(0);
+
+  const handleChange = (event, newValue) => {
+    setValue(newValue);
+  };
+
+  const accordionStyle = {
+    mb: 2, 
+    background: 'var(--glass-bg)', 
+    backdropFilter: 'blur(10px)', 
+    border: '1px solid var(--border)', 
+    borderRadius: '12px !important', 
+    boxShadow: 'none', 
+    '&:before': { display: 'none' }
+  };
+
   return (
-    <Box sx={{ maxWidth: 1000, margin: '0 auto' }}>
+    <Box sx={{ maxWidth: 1000, margin: '0 auto', fontFamily: 'var(--sans)' }}>
       <Box sx={{ mb: 4 }}>
-        <Typography variant="h4" sx={{ fontWeight: 800, mb: 1, color: 'var(--text-h)' }}>
+        <Typography variant="h4" sx={{ fontWeight: 800, mb: 1, color: 'var(--text-h)', fontFamily: 'var(--sans)' }}>
           How To Use Frank SEO 🚀
         </Typography>
-        <Typography variant="body1" sx={{ color: 'var(--text)' }}>
-          Welcome to the most advanced, AI-powered SEO plugin for WordPress. This guide will walk you through every feature and setting so you can rank higher, faster.
+        <Typography variant="body1" sx={{ color: 'var(--text)', fontFamily: 'var(--sans)' }}>
+          Welcome to your complete, easy-to-understand guide for Frank SEO. We've broken down every feature so you can get the best rankings on Google without needing technical knowledge!
         </Typography>
       </Box>
 
-      {/* Gutenberg Editor */}
-      <Accordion defaultExpanded sx={{ mb: 2, background: 'var(--glass-bg)', backdropFilter: 'blur(10px)', border: '1px solid var(--border)', borderRadius: '12px !important', boxShadow: 'none', '&:before': { display: 'none' } }}>
-        <AccordionSummary expandIcon={<ExpandMoreIcon sx={{ color: 'var(--text)' }} />}>
-          <Box sx={{ display: 'flex', alignItems: 'center', gap: 2 }}>
-            <AutoAwesomeIcon color="primary" />
-            <Typography variant="h6" sx={{ fontWeight: 600 }}>1. Gutenberg AI SEO Sidebar</Typography>
-          </Box>
-        </AccordionSummary>
-        <AccordionDetails sx={{ color: 'var(--text)' }}>
-          <Typography variant="body1" paragraph>
-            When writing a Post or Page in the standard WordPress block editor, you will see a new <strong>Frank SEO</strong> icon in the top right corner. Clicking this opens our real-time SEO sidebar.
-          </Typography>
-          <ul>
-            <li><strong>Focus Keyword:</strong> Enter the primary keyword you want this page to rank for. Our analyzer will immediately check your content, title, and URL against this keyword.</li>
-            <li><strong>SEO Title & Description:</strong> Write your meta tags manually, or click the <strong>✨ AI Generate</strong> button. The Gemini AI will read your entire post content and generate a highly optimized, click-worthy title and description instantly.</li>
-            <li><strong>Robots Meta:</strong> Control whether search engines should Index or Follow this specific page using the simple toggle switches.</li>
-            <li><strong>Real-time Checklist:</strong> As you type in the editor, the SEO checklist (keyword density, length, readability) updates automatically without needing to refresh the page.</li>
-          </ul>
-        </AccordionDetails>
-      </Accordion>
+      <Box sx={{ borderBottom: 1, borderColor: 'var(--border)' }}>
+        <Tabs 
+          value={value} 
+          onChange={handleChange} 
+          variant="scrollable"
+          scrollButtons="auto"
+          sx={{
+            '& .MuiTab-root': { color: 'var(--text)', fontFamily: 'var(--sans)', fontWeight: 600, textTransform: 'none', fontSize: '1rem' },
+            '& .Mui-selected': { color: 'var(--primary) !important' },
+            '& .MuiTabs-indicator': { backgroundColor: 'var(--primary)' }
+          }}
+        >
+          <Tab icon={<DashboardIcon />} iconPosition="start" label="Dashboard" />
+          <Tab icon={<HistoryIcon />} iconPosition="start" label="Audit History" />
+          <Tab icon={<SwapCallsIcon />} iconPosition="start" label="Redirects" />
+          <Tab icon={<ReportProblemIcon />} iconPosition="start" label="404 Monitor" />
+          <Tab icon={<SettingsIcon />} iconPosition="start" label="Settings" />
+        </Tabs>
+      </Box>
 
-      {/* Competitor Audits */}
-      <Accordion sx={{ mb: 2, background: 'var(--glass-bg)', backdropFilter: 'blur(10px)', border: '1px solid var(--border)', borderRadius: '12px !important', boxShadow: 'none', '&:before': { display: 'none' } }}>
-        <AccordionSummary expandIcon={<ExpandMoreIcon sx={{ color: 'var(--text)' }} />}>
-          <Box sx={{ display: 'flex', alignItems: 'center', gap: 2 }}>
-            <FindInPageIcon sx={{ color: '#ec4899' }} />
-            <Typography variant="h6" sx={{ fontWeight: 600 }}>2. AI Competitor Audits (Dashboard)</Typography>
-          </Box>
-        </AccordionSummary>
-        <AccordionDetails sx={{ color: 'var(--text)' }}>
-          <Typography variant="body1" paragraph>
-            The core feature of this plugin is the Competitor Audit tool found right on the <strong>Dashboard</strong>. 
-          </Typography>
-          <Typography variant="body1" paragraph>
-            <strong>How to run an audit:</strong>
-            <br />
-            1. Enter your Target URL (the page on your site you want to rank).<br />
-            2. Enter the Competitor URL (the page currently ranking #1 on Google).<br />
-            3. Enter your Focus Keyword.<br />
-            4. Click "Run Audit".
-          </Typography>
-          <Typography variant="body1" paragraph>
-            <strong>What the results mean:</strong>
-            <br />
-            The tool will scrape both pages and display a side-by-side comparison matrix of word count, keyword density, loading speed estimates, and content structure.
-            Below the matrix, our Gemini AI will analyze the differences and generate a custom, actionable <strong>Beat-Them Guideline</strong> list. These are exact steps you must take to outrank that specific competitor!
-          </Typography>
-        </AccordionDetails>
-      </Accordion>
+      {/* =========================================
+          DASHBOARD TAB 
+      ========================================= */}
+      <TabPanel value={value} index={0}>
+        <Accordion defaultExpanded sx={accordionStyle}>
+          <AccordionSummary expandIcon={<ExpandMoreIcon sx={{ color: 'var(--text)' }} />}>
+            <Box sx={{ display: 'flex', alignItems: 'center', gap: 2 }}>
+              <FindInPageIcon sx={{ color: '#ec4899' }} />
+              <Typography variant="h6" sx={{ fontWeight: 600, fontFamily: 'var(--sans)', color: 'var(--text-h)' }}>AI Competitor Audits (Beat #1 on Google)</Typography>
+            </Box>
+          </AccordionSummary>
+          <AccordionDetails sx={{ color: 'var(--text)', fontFamily: 'var(--sans)' }}>
+            <Typography variant="body1" paragraph>
+              <strong>What it does:</strong> This is our most powerful tool. It looks at the website currently ranking #1 on Google, compares it to your website, and tells you exactly what you need to change to steal their spot!
+            </Typography>
+            <Typography variant="body1" paragraph><strong>How to use the options:</strong></Typography>
+            <ul>
+              <li style={{ marginBottom: '10px' }}><strong>Target URL:</strong> Paste the link of YOUR page that you want to rank higher.</li>
+              <li style={{ marginBottom: '10px' }}><strong>Competitor URL:</strong> Go to Google, search for your keyword, copy the link of the #1 result, and paste it here.</li>
+              <li style={{ marginBottom: '10px' }}><strong>Focus Keyword:</strong> The exact search term you are trying to win (e.g., "best pizza in New York").</li>
+            </ul>
+            <Typography variant="body1">
+              <strong>Usecase:</strong> Use this whenever you write a new blog post or if you have an old page that is stuck on page 2 of Google and refuses to climb higher.
+            </Typography>
+          </AccordionDetails>
+        </Accordion>
 
-      {/* Redirects Manager */}
-      <Accordion sx={{ mb: 2, background: 'var(--glass-bg)', backdropFilter: 'blur(10px)', border: '1px solid var(--border)', borderRadius: '12px !important', boxShadow: 'none', '&:before': { display: 'none' } }}>
-        <AccordionSummary expandIcon={<ExpandMoreIcon sx={{ color: 'var(--text)' }} />}>
-          <Box sx={{ display: 'flex', alignItems: 'center', gap: 2 }}>
-            <CompareArrowsIcon sx={{ color: '#10b981' }} />
-            <Typography variant="h6" sx={{ fontWeight: 600 }}>3. Redirects Manager</Typography>
-          </Box>
-        </AccordionSummary>
-        <AccordionDetails sx={{ color: 'var(--text)' }}>
-          <Typography variant="body1" paragraph>
-            Never lose SEO juice when deleting or moving pages. The Redirects Manager allows you to safely route traffic from old URLs to new ones.
-          </Typography>
-          <ul>
-            <li><strong>Source URL:</strong> The old URL that no longer exists (e.g. `/old-blog-post`).</li>
-            <li><strong>Target URL:</strong> Where the user should be sent instead (e.g. `/new-blog-post`).</li>
-            <li><strong>Type:</strong> Choose <strong>301 (Permanent)</strong> for SEO value transfer, or <strong>302 (Temporary)</strong> if the move is not permanent.</li>
-          </ul>
-        </AccordionDetails>
-      </Accordion>
+        <Accordion sx={accordionStyle}>
+          <AccordionSummary expandIcon={<ExpandMoreIcon sx={{ color: 'var(--text)' }} />}>
+            <Box sx={{ display: 'flex', alignItems: 'center', gap: 2 }}>
+              <AutoAwesomeIcon sx={{ color: 'var(--primary)' }} />
+              <Typography variant="h6" sx={{ fontWeight: 600, fontFamily: 'var(--sans)', color: 'var(--text-h)' }}>Gutenberg Page Editor (AI SEO Sidebar)</Typography>
+            </Box>
+          </AccordionSummary>
+          <AccordionDetails sx={{ color: 'var(--text)', fontFamily: 'var(--sans)' }}>
+            <Typography variant="body1" paragraph>
+              <strong>What it does:</strong> When you are writing a post inside WordPress, click the Frank SEO icon in the top right corner. It opens a sidebar that guides you while you type.
+            </Typography>
+            <Typography variant="body1" paragraph><strong>How to use the options:</strong></Typography>
+            <ul>
+              <li style={{ marginBottom: '10px' }}><strong>Focus Keyword:</strong> Type the word you want to rank for. The sidebar will instantly check your text and tell you if you've used the word enough times.</li>
+              <li style={{ marginBottom: '10px' }}><strong>AI Generate Button (✨):</strong> Don't know how to write a catchy title? Click this button! The AI will read your whole post and write a perfect, click-worthy SEO Title and Description for you.</li>
+              <li style={{ marginBottom: '10px' }}><strong>Index vs NoIndex Toggle:</strong> Leave this on "Index" so Google can find your page. Only turn it to "NoIndex" if it's a private page (like a Thank You page or login screen) that you want to hide from search engines.</li>
+            </ul>
+          </AccordionDetails>
+        </Accordion>
 
-      {/* 404 Monitor */}
-      <Accordion sx={{ mb: 2, background: 'var(--glass-bg)', backdropFilter: 'blur(10px)', border: '1px solid var(--border)', borderRadius: '12px !important', boxShadow: 'none', '&:before': { display: 'none' } }}>
-        <AccordionSummary expandIcon={<ExpandMoreIcon sx={{ color: 'var(--text)' }} />}>
-          <Box sx={{ display: 'flex', alignItems: 'center', gap: 2 }}>
-            <LinkOffIcon sx={{ color: '#f59e0b' }} />
-            <Typography variant="h6" sx={{ fontWeight: 600 }}>4. 404 Error Monitor</Typography>
-          </Box>
-        </AccordionSummary>
-        <AccordionDetails sx={{ color: 'var(--text)' }}>
-          <Typography variant="body1" paragraph>
-            Broken links hurt your user experience and SEO rankings. The 404 Monitor silently watches your site for users hitting broken pages.
-          </Typography>
-          <Typography variant="body1" paragraph>
-            On the 404 Monitor page, you'll see a log of every broken URL visited, how many times it was hit, and when. 
-            <strong>Pro Tip:</strong> If you see a URL getting lots of 404 hits, click the "Create Redirect" button next to it to immediately send that traffic to a working page using the Redirects Manager!
-          </Typography>
-        </AccordionDetails>
-      </Accordion>
+        <Accordion sx={accordionStyle}>
+          <AccordionSummary expandIcon={<ExpandMoreIcon sx={{ color: 'var(--text)' }} />}>
+            <Box sx={{ display: 'flex', alignItems: 'center', gap: 2 }}>
+              <MapIcon sx={{ color: '#8b5cf6' }} />
+              <Typography variant="h6" sx={{ fontWeight: 600, fontFamily: 'var(--sans)', color: 'var(--text-h)' }}>Automatic XML Sitemap</Typography>
+            </Box>
+          </AccordionSummary>
+          <AccordionDetails sx={{ color: 'var(--text)', fontFamily: 'var(--sans)' }}>
+            <Typography variant="body1" paragraph>
+              <strong>What it does:</strong> A sitemap is like a map of your website that Google uses to find all your pages.
+            </Typography>
+            <Typography variant="body1">
+              <strong>How to use it:</strong> You don't have to do anything! Frank SEO automatically creates and updates your sitemap in the background. You can find it by typing <code>yourwebsite.com/sitemap.xml</code> in your browser. Just submit that link to Google Search Console once, and you're done forever!
+            </Typography>
+          </AccordionDetails>
+        </Accordion>
+      </TabPanel>
 
-      {/* XML Sitemap */}
-      <Accordion sx={{ mb: 2, background: 'var(--glass-bg)', backdropFilter: 'blur(10px)', border: '1px solid var(--border)', borderRadius: '12px !important', boxShadow: 'none', '&:before': { display: 'none' } }}>
-        <AccordionSummary expandIcon={<ExpandMoreIcon sx={{ color: 'var(--text)' }} />}>
-          <Box sx={{ display: 'flex', alignItems: 'center', gap: 2 }}>
-            <MapIcon sx={{ color: '#8b5cf6' }} />
-            <Typography variant="h6" sx={{ fontWeight: 600 }}>5. Dynamic XML Sitemap</Typography>
-          </Box>
-        </AccordionSummary>
-        <AccordionDetails sx={{ color: 'var(--text)' }}>
-          <Typography variant="body1" paragraph>
-            A sitemap is crucial for Google to discover your pages. Frank SEO automatically generates a blazing-fast, dynamic XML sitemap.
-          </Typography>
-          <Typography variant="body1">
-            <strong>Where is it?</strong> Your sitemap is permanently available at <code>yourwebsite.com/sitemap.xml</code>.
-          </Typography>
-          <Typography variant="body1" sx={{ mt: 1 }}>
-            It updates automatically every time you publish, edit, or delete a post. Pages marked as "NoIndex" in the Gutenberg sidebar are automatically excluded from the sitemap. You do not need to configure anything—it just works.
-          </Typography>
-        </AccordionDetails>
-      </Accordion>
+      {/* =========================================
+          AUDIT HISTORY TAB 
+      ========================================= */}
+      <TabPanel value={value} index={1}>
+        <Accordion defaultExpanded sx={accordionStyle}>
+          <AccordionSummary expandIcon={<ExpandMoreIcon sx={{ color: 'var(--text)' }} />}>
+            <Box sx={{ display: 'flex', alignItems: 'center', gap: 2 }}>
+              <HistoryIcon sx={{ color: 'var(--text-h)' }} />
+              <Typography variant="h6" sx={{ fontWeight: 600, fontFamily: 'var(--sans)', color: 'var(--text-h)' }}>Viewing Your Past SEO Scans</Typography>
+            </Box>
+          </AccordionSummary>
+          <AccordionDetails sx={{ color: 'var(--text)', fontFamily: 'var(--sans)' }}>
+            <Typography variant="body1" paragraph>
+              <strong>What it does:</strong> This tab saves a record of every time the plugin scanned your website for SEO errors.
+            </Typography>
+            <Typography variant="body1" paragraph><strong>What the options mean:</strong></Typography>
+            <ul>
+              <li style={{ marginBottom: '10px' }}><strong>View Details Button:</strong> Click this to open the exact report from that specific day. It will show you exactly which pages were broken or missing titles on that date.</li>
+              <li style={{ marginBottom: '10px' }}><strong>Delete Button:</strong> Removes old scans to keep your database clean.</li>
+            </ul>
+            <Typography variant="body1">
+              <strong>Usecase:</strong> Imagine your website traffic suddenly drops today. You can come to the Audit History, open yesterday's scan, and compare it to last month's scan to see if any critical SEO errors (like broken links) recently appeared on your site!
+            </Typography>
+          </AccordionDetails>
+        </Accordion>
+      </TabPanel>
 
-      {/* Settings */}
-      <Accordion sx={{ mb: 4, background: 'var(--glass-bg)', backdropFilter: 'blur(10px)', border: '1px solid var(--border)', borderRadius: '12px !important', boxShadow: 'none', '&:before': { display: 'none' } }}>
-        <AccordionSummary expandIcon={<ExpandMoreIcon sx={{ color: 'var(--text)' }} />}>
-          <Box sx={{ display: 'flex', alignItems: 'center', gap: 2 }}>
-            <SettingsIcon sx={{ color: '#64748b' }} />
-            <Typography variant="h6" sx={{ fontWeight: 600 }}>6. Plugin Settings & API Key</Typography>
-          </Box>
-        </AccordionSummary>
-        <AccordionDetails sx={{ color: 'var(--text)' }}>
-          <Typography variant="body1" paragraph>
-            To power the AI generation and Competitor Audits, Frank SEO uses the Google Gemini AI.
-          </Typography>
-          <Typography variant="body1">
-            Navigate to the <strong>Settings</strong> tab to enter your Gemini API Key. You can get a free API key from the Google AI Studio. Once saved, the key is securely encrypted in your WordPress database and all AI features will instantly unlock.
-          </Typography>
-        </AccordionDetails>
-      </Accordion>
+      {/* =========================================
+          REDIRECTS TAB 
+      ========================================= */}
+      <TabPanel value={value} index={2}>
+        <Accordion defaultExpanded sx={accordionStyle}>
+          <AccordionSummary expandIcon={<ExpandMoreIcon sx={{ color: 'var(--text)' }} />}>
+            <Box sx={{ display: 'flex', alignItems: 'center', gap: 2 }}>
+              <SwapCallsIcon sx={{ color: '#10b981' }} />
+              <Typography variant="h6" sx={{ fontWeight: 600, fontFamily: 'var(--sans)', color: 'var(--text-h)' }}>URL Redirects Manager</Typography>
+            </Box>
+          </AccordionSummary>
+          <AccordionDetails sx={{ color: 'var(--text)', fontFamily: 'var(--sans)' }}>
+            <Typography variant="body1" paragraph>
+              <strong>What it does:</strong> If you delete an old post or change its link, visitors will hit a dead end (a 404 error) and Google will penalize your ranking. A redirect safely forwards visitors from the old deleted link to a new working link automatically!
+            </Typography>
+            <Typography variant="body1" paragraph><strong>How to use the options:</strong></Typography>
+            <ul>
+              <li style={{ marginBottom: '10px' }}><strong>Source Path:</strong> Type the old, broken link here (e.g. <code>/old-pizza-recipe/</code>).</li>
+              <li style={{ marginBottom: '10px' }}><strong>Target Destination:</strong> Type the new working link where you want people to go instead (e.g. <code>/new-pizza-recipe/</code>).</li>
+              <li style={{ marginBottom: '10px' }}>
+                <strong>Redirect Type (Important!):</strong>
+                <ul>
+                  <li><strong>301 Permanent (Use this 99% of the time):</strong> Tells Google "I permanently moved this page. Please transfer all my old SEO ranking power to the new link!"</li>
+                  <li><strong>302/307 Temporary:</strong> Tells Google "This page is broken today, but it will be back soon, so don't update my SEO rankings." Rarely used.</li>
+                </ul>
+              </li>
+            </ul>
+          </AccordionDetails>
+        </Accordion>
+      </TabPanel>
+
+      {/* =========================================
+          404 MONITOR TAB 
+      ========================================= */}
+      <TabPanel value={value} index={3}>
+        <Accordion defaultExpanded sx={accordionStyle}>
+          <AccordionSummary expandIcon={<ExpandMoreIcon sx={{ color: 'var(--text)' }} />}>
+            <Box sx={{ display: 'flex', alignItems: 'center', gap: 2 }}>
+              <ReportProblemIcon sx={{ color: '#f59e0b' }} />
+              <Typography variant="h6" sx={{ fontWeight: 600, fontFamily: 'var(--sans)', color: 'var(--text-h)' }}>404 Error Monitor (Broken Links)</Typography>
+            </Box>
+          </AccordionSummary>
+          <AccordionDetails sx={{ color: 'var(--text)', fontFamily: 'var(--sans)' }}>
+            <Typography variant="body1" paragraph>
+              <strong>What it does:</strong> It silently acts like a security camera for your website. Whenever a real person or a Google Search bot tries to visit a page that doesn't exist, it logs it here.
+            </Typography>
+            <Typography variant="body1" paragraph><strong>How to use the options:</strong></Typography>
+            <ul>
+              <li style={{ marginBottom: '10px' }}><strong>Hits Column:</strong> Shows how many times people tried to visit that broken link. High numbers mean you are actively losing lots of visitors!</li>
+              <li style={{ marginBottom: '10px' }}><strong>Redirect Button:</strong> If you see a broken link with high hits, click this button. It will instantly pop open the Redirects Manager so you can forward that lost traffic to your homepage or a related article, saving your visitors!</li>
+            </ul>
+            <Typography variant="body1">
+              <strong>Usecase:</strong> Check this tab once a week. If you see a lot of broken links getting hit, use the Redirect button to plug the holes in your website's traffic bucket.
+            </Typography>
+          </AccordionDetails>
+        </Accordion>
+      </TabPanel>
+
+      {/* =========================================
+          SETTINGS TAB 
+      ========================================= */}
+      <TabPanel value={value} index={4}>
+        <Accordion defaultExpanded sx={accordionStyle}>
+          <AccordionSummary expandIcon={<ExpandMoreIcon sx={{ color: 'var(--text)' }} />}>
+            <Box sx={{ display: 'flex', alignItems: 'center', gap: 2 }}>
+              <SettingsIcon sx={{ color: '#64748b' }} />
+              <Typography variant="h6" sx={{ fontWeight: 600, fontFamily: 'var(--sans)', color: 'var(--text-h)' }}>Plugin Configuration</Typography>
+            </Box>
+          </AccordionSummary>
+          <AccordionDetails sx={{ color: 'var(--text)', fontFamily: 'var(--sans)' }}>
+            <Typography variant="body1" paragraph>
+              <strong>What it does:</strong> This is the engine room. It controls how the plugin scans your website and connects to artificial intelligence.
+            </Typography>
+            
+            <Typography variant="subtitle1" sx={{ fontWeight: 700, mt: 3, mb: 1, color: 'var(--text-h)' }}>1. API Integrations</Typography>
+            <Typography variant="body2" paragraph>
+              <strong>Google Gemini API Key:</strong> The plugin needs this "key" to unlock its AI powers (like generating titles or analyzing competitors). You can generate a free key from Google AI Studio and paste it here. It is kept completely secure.
+            </Typography>
+
+            <Typography variant="subtitle1" sx={{ fontWeight: 700, mt: 3, mb: 1, color: 'var(--text-h)' }}>2. Automation & Emails</Typography>
+            <Typography variant="body2" paragraph>
+              <strong>Background Audits:</strong> You can tell the plugin to scan your entire website automatically (Daily, Weekly, or Monthly) while you sleep. Monthly is recommended for most websites so it doesn't slow down your server.
+            </Typography>
+            <Typography variant="body2" paragraph>
+              <strong>Email Reports:</strong> If you turn this on, the plugin will email you a beautiful PDF-like summary report whenever a scan finishes, telling you your SEO score and what needs fixing.
+            </Typography>
+
+            <Typography variant="subtitle1" sx={{ fontWeight: 700, mt: 3, mb: 1, color: 'var(--text-h)' }}>3. Crawl Settings</Typography>
+            <Typography variant="body2" paragraph>
+              <strong>Max Crawl Depth:</strong> How many "clicks" deep the scanner should go when checking your website. Leaving it at 3 means it checks your homepage, pages linked from your homepage, and pages linked from those pages.
+            </Typography>
+            <Typography variant="body2" paragraph>
+              <strong>Crawl Delay (Seconds):</strong> If you have a very cheap or slow web host, scanning hundreds of pages fast might crash your site. Increasing this delay makes the scanner wait a few seconds between checking each page, keeping your site fast and safe.
+            </Typography>
+          </AccordionDetails>
+        </Accordion>
+      </TabPanel>
       
     </Box>
   );

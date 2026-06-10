@@ -87,6 +87,10 @@ class Frank_SEO_Admin {
 			'_frank_seo_robots_index'   => 'string',
 			'_frank_seo_robots_follow'  => 'string',
 			'_frank_seo_canonical'      => 'string',
+			'_frank_seo_og_title'       => 'string',
+			'_frank_seo_og_description' => 'string',
+			'_frank_seo_og_image'       => 'string',
+			'_frank_seo_custom_schema'  => 'string',
 		);
 
 		$post_types = array( 'post', 'page' );

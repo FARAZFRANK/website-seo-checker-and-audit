@@ -501,6 +501,12 @@ class Frank_SEO_REST_API {
 			'enableScanEmail'  => false,
 			'enableScheduledEmail' => false,
 			'geminiApiKey'     => '',
+			'localBusinessName' => '',
+			'localBusinessType' => 'LocalBusiness',
+			'localBusinessAddress' => '',
+			'localBusinessCity' => '',
+			'localBusinessZip' => '',
+			'localBusinessPhone' => '',
 		);
 
 		$settings = wp_parse_args( $settings, $defaults );
@@ -518,6 +524,12 @@ class Frank_SEO_REST_API {
 		$settings['enableScheduledEmail'] = (bool) $settings['enableScheduledEmail'];
 		$settings['emailRecipients']  = sanitize_text_field( $settings['emailRecipients'] );
 		$settings['geminiApiKey']     = isset( $settings['geminiApiKey'] ) ? sanitize_text_field( $settings['geminiApiKey'] ) : '';
+		$settings['localBusinessName'] = isset( $settings['localBusinessName'] ) ? sanitize_text_field( $settings['localBusinessName'] ) : '';
+		$settings['localBusinessType'] = isset( $settings['localBusinessType'] ) ? sanitize_text_field( $settings['localBusinessType'] ) : 'LocalBusiness';
+		$settings['localBusinessAddress'] = isset( $settings['localBusinessAddress'] ) ? sanitize_text_field( $settings['localBusinessAddress'] ) : '';
+		$settings['localBusinessCity'] = isset( $settings['localBusinessCity'] ) ? sanitize_text_field( $settings['localBusinessCity'] ) : '';
+		$settings['localBusinessZip'] = isset( $settings['localBusinessZip'] ) ? sanitize_text_field( $settings['localBusinessZip'] ) : '';
+		$settings['localBusinessPhone'] = isset( $settings['localBusinessPhone'] ) ? sanitize_text_field( $settings['localBusinessPhone'] ) : '';
 
 		return rest_ensure_response( $settings );
 	}
@@ -555,6 +567,13 @@ class Frank_SEO_REST_API {
 		$sanitized_settings['enableScanEmail']  = isset( $params['enableScanEmail'] ) ? (bool) $params['enableScanEmail'] : false;
 		$sanitized_settings['enableScheduledEmail'] = isset( $params['enableScheduledEmail'] ) ? (bool) $params['enableScheduledEmail'] : false;
 		$sanitized_settings['geminiApiKey']     = isset( $params['geminiApiKey'] ) ? sanitize_text_field( $params['geminiApiKey'] ) : '';
+		
+		$sanitized_settings['localBusinessName'] = isset( $params['localBusinessName'] ) ? sanitize_text_field( $params['localBusinessName'] ) : '';
+		$sanitized_settings['localBusinessType'] = isset( $params['localBusinessType'] ) ? sanitize_text_field( $params['localBusinessType'] ) : 'LocalBusiness';
+		$sanitized_settings['localBusinessAddress'] = isset( $params['localBusinessAddress'] ) ? sanitize_text_field( $params['localBusinessAddress'] ) : '';
+		$sanitized_settings['localBusinessCity'] = isset( $params['localBusinessCity'] ) ? sanitize_text_field( $params['localBusinessCity'] ) : '';
+		$sanitized_settings['localBusinessZip'] = isset( $params['localBusinessZip'] ) ? sanitize_text_field( $params['localBusinessZip'] ) : '';
+		$sanitized_settings['localBusinessPhone'] = isset( $params['localBusinessPhone'] ) ? sanitize_text_field( $params['localBusinessPhone'] ) : '';
 
 		update_option( 'frank_seo_settings', $sanitized_settings );
 

@@ -27,6 +27,10 @@ const FrankSeoSidebar = () => {
 	const robotsIndex = meta._frank_seo_robots_index || 'index';
 	const robotsFollow = meta._frank_seo_robots_follow || 'follow';
 	const canonicalUrl = meta._frank_seo_canonical || '';
+	const ogTitle = meta._frank_seo_og_title || '';
+	const ogDesc = meta._frank_seo_og_description || '';
+	const ogImage = meta._frank_seo_og_image || '';
+	const customSchema = meta._frank_seo_custom_schema || '';
 
 	// Update meta values helper
 	const updateMeta = ( key, value ) => {
@@ -366,6 +370,45 @@ const FrankSeoSidebar = () => {
 						/>
 					</div>
 				</div>
+			</PanelBody>
+
+			<PanelBody title="Social Media (OpenGraph)" initialOpen={ false }>
+				<p style={{ fontSize: '11px', color: '#64748b', marginBottom: '10px', marginTop: '0' }}>
+					Overrides the default SEO metadata when shared on Facebook, X (Twitter), and LinkedIn.
+				</p>
+				<TextControl
+					label="Social Title"
+					value={ ogTitle }
+					onChange={ ( val ) => updateMeta( '_frank_seo_og_title', val ) }
+					placeholder="Leave blank to use SEO Title"
+				/>
+				<TextareaControl
+					label="Social Description"
+					value={ ogDesc }
+					onChange={ ( val ) => updateMeta( '_frank_seo_og_description', val ) }
+					placeholder="Leave blank to use SEO Desc"
+				/>
+				<TextControl
+					label="Social Image URL"
+					value={ ogImage }
+					onChange={ ( val ) => updateMeta( '_frank_seo_og_image', val ) }
+					placeholder="https://..."
+					help="Leave blank to automatically use the Featured Image."
+				/>
+			</PanelBody>
+
+			<PanelBody title="Advanced Schema Builder" initialOpen={ false }>
+				<p style={{ fontSize: '11px', color: '#64748b', marginBottom: '10px', marginTop: '0' }}>
+					Frank SEO automatically detects FAQ blocks on this page and converts them into Schema. If you want to inject custom JSON-LD (like a Recipe or Course), paste it here.
+				</p>
+				<TextareaControl
+					label="Raw JSON-LD"
+					value={ customSchema }
+					onChange={ ( val ) => updateMeta( '_frank_seo_custom_schema', val ) }
+					placeholder='{ "@context": "https://schema.org", ... }'
+					rows={ 8 }
+					style={{ fontFamily: 'monospace', fontSize: '11px' }}
+				/>
 			</PanelBody>
 		</PluginSidebar>
 	);

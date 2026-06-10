@@ -30,6 +30,7 @@ import LinkIcon from '@mui/icons-material/Link';
 import DeleteIcon from '@mui/icons-material/Delete';
 import MailOutlineIcon from '@mui/icons-material/MailOutline';
 import VpnKeyIcon from '@mui/icons-material/VpnKey';
+import StorefrontIcon from '@mui/icons-material/Storefront';
 import Visibility from '@mui/icons-material/Visibility';
 import VisibilityOff from '@mui/icons-material/VisibilityOff';
 import { getSettings, updateSettings, resetPlugin } from '../api';
@@ -52,6 +53,12 @@ function Settings() {
     enableScanEmail: false,
     enableScheduledEmail: false,
     geminiApiKey: "",
+    localBusinessName: "",
+    localBusinessType: "LocalBusiness",
+    localBusinessAddress: "",
+    localBusinessCity: "",
+    localBusinessZip: "",
+    localBusinessPhone: "",
   });
 
   const [showApiKey, setShowApiKey] = useState(false);
@@ -86,6 +93,12 @@ function Settings() {
             enableScanEmail: apiSettings.enableScanEmail !== undefined ? !!apiSettings.enableScanEmail : prev.enableScanEmail,
             enableScheduledEmail: apiSettings.enableScheduledEmail !== undefined ? !!apiSettings.enableScheduledEmail : prev.enableScheduledEmail,
             geminiApiKey: apiSettings.geminiApiKey !== undefined ? apiSettings.geminiApiKey : prev.geminiApiKey,
+            localBusinessName: apiSettings.localBusinessName !== undefined ? apiSettings.localBusinessName : prev.localBusinessName,
+            localBusinessType: apiSettings.localBusinessType !== undefined ? apiSettings.localBusinessType : prev.localBusinessType,
+            localBusinessAddress: apiSettings.localBusinessAddress !== undefined ? apiSettings.localBusinessAddress : prev.localBusinessAddress,
+            localBusinessCity: apiSettings.localBusinessCity !== undefined ? apiSettings.localBusinessCity : prev.localBusinessCity,
+            localBusinessZip: apiSettings.localBusinessZip !== undefined ? apiSettings.localBusinessZip : prev.localBusinessZip,
+            localBusinessPhone: apiSettings.localBusinessPhone !== undefined ? apiSettings.localBusinessPhone : prev.localBusinessPhone,
           }));
         }
       } catch (err) {
@@ -457,6 +470,108 @@ function Settings() {
                         </Typography>
                       </Box>
                     }
+                  />
+                </Grid>
+              </Grid>
+            </Box>
+
+            {/* Local Business SEO Card */}
+            <Box className="glass-panel" sx={{ p: 4, borderRadius: '20px' }}>
+              <Box sx={{ display: 'flex', alignItems: 'center', gap: 1.5, mb: 3 }}>
+                <StorefrontIcon sx={{ color: 'var(--primary)' }} />
+                <Typography variant="h6" sx={{ fontWeight: 700, fontFamily: 'var(--sans)', color: 'var(--text-h)' }}>
+                  Local Business SEO
+                </Typography>
+              </Box>
+              <Typography sx={{ color: 'var(--text)', opacity: 0.8, fontSize: '0.85rem', fontFamily: 'var(--sans)', mb: 3 }}>
+                Help Google Maps and Local Search understand your physical business by filling out these details. It automatically generates LocalBusiness schema on your homepage.
+              </Typography>
+
+              <Grid container spacing={3}>
+                <Grid item xs={12} md={6}>
+                  <TextField
+                    label="Business Name"
+                    variant="outlined"
+                    fullWidth
+                    value={settings.localBusinessName || ''}
+                    onChange={(e) => setSettings({ ...settings, localBusinessName: e.target.value })}
+                    placeholder="Frank's Pizza"
+                    sx={{
+                      '& .MuiOutlinedInput-root': { borderRadius: '12px', fontFamily: 'var(--sans)', fontSize: '0.9rem', '& fieldset': { borderColor: 'var(--border)' }, '&:hover fieldset': { borderColor: 'var(--primary)' }, '&.Mui-focused fieldset': { borderColor: 'var(--primary)', borderWidth: '1px' } },
+                      '& .MuiInputLabel-root': { fontFamily: 'var(--sans)', fontSize: '0.9rem' }
+                    }}
+                  />
+                </Grid>
+                <Grid item xs={12} md={6}>
+                  <Select
+                    value={settings.localBusinessType || 'LocalBusiness'}
+                    onChange={(e) => setSettings({ ...settings, localBusinessType: e.target.value })}
+                    fullWidth
+                    sx={{
+                      borderRadius: '12px', fontFamily: 'var(--sans)', fontSize: '0.9rem',
+                      '& .MuiOutlinedInput-notchedOutline': { borderColor: 'var(--border)' },
+                      '&:hover .MuiOutlinedInput-notchedOutline': { borderColor: 'var(--primary)' },
+                      '&.Mui-focused .MuiOutlinedInput-notchedOutline': { borderColor: 'var(--primary)', borderWidth: '1px' }
+                    }}
+                  >
+                    <MenuItem value="LocalBusiness">Local Business (Generic)</MenuItem>
+                    <MenuItem value="Restaurant">Restaurant</MenuItem>
+                    <MenuItem value="MedicalBusiness">Medical Clinic / Dentist</MenuItem>
+                    <MenuItem value="Store">Retail Store</MenuItem>
+                    <MenuItem value="HomeAndConstructionBusiness">Plumber / Construction</MenuItem>
+                  </Select>
+                </Grid>
+                <Grid item xs={12}>
+                  <TextField
+                    label="Street Address"
+                    variant="outlined"
+                    fullWidth
+                    value={settings.localBusinessAddress || ''}
+                    onChange={(e) => setSettings({ ...settings, localBusinessAddress: e.target.value })}
+                    placeholder="123 Main St"
+                    sx={{
+                      '& .MuiOutlinedInput-root': { borderRadius: '12px', fontFamily: 'var(--sans)', fontSize: '0.9rem', '& fieldset': { borderColor: 'var(--border)' }, '&:hover fieldset': { borderColor: 'var(--primary)' }, '&.Mui-focused fieldset': { borderColor: 'var(--primary)', borderWidth: '1px' } },
+                      '& .MuiInputLabel-root': { fontFamily: 'var(--sans)', fontSize: '0.9rem' }
+                    }}
+                  />
+                </Grid>
+                <Grid item xs={12} md={4}>
+                  <TextField
+                    label="City"
+                    variant="outlined"
+                    fullWidth
+                    value={settings.localBusinessCity || ''}
+                    onChange={(e) => setSettings({ ...settings, localBusinessCity: e.target.value })}
+                    sx={{
+                      '& .MuiOutlinedInput-root': { borderRadius: '12px', fontFamily: 'var(--sans)', fontSize: '0.9rem', '& fieldset': { borderColor: 'var(--border)' }, '&:hover fieldset': { borderColor: 'var(--primary)' }, '&.Mui-focused fieldset': { borderColor: 'var(--primary)', borderWidth: '1px' } },
+                      '& .MuiInputLabel-root': { fontFamily: 'var(--sans)', fontSize: '0.9rem' }
+                    }}
+                  />
+                </Grid>
+                <Grid item xs={12} md={4}>
+                  <TextField
+                    label="Zip / Postal Code"
+                    variant="outlined"
+                    fullWidth
+                    value={settings.localBusinessZip || ''}
+                    onChange={(e) => setSettings({ ...settings, localBusinessZip: e.target.value })}
+                    sx={{
+                      '& .MuiOutlinedInput-root': { borderRadius: '12px', fontFamily: 'var(--sans)', fontSize: '0.9rem', '& fieldset': { borderColor: 'var(--border)' }, '&:hover fieldset': { borderColor: 'var(--primary)' }, '&.Mui-focused fieldset': { borderColor: 'var(--primary)', borderWidth: '1px' } },
+                      '& .MuiInputLabel-root': { fontFamily: 'var(--sans)', fontSize: '0.9rem' }
+                    }}
+                  />
+                </Grid>
+                <Grid item xs={12} md={4}>
+                  <TextField
+                    label="Phone Number"
+                    variant="outlined"
+                    fullWidth
+                    value={settings.localBusinessPhone || ''}
+                    onChange={(e) => setSettings({ ...settings, localBusinessPhone: e.target.value })}
+                    sx={{
+                      '& .MuiOutlinedInput-root': { borderRadius: '12px', fontFamily: 'var(--sans)', fontSize: '0.9rem', '& fieldset': { borderColor: 'var(--border)' }, '&:hover fieldset': { borderColor: 'var(--primary)' }, '&.Mui-focused fieldset': { borderColor: 'var(--primary)', borderWidth: '1px' } },
+                      '& .MuiInputLabel-root': { fontFamily: 'var(--sans)', fontSize: '0.9rem' }
+                    }}
                   />
                 </Grid>
               </Grid>

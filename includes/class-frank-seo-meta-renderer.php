@@ -92,9 +92,15 @@ class Frank_SEO_Meta_Renderer {
 		echo '<link rel="canonical" href="' . esc_url( $canonical_url ) . '" />' . "\n";
 
 		// 2. Open Graph Tags (Facebook)
-		$og_title = get_post_meta( $post_id, '_frank_seo_title', true ) ?: get_the_title( $post_id );
-		$og_image = '';
-		if ( has_post_thumbnail( $post_id ) ) {
+		$og_title = get_post_meta( $post_id, '_frank_seo_og_title', true );
+		if ( empty( $og_title ) ) {
+			$og_title = get_post_meta( $post_id, '_frank_seo_title', true ) ?: get_the_title( $post_id );
+		}
+
+		$og_desc = get_post_meta( $post_id, '_frank_seo_og_description', true ) ?: $meta_description;
+
+		$og_image = get_post_meta( $post_id, '_frank_seo_og_image', true );
+		if ( empty( $og_image ) && has_post_thumbnail( $post_id ) ) {
 			$og_image = get_the_post_thumbnail_url( $post_id, 'large' );
 		}
 
@@ -102,14 +108,24 @@ class Frank_SEO_Meta_Renderer {
 		echo '<meta property="og:locale" content="' . esc_attr( get_locale() ) . '" />' . "\n";
 		echo '<meta property="og:type" content="' . ( is_single() ? 'article' : 'website' ) . '" />' . "\n";
 		echo '<meta property="og:title" content="' . esc_attr( $og_title ) . '" />' . "\n";
-		if ( ! empty( $meta_description ) ) {
-			echo '<meta property="og:description" content="' . esc_attr( $meta_description ) . '" />' . "\n";
+		if ( ! empty( $og_desc ) ) {
+			echo '<meta property="og:description" content="' . esc_attr( $og_desc ) . '" />' . "\n";
 		}
 		echo '<meta property="og:url" content="' . esc_url( $canonical_url ) . '" />' . "\n";
 		echo '<meta property="og:site_name" content="' . esc_attr( get_bloginfo( 'name' ) ) . '" />' . "\n";
 		if ( ! empty( $og_image ) ) {
 			echo '<meta property="og:image" content="' . esc_url( $og_image ) . '" />' . "\n";
 			echo '<meta property="og:image:secure_url" content="' . esc_url( $og_image ) . '" />' . "\n";
+		}
+
+		// WooCommerce OpenGraph extensions
+		if ( function_exists( 'is_product' ) && is_product() ) {
+			global $product;
+			if ( is_a( $product, 'WC_Product' ) ) {
+				echo '<meta property="product:price:amount" content="' . esc_attr( $product->get_price() ) . '" />' . "\n";
+				echo '<meta property="product:price:currency" content="' . esc_attr( get_woocommerce_currency() ) . '" />' . "\n";
+				echo '<meta property="product:availability" content="' . ( $product->is_in_stock() ? 'instock' : 'oos' ) . '" />' . "\n";
+			}
 		}
 
 		// Article publisher details
@@ -124,8 +140,8 @@ class Frank_SEO_Meta_Renderer {
 		echo '<!-- Frank SEO Twitter Card Tags -->' . "\n";
 		echo '<meta name="twitter:card" content="summary_large_image" />' . "\n";
 		echo '<meta name="twitter:title" content="' . esc_attr( $og_title ) . '" />' . "\n";
-		if ( ! empty( $meta_description ) ) {
-			echo '<meta name="twitter:description" content="' . esc_attr( $meta_description ) . '" />' . "\n";
+		if ( ! empty( $og_desc ) ) {
+			echo '<meta name="twitter:description" content="' . esc_attr( $og_desc ) . '" />' . "\n";
 		}
 		if ( ! empty( $og_image ) ) {
 			echo '<meta name="twitter:image" content="' . esc_url( $og_image ) . '" />' . "\n";

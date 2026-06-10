@@ -2,13 +2,22 @@
 /**
  * Plugin Name:       Frank Website SEO Checker And Audit
  * Description:       A complete on-page SEO audit plugin with a React-powered dashboard. Crawls pages, detects SEO issues, and maintains history.
- * Version:           1.0.5
+ * Version:           1.0.6
  * Author:			  FARAZFRANK
  * Author URI:        https://wpfrank.com/
  * License:           GPL-2.0+
  * License URI:       http://www.gnu.org/licenses/gpl-2.0.txt
  * Text Domain:       frank-website-seo-checker-and-audit
  * Domain Path:       /languages
+ *
+ * CHANGELOG:
+ * [2026-06-10] v1.0.6
+ * - Added WooCommerce SEO tags (Product Schema and OpenGraph Pricing).
+ * - Added Local Business SEO settings and Auto-Schema Generation.
+ * - Added Advanced Social Media Override UI (OpenGraph/Twitter).
+ * - Added Missing Image Alt Tag Auto-injector (`the_content` filter).
+ * - Added Custom JSON-LD Schema builder for posts/pages.
+ * - Added WordPress FAQ blocks Auto-Schema Generation (Yoast & Rank Math detection).
  */
 
 // If this file is called directly, abort.
@@ -19,7 +28,7 @@ if (!defined('ABSPATH')) {
 /**
  * Currently plugin version.
  */
-define('FRANK_SEO_AUDIT_VERSION', '1.0.5');
+define('FRANK_SEO_AUDIT_VERSION', '1.0.6');
 
 /**
  * Plugin directory path.
@@ -62,6 +71,7 @@ require_once FRANK_SEO_AUDIT_DIR . 'includes/class-frank-seo-meta-renderer.php';
 require_once FRANK_SEO_AUDIT_DIR . 'includes/class-frank-seo-schema-builder.php';
 require_once FRANK_SEO_AUDIT_DIR . 'includes/class-frank-seo-redirect-manager.php';
 require_once FRANK_SEO_AUDIT_DIR . 'includes/class-frank-seo-sitemap.php';
+require_once FRANK_SEO_AUDIT_DIR . 'includes/class-frank-seo-image-optimizer.php';
 
 /**
  * Begins execution of the plugin.
@@ -88,6 +98,10 @@ function frank_seo_audit_run()
 	// Initialize Dynamic XML Sitemap Engine
 	$sitemap_engine = new Frank_SEO_Sitemap();
 	$sitemap_engine->init();
+
+	// Initialize Image Optimizer
+	$image_optimizer = new Frank_SEO_Image_Optimizer();
+	$image_optimizer->init();
 
 	// Run automatic DB upgrades on version mismatch
 	$db_version = get_option( 'frank_seo_db_version' );
