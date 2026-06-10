@@ -507,6 +507,11 @@ class Frank_SEO_REST_API {
 			'localBusinessCity' => '',
 			'localBusinessZip' => '',
 			'localBusinessPhone' => '',
+			'enableWooCommerceSEO' => true,
+			'enableLocalSEO' => true,
+			'enableOpenGraph' => true,
+			'enableImageSEO' => true,
+			'enableAdvancedSchema' => true,
 		);
 
 		$settings = wp_parse_args( $settings, $defaults );
@@ -530,6 +535,12 @@ class Frank_SEO_REST_API {
 		$settings['localBusinessCity'] = isset( $settings['localBusinessCity'] ) ? sanitize_text_field( $settings['localBusinessCity'] ) : '';
 		$settings['localBusinessZip'] = isset( $settings['localBusinessZip'] ) ? sanitize_text_field( $settings['localBusinessZip'] ) : '';
 		$settings['localBusinessPhone'] = isset( $settings['localBusinessPhone'] ) ? sanitize_text_field( $settings['localBusinessPhone'] ) : '';
+		
+		$settings['enableWooCommerceSEO'] = (bool) $settings['enableWooCommerceSEO'];
+		$settings['enableLocalSEO']       = (bool) $settings['enableLocalSEO'];
+		$settings['enableOpenGraph']      = (bool) $settings['enableOpenGraph'];
+		$settings['enableImageSEO']       = (bool) $settings['enableImageSEO'];
+		$settings['enableAdvancedSchema'] = (bool) $settings['enableAdvancedSchema'];
 
 		return rest_ensure_response( $settings );
 	}
@@ -574,6 +585,12 @@ class Frank_SEO_REST_API {
 		$sanitized_settings['localBusinessCity'] = isset( $params['localBusinessCity'] ) ? sanitize_text_field( $params['localBusinessCity'] ) : '';
 		$sanitized_settings['localBusinessZip'] = isset( $params['localBusinessZip'] ) ? sanitize_text_field( $params['localBusinessZip'] ) : '';
 		$sanitized_settings['localBusinessPhone'] = isset( $params['localBusinessPhone'] ) ? sanitize_text_field( $params['localBusinessPhone'] ) : '';
+
+		$sanitized_settings['enableWooCommerceSEO'] = isset( $params['enableWooCommerceSEO'] ) ? (bool) $params['enableWooCommerceSEO'] : true;
+		$sanitized_settings['enableLocalSEO']       = isset( $params['enableLocalSEO'] ) ? (bool) $params['enableLocalSEO'] : true;
+		$sanitized_settings['enableOpenGraph']      = isset( $params['enableOpenGraph'] ) ? (bool) $params['enableOpenGraph'] : true;
+		$sanitized_settings['enableImageSEO']       = isset( $params['enableImageSEO'] ) ? (bool) $params['enableImageSEO'] : true;
+		$sanitized_settings['enableAdvancedSchema'] = isset( $params['enableAdvancedSchema'] ) ? (bool) $params['enableAdvancedSchema'] : true;
 
 		update_option( 'frank_seo_settings', $sanitized_settings );
 

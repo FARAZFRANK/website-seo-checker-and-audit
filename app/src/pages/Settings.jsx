@@ -59,6 +59,11 @@ function Settings() {
     localBusinessCity: "",
     localBusinessZip: "",
     localBusinessPhone: "",
+    enableWooCommerceSEO: true,
+    enableLocalSEO: true,
+    enableOpenGraph: true,
+    enableImageSEO: true,
+    enableAdvancedSchema: true,
   });
 
   const [showApiKey, setShowApiKey] = useState(false);
@@ -99,6 +104,11 @@ function Settings() {
             localBusinessCity: apiSettings.localBusinessCity !== undefined ? apiSettings.localBusinessCity : prev.localBusinessCity,
             localBusinessZip: apiSettings.localBusinessZip !== undefined ? apiSettings.localBusinessZip : prev.localBusinessZip,
             localBusinessPhone: apiSettings.localBusinessPhone !== undefined ? apiSettings.localBusinessPhone : prev.localBusinessPhone,
+            enableWooCommerceSEO: apiSettings.enableWooCommerceSEO !== undefined ? !!apiSettings.enableWooCommerceSEO : prev.enableWooCommerceSEO,
+            enableLocalSEO: apiSettings.enableLocalSEO !== undefined ? !!apiSettings.enableLocalSEO : prev.enableLocalSEO,
+            enableOpenGraph: apiSettings.enableOpenGraph !== undefined ? !!apiSettings.enableOpenGraph : prev.enableOpenGraph,
+            enableImageSEO: apiSettings.enableImageSEO !== undefined ? !!apiSettings.enableImageSEO : prev.enableImageSEO,
+            enableAdvancedSchema: apiSettings.enableAdvancedSchema !== undefined ? !!apiSettings.enableAdvancedSchema : prev.enableAdvancedSchema,
           }));
         }
       } catch (err) {
@@ -327,6 +337,128 @@ function Settings() {
                         },
                       },
                     }}
+                  />
+                </Grid>
+              </Grid>
+            </Box>
+
+            {/* Global Features Settings Card */}
+            <Box className="glass-panel" sx={{ p: 4, borderRadius: '20px' }}>
+              <Box sx={{ display: 'flex', alignItems: 'center', gap: 1.5, mb: 3 }}>
+                <AutoAwesomeIcon sx={{ color: 'var(--primary)' }} />
+                <Typography variant="h6" sx={{ fontWeight: 700, fontFamily: 'var(--sans)', color: 'var(--text-h)' }}>
+                  Global Features Integration
+                </Typography>
+              </Box>
+
+              <Grid container spacing={3.5}>
+                <Grid item xs={12} md={6}>
+                  <FormControlLabel
+                    control={
+                      <Switch 
+                        checked={settings.enableWooCommerceSEO} 
+                        onChange={(e) => setSettings({ ...settings, enableWooCommerceSEO: e.target.checked })}
+                        sx={{ '& .MuiSwitch-switchBase.Mui-checked': { color: 'var(--primary)', '& + .MuiSwitch-track': { backgroundColor: 'var(--primary)' } } }}
+                      />
+                    }
+                    label={
+                      <Box>
+                        <Typography sx={{ fontWeight: 600, fontFamily: 'var(--sans)', fontSize: '0.9rem', color: 'var(--text-h)' }}>
+                          WooCommerce SEO
+                        </Typography>
+                        <Typography sx={{ color: 'var(--text)', opacity: 0.8, fontSize: '0.8rem', fontFamily: 'var(--sans)' }}>
+                          Enable automated Product Schema and OpenGraph tags.
+                        </Typography>
+                      </Box>
+                    }
+                  />
+                </Grid>
+
+                <Grid item xs={12} md={6}>
+                  <FormControlLabel
+                    control={
+                      <Switch 
+                        checked={settings.enableLocalSEO} 
+                        onChange={(e) => setSettings({ ...settings, enableLocalSEO: e.target.checked })}
+                        sx={{ '& .MuiSwitch-switchBase.Mui-checked': { color: 'var(--primary)', '& + .MuiSwitch-track': { backgroundColor: 'var(--primary)' } } }}
+                      />
+                    }
+                    label={
+                      <Box>
+                        <Typography sx={{ fontWeight: 600, fontFamily: 'var(--sans)', fontSize: '0.9rem', color: 'var(--text-h)' }}>
+                          Local Business SEO
+                        </Typography>
+                        <Typography sx={{ color: 'var(--text)', opacity: 0.8, fontSize: '0.8rem', fontFamily: 'var(--sans)' }}>
+                          Enable Local Business schema rendering on the front page.
+                        </Typography>
+                      </Box>
+                    }
+                  />
+                </Grid>
+
+                <Grid item xs={12} md={6}>
+                  <FormControlLabel
+                    control={
+                      <Switch 
+                        checked={settings.enableOpenGraph} 
+                        onChange={(e) => setSettings({ ...settings, enableOpenGraph: e.target.checked })}
+                        sx={{ '& .MuiSwitch-switchBase.Mui-checked': { color: 'var(--primary)', '& + .MuiSwitch-track': { backgroundColor: 'var(--primary)' } } }}
+                      />
+                    }
+                    label={
+                      <Box>
+                        <Typography sx={{ fontWeight: 600, fontFamily: 'var(--sans)', fontSize: '0.9rem', color: 'var(--text-h)' }}>
+                          Social Media (OpenGraph)
+                        </Typography>
+                        <Typography sx={{ color: 'var(--text)', opacity: 0.8, fontSize: '0.8rem', fontFamily: 'var(--sans)' }}>
+                          Output custom OpenGraph and Twitter tags to the header.
+                        </Typography>
+                      </Box>
+                    }
+                  />
+                </Grid>
+
+                <Grid item xs={12} md={6}>
+                  <FormControlLabel
+                    control={
+                      <Switch 
+                        checked={settings.enableImageSEO} 
+                        onChange={(e) => setSettings({ ...settings, enableImageSEO: e.target.checked })}
+                        sx={{ '& .MuiSwitch-switchBase.Mui-checked': { color: 'var(--primary)', '& + .MuiSwitch-track': { backgroundColor: 'var(--primary)' } } }}
+                      />
+                    }
+                    label={
+                      <Box>
+                        <Typography sx={{ fontWeight: 600, fontFamily: 'var(--sans)', fontSize: '0.9rem', color: 'var(--text-h)' }}>
+                          Automatic Image SEO
+                        </Typography>
+                        <Typography sx={{ color: 'var(--text)', opacity: 0.8, fontSize: '0.8rem', fontFamily: 'var(--sans)' }}>
+                          Automatically inject alt attributes to missing images.
+                        </Typography>
+                      </Box>
+                    }
+                  />
+                </Grid>
+
+                <Grid item xs={12} md={6}>
+                  <FormControlLabel
+                    control={
+                      <Switch 
+                        checked={settings.enableAdvancedSchema} 
+                        onChange={(e) => setSettings({ ...settings, enableAdvancedSchema: e.target.checked })}
+                        sx={{ '& .MuiSwitch-switchBase.Mui-checked': { color: 'var(--primary)', '& + .MuiSwitch-track': { backgroundColor: 'var(--primary)' } } }}
+                      />
+                    }
+                    label={
+                      <Box>
+                        <Typography sx={{ fontWeight: 600, fontFamily: 'var(--sans)', fontSize: '0.9rem', color: 'var(--text-h)' }}>
+                          Advanced Schema Builder
+                        </Typography>
+                        <Typography sx={{ color: 'var(--text)', opacity: 0.8, fontSize: '0.8rem', fontFamily: 'var(--sans)' }}>
+                          Enable Custom JSON-LD schema injection and FAQ auto-detection.
+                        </Typography>
+                      </Box>
+                    }
                   />
                 </Grid>
               </Grid>

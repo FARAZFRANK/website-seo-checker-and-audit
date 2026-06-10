@@ -19,10 +19,11 @@ class Frank_SEO_Image_Optimizer {
 	 */
 	public function add_missing_alt_tags( $content ) {
 		$settings = get_option( 'frank_seo_settings', array() );
+		$enable_image_seo = isset( $settings['enableImageSEO'] ) ? (bool) $settings['enableImageSEO'] : true;
 		$check_alt = isset( $settings['checkAltTags'] ) ? (bool) $settings['checkAltTags'] : true;
 
 		// Only process if the setting is enabled and there is content
-		if ( ! $check_alt || empty( $content ) || ! is_singular() ) {
+		if ( ! $enable_image_seo || ! $check_alt || empty( $content ) || ! is_singular() ) {
 			return $content;
 		}
 

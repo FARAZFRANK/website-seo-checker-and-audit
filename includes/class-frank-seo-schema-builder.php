@@ -20,17 +20,24 @@ class Frank_SEO_Schema_Builder {
 	 * Render the structured data JSON-LD scripts in the header.
 	 */
 	public function render_schema() {
+		$settings = get_option( 'frank_seo_settings', array() );
+		$enable_local = isset( $settings['enableLocalSEO'] ) ? (bool) $settings['enableLocalSEO'] : true;
+		$enable_woo   = isset( $settings['enableWooCommerceSEO'] ) ? (bool) $settings['enableWooCommerceSEO'] : true;
+		$enable_adv   = isset( $settings['enableAdvancedSchema'] ) ? (bool) $settings['enableAdvancedSchema'] : true;
+
 		$schemas = array();
 
 		// 1. Organization Schema (Rendered globally or on the front page)
 		if ( is_front_page() || is_home() ) {
 			$schemas[] = $this->build_organization_schema();
 			$schemas[] = $this->build_website_schema();
-			$schemas[] = $this->build_local_business_schema();
+			if ( $enable_local ) {
+				$schemas[] = $this->build_local_business_schema();
+			}
 		}
 
 		// 2. Article or Product Schema (Rendered on single posts/articles)
-		if ( function_exists( 'is_product' ) && is_product() ) {
+		if ( $enable_woo && function_exists( 'is_product' ) && is_product() ) {
 			$schemas[] = $this->build_product_schema();
 		} elseif ( is_singular( 'post' ) ) {
 			$schemas[] = $this->build_article_schema();
@@ -42,13 +49,13 @@ class Frank_SEO_Schema_Builder {
 		}
 
 		// 4. FAQ Schema (Auto-detect FAQ blocks)
-		if ( is_singular() ) {
+		if ( $enable_adv && is_singular() ) {
 			$schemas[] = $this->build_faq_schema();
 		}
 
 		// 5. Custom User Schema (Rendered on specific post if set)
 		$custom_schema = '';
-		if ( is_singular() ) {
+		if ( $enable_adv && is_singular() ) {
 			$custom_schema = get_post_meta( get_queried_object_id(), '_frank_seo_custom_schema', true );
 		}
 

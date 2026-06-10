@@ -17,6 +17,11 @@ const rows = [
   createData('AI Title & Desc Generator', true, 'Premium', 'Premium', 'Premium', 'Premium', false, 'Premium', 'Premium', 'Premium'),
   createData('Side-by-Side Competitor Audit', true, false, false, false, false, false, false, false, false),
   createData('AI "Beat-Them" Guidelines', true, false, false, false, false, false, false, false, false),
+  createData('WooCommerce SEO Integration', true, 'Premium', 'Premium', 'Premium', 'Premium', 'Premium', 'Premium', 'Premium', 'Premium'),
+  createData('Local Business SEO (Auto-Schema)', true, 'Premium', 'Premium', 'Premium', 'Premium', 'Premium', 'Premium', 'Premium', 'Premium'),
+  createData('Social Media (OpenGraph) Overrides', true, true, true, true, true, true, true, true, true),
+  createData('Automated Image Alt Tag SEO', true, 'Premium', 'Premium', 'Premium', 'Premium', false, 'Premium', 'Premium', 'Premium'),
+  createData('Advanced FAQ & Custom Schema Builder', true, 'Premium', 'Premium', 'Premium', 'Premium', false, 'Premium', 'Premium', 'Premium'),
   createData('100% Free / No Paywalls', true, false, false, false, false, true, false, false, false),
   createData('Modern React 19 UI', true, false, false, false, false, false, false, false, false),
 ];

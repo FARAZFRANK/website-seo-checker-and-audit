@@ -59,6 +59,10 @@ class Frank_SEO_Meta_Renderer {
 
 		$post_id = get_the_ID();
 		
+		$settings = get_option( 'frank_seo_settings', array() );
+		$enable_woo = isset( $settings['enableWooCommerceSEO'] ) ? (bool) $settings['enableWooCommerceSEO'] : true;
+		$enable_og  = isset( $settings['enableOpenGraph'] ) ? (bool) $settings['enableOpenGraph'] : true;
+
 		// 1. Fetch custom post meta settings
 		$meta_description = get_post_meta( $post_id, '_frank_seo_description', true );
 		$robots_index     = get_post_meta( $post_id, '_frank_seo_robots_index', true ) ?: 'index';
@@ -92,59 +96,61 @@ class Frank_SEO_Meta_Renderer {
 		echo '<link rel="canonical" href="' . esc_url( $canonical_url ) . '" />' . "\n";
 
 		// 2. Open Graph Tags (Facebook)
-		$og_title = get_post_meta( $post_id, '_frank_seo_og_title', true );
-		if ( empty( $og_title ) ) {
-			$og_title = get_post_meta( $post_id, '_frank_seo_title', true ) ?: get_the_title( $post_id );
-		}
-
-		$og_desc = get_post_meta( $post_id, '_frank_seo_og_description', true ) ?: $meta_description;
-
-		$og_image = get_post_meta( $post_id, '_frank_seo_og_image', true );
-		if ( empty( $og_image ) && has_post_thumbnail( $post_id ) ) {
-			$og_image = get_the_post_thumbnail_url( $post_id, 'large' );
-		}
-
-		echo '<!-- Frank SEO Open Graph Tags -->' . "\n";
-		echo '<meta property="og:locale" content="' . esc_attr( get_locale() ) . '" />' . "\n";
-		echo '<meta property="og:type" content="' . ( is_single() ? 'article' : 'website' ) . '" />' . "\n";
-		echo '<meta property="og:title" content="' . esc_attr( $og_title ) . '" />' . "\n";
-		if ( ! empty( $og_desc ) ) {
-			echo '<meta property="og:description" content="' . esc_attr( $og_desc ) . '" />' . "\n";
-		}
-		echo '<meta property="og:url" content="' . esc_url( $canonical_url ) . '" />' . "\n";
-		echo '<meta property="og:site_name" content="' . esc_attr( get_bloginfo( 'name' ) ) . '" />' . "\n";
-		if ( ! empty( $og_image ) ) {
-			echo '<meta property="og:image" content="' . esc_url( $og_image ) . '" />' . "\n";
-			echo '<meta property="og:image:secure_url" content="' . esc_url( $og_image ) . '" />' . "\n";
-		}
-
-		// WooCommerce OpenGraph extensions
-		if ( function_exists( 'is_product' ) && is_product() ) {
-			global $product;
-			if ( is_a( $product, 'WC_Product' ) ) {
-				echo '<meta property="product:price:amount" content="' . esc_attr( $product->get_price() ) . '" />' . "\n";
-				echo '<meta property="product:price:currency" content="' . esc_attr( get_woocommerce_currency() ) . '" />' . "\n";
-				echo '<meta property="product:availability" content="' . ( $product->is_in_stock() ? 'instock' : 'oos' ) . '" />' . "\n";
+		if ( $enable_og ) {
+			$og_title = get_post_meta( $post_id, '_frank_seo_og_title', true );
+			if ( empty( $og_title ) ) {
+				$og_title = get_post_meta( $post_id, '_frank_seo_title', true ) ?: get_the_title( $post_id );
 			}
-		}
 
-		// Article publisher details
-		if ( is_single() ) {
-			$publish_date = get_the_date( 'c', $post_id );
-			$modified_date = get_the_modified_date( 'c', $post_id );
-			echo '<meta property="article:published_time" content="' . esc_attr( $publish_date ) . '" />' . "\n";
-			echo '<meta property="article:modified_time" content="' . esc_attr( $modified_date ) . '" />' . "\n";
-		}
+			$og_desc = get_post_meta( $post_id, '_frank_seo_og_description', true ) ?: $meta_description;
 
-		// 3. Twitter Card Tags
-		echo '<!-- Frank SEO Twitter Card Tags -->' . "\n";
-		echo '<meta name="twitter:card" content="summary_large_image" />' . "\n";
-		echo '<meta name="twitter:title" content="' . esc_attr( $og_title ) . '" />' . "\n";
-		if ( ! empty( $og_desc ) ) {
-			echo '<meta name="twitter:description" content="' . esc_attr( $og_desc ) . '" />' . "\n";
-		}
-		if ( ! empty( $og_image ) ) {
-			echo '<meta name="twitter:image" content="' . esc_url( $og_image ) . '" />' . "\n";
+			$og_image = get_post_meta( $post_id, '_frank_seo_og_image', true );
+			if ( empty( $og_image ) && has_post_thumbnail( $post_id ) ) {
+				$og_image = get_the_post_thumbnail_url( $post_id, 'large' );
+			}
+
+			echo '<!-- Frank SEO Open Graph Tags -->' . "\n";
+			echo '<meta property="og:locale" content="' . esc_attr( get_locale() ) . '" />' . "\n";
+			echo '<meta property="og:type" content="' . ( is_single() ? 'article' : 'website' ) . '" />' . "\n";
+			echo '<meta property="og:title" content="' . esc_attr( $og_title ) . '" />' . "\n";
+			if ( ! empty( $og_desc ) ) {
+				echo '<meta property="og:description" content="' . esc_attr( $og_desc ) . '" />' . "\n";
+			}
+			echo '<meta property="og:url" content="' . esc_url( $canonical_url ) . '" />' . "\n";
+			echo '<meta property="og:site_name" content="' . esc_attr( get_bloginfo( 'name' ) ) . '" />' . "\n";
+			if ( ! empty( $og_image ) ) {
+				echo '<meta property="og:image" content="' . esc_url( $og_image ) . '" />' . "\n";
+				echo '<meta property="og:image:secure_url" content="' . esc_url( $og_image ) . '" />' . "\n";
+			}
+
+			// WooCommerce OpenGraph extensions
+			if ( $enable_woo && function_exists( 'is_product' ) && is_product() ) {
+				global $product;
+				if ( is_a( $product, 'WC_Product' ) ) {
+					echo '<meta property="product:price:amount" content="' . esc_attr( $product->get_price() ) . '" />' . "\n";
+					echo '<meta property="product:price:currency" content="' . esc_attr( get_woocommerce_currency() ) . '" />' . "\n";
+					echo '<meta property="product:availability" content="' . ( $product->is_in_stock() ? 'instock' : 'oos' ) . '" />' . "\n";
+				}
+			}
+
+			// Article publisher details
+			if ( is_single() ) {
+				$publish_date = get_the_date( 'c', $post_id );
+				$modified_date = get_the_modified_date( 'c', $post_id );
+				echo '<meta property="article:published_time" content="' . esc_attr( $publish_date ) . '" />' . "\n";
+				echo '<meta property="article:modified_time" content="' . esc_attr( $modified_date ) . '" />' . "\n";
+			}
+
+			// 3. Twitter Card Tags
+			echo '<!-- Frank SEO Twitter Card Tags -->' . "\n";
+			echo '<meta name="twitter:card" content="summary_large_image" />' . "\n";
+			echo '<meta name="twitter:title" content="' . esc_attr( $og_title ) . '" />' . "\n";
+			if ( ! empty( $og_desc ) ) {
+				echo '<meta name="twitter:description" content="' . esc_attr( $og_desc ) . '" />' . "\n";
+			}
+			if ( ! empty( $og_image ) ) {
+				echo '<meta name="twitter:image" content="' . esc_url( $og_image ) . '" />' . "\n";
+			}
 		}
 	}
 }
