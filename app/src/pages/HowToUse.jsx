@@ -308,6 +308,16 @@ function HowToUse() {
             <Typography variant="body2" paragraph>
               <strong>Crawl Delay (Seconds):</strong> If you have a very cheap or slow web host, scanning hundreds of pages fast might crash your site. Increasing this delay makes the scanner wait a few seconds between checking each page, keeping your site fast and safe.
             </Typography>
+
+            <Typography variant="subtitle1" sx={{ fontWeight: 700, mt: 3, mb: 1, color: 'var(--text-h)' }}>4. Link Analytics (Exclusions)</Typography>
+            <Typography variant="body2" paragraph>
+              <strong>Exclude Menus / Footers / Sidebars:</strong> When the auditor checks your page for broken links, you can tell it to ignore links inside your header menus, footers, and sidebars so it focuses strictly on the main content of your article.
+            </Typography>
+
+            <Typography variant="subtitle1" sx={{ fontWeight: 700, mt: 3, mb: 1, color: 'var(--text-h)' }}>5. Global Features Integration</Typography>
+            <Typography variant="body2" paragraph>
+              <strong>Toggle Major Features:</strong> If you use another plugin for a specific task (like WooCommerce SEO or Local Business Schema) and don't want Frank SEO to handle it, you can individually turn off those features here to prevent conflicts. By default, everything is enabled so you don't need any other plugins.
+            </Typography>
           </AccordionDetails>
         </Accordion>
       </TabPanel>
