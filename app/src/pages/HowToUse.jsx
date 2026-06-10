@@ -118,7 +118,28 @@ function HowToUse() {
             <ul>
               <li style={{ marginBottom: '10px' }}><strong>Focus Keyword:</strong> Type the word you want to rank for. The sidebar will instantly check your text and tell you if you've used the word enough times.</li>
               <li style={{ marginBottom: '10px' }}><strong>AI Generate Button (✨):</strong> Don't know how to write a catchy title? Click this button! The AI will read your whole post and write a perfect, click-worthy SEO Title and Description for you.</li>
+              <li style={{ marginBottom: '10px' }}><strong>Social Media (OpenGraph):</strong> Want your link to look different when shared on Facebook or Twitter? You can override the title, description, and even upload a custom share image here.</li>
+              <li style={{ marginBottom: '10px' }}><strong>Advanced Schema Builder:</strong> Paste raw JSON-LD here for recipes, courses, or events. Frank SEO also automatically detects your FAQ blocks (Yoast/RankMath) and turns them into Google FAQ snippets automatically!</li>
               <li style={{ marginBottom: '10px' }}><strong>Index vs NoIndex Toggle:</strong> Leave this on "Index" so Google can find your page. Only turn it to "NoIndex" if it's a private page (like a Thank You page or login screen) that you want to hide from search engines.</li>
+            </ul>
+          </AccordionDetails>
+        </Accordion>
+
+        <Accordion sx={accordionStyle}>
+          <AccordionSummary expandIcon={<ExpandMoreIcon sx={{ color: 'var(--text)' }} />}>
+            <Box sx={{ display: 'flex', alignItems: 'center', gap: 2 }}>
+              <AutoAwesomeIcon sx={{ color: '#f59e0b' }} />
+              <Typography variant="h6" sx={{ fontWeight: 600, fontFamily: 'var(--sans)', color: 'var(--text-h)' }}>E-Commerce & Images Automation (Set & Forget)</Typography>
+            </Box>
+          </AccordionSummary>
+          <AccordionDetails sx={{ color: 'var(--text)', fontFamily: 'var(--sans)' }}>
+            <Typography variant="body1" paragraph>
+              <strong>What it does:</strong> Frank SEO automatically works in the background to optimize your WooCommerce products and images without any extra setup.
+            </Typography>
+            <Typography variant="body1" paragraph><strong>Included Features:</strong></Typography>
+            <ul>
+              <li style={{ marginBottom: '10px' }}><strong>WooCommerce Product Schema:</strong> Automatically outputs rich snippets for products (Price, Currency, Stock Status, Reviews) so your products look amazing in Google Shopping results.</li>
+              <li style={{ marginBottom: '10px' }}><strong>Missing Image SEO:</strong> Forget to add 'Alt' text to your images? Frank SEO safely injects your post title as the Alt text for any empty images, keeping Google happy and improving accessibility.</li>
             </ul>
           </AccordionDetails>
         </Accordion>
