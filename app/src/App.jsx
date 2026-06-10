@@ -11,6 +11,8 @@ import SwapCallsIcon from '@mui/icons-material/SwapCalls';
 import ReportProblemIcon from '@mui/icons-material/ReportProblem';
 import HelpOutlineIcon from '@mui/icons-material/HelpOutline';
 import CompareArrowsIcon from '@mui/icons-material/CompareArrows';
+import ChevronLeftIcon from '@mui/icons-material/ChevronLeft';
+import ChevronRightIcon from '@mui/icons-material/ChevronRight';
 
 import Dashboard from './pages/Dashboard';
 import Settings from './pages/Settings';
@@ -59,6 +61,18 @@ function Layout() {
     setTheme(prev => prev === 'light' ? 'dark' : 'light');
   };
 
+  const [isCollapsed, setIsCollapsed] = useState(() => {
+    return localStorage.getItem('frank-seo-sidebar-collapsed') === 'true';
+  });
+
+  const toggleSidebar = () => {
+    const newVal = !isCollapsed;
+    setIsCollapsed(newVal);
+    localStorage.setItem('frank-seo-sidebar-collapsed', newVal);
+  };
+
+  const currentDrawerWidth = isCollapsed ? 80 : 260;
+
   const menuItems = [
     { text: 'Dashboard', icon: <DashboardIcon />, path: '/' },
     { text: 'Audit History', icon: <HistoryIcon />, path: '/history' },
@@ -85,26 +99,35 @@ function Layout() {
         <CssBaseline />
       <Drawer
         sx={{
-          width: drawerWidth,
+          width: currentDrawerWidth,
           flexShrink: 0,
+          whiteSpace: 'nowrap',
           '& .MuiDrawer-paper': {
-            width: drawerWidth,
+            width: currentDrawerWidth,
             boxSizing: 'border-box',
             position: 'relative',
             height: '100vh',
             background: 'var(--glass-bg)',
             borderRight: '1px solid var(--border)',
             backdropFilter: 'blur(16px)',
-            WebkitBackdropFilter: 'blur(16px)'
+            WebkitBackdropFilter: 'blur(16px)',
+            transition: 'width 0.3s ease',
+            overflowX: 'hidden'
           },
         }}
         variant="permanent"
         anchor="left"
       >
         <Toolbar sx={{ display: 'flex', alignItems: 'center', justifyContent: 'center', py: 2 }}>
-          <Typography variant="h5" sx={{ fontFamily: 'var(--sans)', fontWeight: 800, letterSpacing: '-0.03em', color: 'var(--text-h)' }}>
-            📊 FrankSEO
-          </Typography>
+          {isCollapsed ? (
+            <Typography variant="h5" sx={{ fontFamily: 'var(--sans)', fontWeight: 800, color: 'var(--text-h)' }}>
+              📊
+            </Typography>
+          ) : (
+            <Typography variant="h5" sx={{ fontFamily: 'var(--sans)', fontWeight: 800, letterSpacing: '-0.03em', color: 'var(--text-h)' }}>
+              📊 FrankSEO
+            </Typography>
+          )}
         </Toolbar>
         <List sx={{ px: 1.5, py: 1 }}>
           {menuItems.map((item) => {
@@ -115,35 +138,48 @@ function Layout() {
                   component={Link} 
                   to={item.path}
                   className={isActive ? 'drawer-active-item' : ''}
+                  title={isCollapsed ? item.text : ''}
                   sx={{
                     borderRadius: '10px',
                     transition: 'all 0.2s ease',
                     color: 'var(--text)',
                     fontFamily: 'var(--sans)',
                     py: 1.2,
+                    justifyContent: isCollapsed ? 'center' : 'flex-start',
                     '&:hover': {
                       backgroundColor: 'rgba(99, 102, 241, 0.04)',
                       color: 'var(--text-h)',
-                      transform: 'translateX(3px)'
+                      transform: isCollapsed ? 'scale(1.05)' : 'translateX(3px)'
                     }
                   }}
                 >
-                  <ListItemIcon sx={{ color: 'inherit', minWidth: 40 }}>
+                  <ListItemIcon sx={{ 
+                    color: 'inherit', 
+                    minWidth: isCollapsed ? 'auto' : 40,
+                    justifyContent: 'center'
+                  }}>
                     {item.icon}
                   </ListItemIcon>
-                  <ListItemText 
-                    primary={item.text} 
-                    primaryTypographyProps={{ 
-                      fontFamily: 'var(--sans)', 
-                      fontWeight: isActive ? 600 : 500,
-                      fontSize: '0.95rem'
-                    }} 
-                  />
+                  {!isCollapsed && (
+                    <ListItemText 
+                      primary={item.text} 
+                      primaryTypographyProps={{ 
+                        fontFamily: 'var(--sans)', 
+                        fontWeight: isActive ? 600 : 500,
+                        fontSize: '0.95rem'
+                      }} 
+                    />
+                  )}
                 </ListItemButton>
               </ListItem>
             );
           })}
         </List>
+        <Box sx={{ mt: 'auto', p: 2, display: 'flex', justifyContent: isCollapsed ? 'center' : 'flex-end' }}>
+          <IconButton onClick={toggleSidebar} sx={{ color: 'var(--text)', transition: 'all 0.2s ease', '&:hover': { bgcolor: 'rgba(99, 102, 241, 0.1)', color: 'var(--primary)' } }}>
+            {isCollapsed ? <ChevronRightIcon /> : <ChevronLeftIcon />}
+          </IconButton>
+        </Box>
       </Drawer>
       <Box
         component="main"
