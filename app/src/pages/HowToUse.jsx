@@ -163,6 +163,27 @@ function HowToUse() {
             </Typography>
           </AccordionDetails>
         </Accordion>
+
+        <Accordion sx={accordionStyle}>
+          <AccordionSummary expandIcon={<ExpandMoreIcon sx={{ color: 'var(--text)' }} />}>
+            <Box sx={{ display: 'flex', alignItems: 'center', gap: 2 }}>
+              <TuneIcon sx={{ color: '#ec4899' }} />
+              <Typography variant="h6" sx={{ fontWeight: 600, fontFamily: 'var(--sans)', color: 'var(--text-h)' }}>External Integrations & Core Systems</Typography>
+            </Box>
+          </AccordionSummary>
+          <AccordionDetails sx={{ color: 'var(--text)', fontFamily: 'var(--sans)' }}>
+            <Typography variant="body1" paragraph>
+              <strong>What it does:</strong> Frank SEO includes advanced systems that usually cost $99/yr in other plugins. 
+            </Typography>
+            <Typography variant="body1" paragraph><strong>Included Premium Features:</strong></Typography>
+            <ul>
+              <li style={{ marginBottom: '10px' }}><strong>Google Analytics 4 & Search Console:</strong> Paste your measurement ID in Settings, and Frank SEO automatically injects the exact verification and tracking codes securely into your website header. No coding required.</li>
+              <li style={{ marginBottom: '10px' }}><strong>AI Bot Blocker (Anti-Scraping):</strong> Turn this on to automatically add special rules to your <code>robots.txt</code> file that stop AI companies (like OpenAI and Anthropic) from scraping your content to train their AI models.</li>
+              <li style={{ marginBottom: '10px' }}><strong>Auto-Redirects on Slug Change:</strong> Never lose traffic again! If you edit an old blog post and accidentally change its link (slug), Frank SEO automatically creates a 301 Permanent Redirect behind the scenes from the old link to the new link.</li>
+              <li style={{ marginBottom: '10px' }}><strong>SEO Breadcrumbs:</strong> You can place the shortcode <code>[frank_seo_breadcrumbs]</code> anywhere on your pages to output a beautiful, Google-friendly breadcrumb trail with full Schema.org JSON-LD markup attached.</li>
+            </ul>
+          </AccordionDetails>
+        </Accordion>
       </TabPanel>
 
       {/* =========================================

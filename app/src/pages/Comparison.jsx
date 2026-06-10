@@ -22,6 +22,12 @@ const rows = [
   createData('Social Media (OpenGraph) Overrides', true, true, true, true, true, true, true, true, true),
   createData('Automated Image Alt Tag SEO', true, 'Premium', 'Premium', 'Premium', 'Premium', false, 'Premium', 'Premium', 'Premium'),
   createData('Advanced FAQ & Custom Schema Builder', true, 'Premium', 'Premium', 'Premium', 'Premium', false, 'Premium', 'Premium', 'Premium'),
+  createData('Google Analytics 4 (GA4) Integration', true, 'Premium', 'Premium', 'Premium', 'Premium', 'Premium', 'Premium', true, true),
+  createData('Google Search Console Integration', true, true, true, true, true, true, true, true, true),
+  createData('AI Bot Blocker (Anti-Scraping)', true, false, true, false, false, false, false, false, false),
+  createData('Auto-Redirect on URL Change', true, 'Premium', 'Premium', 'Premium', true, 'Premium', 'Premium', 'Premium', 'Premium'),
+  createData('SEO Breadcrumbs & Schema', true, true, true, true, true, true, true, true, true),
+  createData('Image XML Sitemaps', true, 'Premium', 'Premium', true, 'Premium', 'Premium', 'Premium', 'Premium', 'Premium'),
   createData('100% Free / No Paywalls', true, false, false, false, false, true, false, false, false),
   createData('Modern React 19 UI', true, false, false, false, false, false, false, false, false),
 ];

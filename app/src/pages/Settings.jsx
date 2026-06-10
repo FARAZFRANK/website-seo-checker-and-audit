@@ -65,6 +65,11 @@ function Settings() {
     enableOpenGraph: true,
     enableImageSEO: true,
     enableAdvancedSchema: true,
+    ga4Id: "",
+    gscVerification: "",
+    enableAiBotBlocker: true,
+    enableAutoRedirects: true,
+    enableBreadcrumbs: true,
   });
 
   const [showApiKey, setShowApiKey] = useState(false);
@@ -110,6 +115,11 @@ function Settings() {
             enableOpenGraph: apiSettings.enableOpenGraph !== undefined ? !!apiSettings.enableOpenGraph : prev.enableOpenGraph,
             enableImageSEO: apiSettings.enableImageSEO !== undefined ? !!apiSettings.enableImageSEO : prev.enableImageSEO,
             enableAdvancedSchema: apiSettings.enableAdvancedSchema !== undefined ? !!apiSettings.enableAdvancedSchema : prev.enableAdvancedSchema,
+            ga4Id: apiSettings.ga4Id !== undefined ? apiSettings.ga4Id : prev.ga4Id,
+            gscVerification: apiSettings.gscVerification !== undefined ? apiSettings.gscVerification : prev.gscVerification,
+            enableAiBotBlocker: apiSettings.enableAiBotBlocker !== undefined ? !!apiSettings.enableAiBotBlocker : prev.enableAiBotBlocker,
+            enableAutoRedirects: apiSettings.enableAutoRedirects !== undefined ? !!apiSettings.enableAutoRedirects : prev.enableAutoRedirects,
+            enableBreadcrumbs: apiSettings.enableBreadcrumbs !== undefined ? !!apiSettings.enableBreadcrumbs : prev.enableBreadcrumbs,
           }));
         }
       } catch (err) {
@@ -460,6 +470,116 @@ function Settings() {
                         </Typography>
                       </Box>
                     }
+                  />
+                </Grid>
+
+                <Grid item xs={12} md={6}>
+                  <FormControlLabel
+                    control={
+                      <Switch 
+                        checked={settings.enableAiBotBlocker} 
+                        onChange={(e) => setSettings({ ...settings, enableAiBotBlocker: e.target.checked })}
+                        sx={{ '& .MuiSwitch-switchBase.Mui-checked': { color: 'var(--primary)', '& + .MuiSwitch-track': { backgroundColor: 'var(--primary)' } } }}
+                      />
+                    }
+                    label={
+                      <Box>
+                        <Typography sx={{ fontWeight: 600, fontFamily: 'var(--sans)', fontSize: '0.9rem', color: 'var(--text-h)' }}>
+                          AI Bot Blocker (Anti-Scraping)
+                        </Typography>
+                        <Typography sx={{ color: 'var(--text)', opacity: 0.8, fontSize: '0.8rem', fontFamily: 'var(--sans)' }}>
+                          Block AI crawlers (OpenAI, Anthropic, etc.) from scraping your site.
+                        </Typography>
+                      </Box>
+                    }
+                  />
+                </Grid>
+
+                <Grid item xs={12} md={6}>
+                  <FormControlLabel
+                    control={
+                      <Switch 
+                        checked={settings.enableAutoRedirects} 
+                        onChange={(e) => setSettings({ ...settings, enableAutoRedirects: e.target.checked })}
+                        sx={{ '& .MuiSwitch-switchBase.Mui-checked': { color: 'var(--primary)', '& + .MuiSwitch-track': { backgroundColor: 'var(--primary)' } } }}
+                      />
+                    }
+                    label={
+                      <Box>
+                        <Typography sx={{ fontWeight: 600, fontFamily: 'var(--sans)', fontSize: '0.9rem', color: 'var(--text-h)' }}>
+                          Auto-Redirects on Permalink Change
+                        </Typography>
+                        <Typography sx={{ color: 'var(--text)', opacity: 0.8, fontSize: '0.8rem', fontFamily: 'var(--sans)' }}>
+                          Automatically create 301 redirects if a post's URL slug changes.
+                        </Typography>
+                      </Box>
+                    }
+                  />
+                </Grid>
+
+                <Grid item xs={12} md={6}>
+                  <FormControlLabel
+                    control={
+                      <Switch 
+                        checked={settings.enableBreadcrumbs} 
+                        onChange={(e) => setSettings({ ...settings, enableBreadcrumbs: e.target.checked })}
+                        sx={{ '& .MuiSwitch-switchBase.Mui-checked': { color: 'var(--primary)', '& + .MuiSwitch-track': { backgroundColor: 'var(--primary)' } } }}
+                      />
+                    }
+                    label={
+                      <Box>
+                        <Typography sx={{ fontWeight: 600, fontFamily: 'var(--sans)', fontSize: '0.9rem', color: 'var(--text-h)' }}>
+                          Breadcrumbs & Schema
+                        </Typography>
+                        <Typography sx={{ color: 'var(--text)', opacity: 0.8, fontSize: '0.8rem', fontFamily: 'var(--sans)' }}>
+                          Enable [frank_seo_breadcrumbs] shortcode and JSON-LD markup.
+                        </Typography>
+                      </Box>
+                    }
+                  />
+                </Grid>
+              </Grid>
+            </Box>
+
+            {/* External Integrations Settings Card */}
+            <Box className="glass-panel" sx={{ p: 4, borderRadius: '20px' }}>
+              <Box sx={{ display: 'flex', alignItems: 'center', gap: 1.5, mb: 3 }}>
+                <TuneIcon sx={{ color: '#10b981' }} />
+                <Typography variant="h6" sx={{ fontWeight: 700, fontFamily: 'var(--sans)', color: 'var(--text-h)' }}>
+                  External Integrations
+                </Typography>
+              </Box>
+
+              <Grid container spacing={3}>
+                <Grid item xs={12}>
+                  <TextField
+                    label="Google Analytics 4 Measurement ID"
+                    variant="outlined"
+                    fullWidth
+                    value={settings.ga4Id || ''}
+                    onChange={(e) => setSettings({ ...settings, ga4Id: e.target.value })}
+                    placeholder="G-XXXXXXXXXX"
+                    helperText="Paste your GA4 Measurement ID here. Frank SEO will automatically inject the gtag.js snippet into the header."
+                    sx={{
+                      '& .MuiOutlinedInput-root': { borderRadius: '12px', fontFamily: 'var(--sans)', fontSize: '0.9rem', '& fieldset': { borderColor: 'var(--border)' }, '&:hover fieldset': { borderColor: 'var(--primary)' }, '&.Mui-focused fieldset': { borderColor: 'var(--primary)', borderWidth: '1px' } },
+                      '& .MuiInputLabel-root': { fontFamily: 'var(--sans)', fontSize: '0.9rem' }
+                    }}
+                  />
+                </Grid>
+
+                <Grid item xs={12}>
+                  <TextField
+                    label="Google Search Console Verification"
+                    variant="outlined"
+                    fullWidth
+                    value={settings.gscVerification || ''}
+                    onChange={(e) => setSettings({ ...settings, gscVerification: e.target.value })}
+                    placeholder="Paste the HTML tag content here (e.g. xyz123...)"
+                    helperText="Paste the value of the content attribute from your Google HTML verification tag."
+                    sx={{
+                      '& .MuiOutlinedInput-root': { borderRadius: '12px', fontFamily: 'var(--sans)', fontSize: '0.9rem', '& fieldset': { borderColor: 'var(--border)' }, '&:hover fieldset': { borderColor: 'var(--primary)' }, '&.Mui-focused fieldset': { borderColor: 'var(--primary)', borderWidth: '1px' } },
+                      '& .MuiInputLabel-root': { fontFamily: 'var(--sans)', fontSize: '0.9rem' }
+                    }}
                   />
                 </Grid>
               </Grid>
