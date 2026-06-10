@@ -174,12 +174,15 @@ function Layout() {
               </ListItem>
             );
           })}
+          {/* Collapse Toggle Button */}
+          <ListItem disablePadding sx={{ mt: 2 }}>
+            <Box sx={{ width: '100%', display: 'flex', justifyContent: isCollapsed ? 'center' : 'flex-end', px: isCollapsed ? 0 : 1 }}>
+              <IconButton onClick={toggleSidebar} sx={{ color: 'var(--text)', transition: 'all 0.2s ease', '&:hover': { bgcolor: 'rgba(99, 102, 241, 0.1)', color: 'var(--primary)' } }}>
+                {isCollapsed ? <ChevronRightIcon /> : <ChevronLeftIcon />}
+              </IconButton>
+            </Box>
+          </ListItem>
         </List>
-        <Box sx={{ mt: 'auto', p: 2, display: 'flex', justifyContent: isCollapsed ? 'center' : 'flex-end' }}>
-          <IconButton onClick={toggleSidebar} sx={{ color: 'var(--text)', transition: 'all 0.2s ease', '&:hover': { bgcolor: 'rgba(99, 102, 241, 0.1)', color: 'var(--primary)' } }}>
-            {isCollapsed ? <ChevronRightIcon /> : <ChevronLeftIcon />}
-          </IconButton>
-        </Box>
       </Drawer>
       <Box
         component="main"

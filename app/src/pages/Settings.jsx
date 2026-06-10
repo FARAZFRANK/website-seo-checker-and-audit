@@ -33,6 +33,7 @@ import VpnKeyIcon from '@mui/icons-material/VpnKey';
 import StorefrontIcon from '@mui/icons-material/Storefront';
 import Visibility from '@mui/icons-material/Visibility';
 import VisibilityOff from '@mui/icons-material/VisibilityOff';
+import AutoAwesomeIcon from '@mui/icons-material/AutoAwesome';
 import { getSettings, updateSettings, resetPlugin } from '../api';
 
 function Settings() {
