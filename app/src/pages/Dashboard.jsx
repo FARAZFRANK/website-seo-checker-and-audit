@@ -45,7 +45,7 @@ import FilterListIcon from '@mui/icons-material/FilterList';
 import DeleteIcon from '@mui/icons-material/Delete';
 import ViewColumnIcon from '@mui/icons-material/ViewColumn';
 
-import { getSummary, getPages, triggerScan, deletePage, bulkDeletePages, getPagesToScan, getSettings, triggerScanComplete, runCompetitorAudit } from '../api';
+import { getSummary, getPages, triggerScan, deletePage, bulkDeletePages, getPagesToScan, getSettings, triggerScanComplete, runCompetitorAudit, startBackgroundScan, getScanProgress } from '../api';
 import { useNavigate } from 'react-router-dom';
 
 function Dashboard() {
@@ -57,16 +57,20 @@ function Dashboard() {
   const [scoreFilter, setScoreFilter] = useState('all'); // 'all', 'excellent', 'warning', 'critical'
   const [postTypeFilter, setPostTypeFilter] = useState('all');
   
-  // Scan progress states
   const [scanProgress, setScanProgress] = useState(0);
   const [scanTotal, setScanTotal] = useState(0);
   const [scanCurrent, setScanCurrent] = useState(0);
   const [scanStatusText, setScanStatusText] = useState('');
   const scanCancelledRef = React.useRef(false);
 
-  const handleCancelScan = () => {
+  const handleCancelScan = async () => {
     scanCancelledRef.current = true;
     setScanStatusText("Cancelling scan...");
+    try {
+      await getScanProgress(true); // cancel flag
+    } catch (e) {
+      console.error(e);
+    }
   };
 
   // Pagination & deletion states
@@ -140,7 +144,77 @@ function Dashboard() {
 
   useEffect(() => {
     fetchData();
+
+    // Check if background scan is already running when component mounts
+    let initialPollInterval;
+    const checkActiveScan = async () => {
+      try {
+        const progress = await getScanProgress();
+        if (progress.status === 'running') {
+          setScanning(true);
+          setScanTotal(progress.total);
+          setScanCurrent(progress.completed);
+          setScanProgress(Math.min(100, Math.round((progress.completed / progress.total) * 100)));
+          setScanStatusText(`Resuming audit for ${progress.total} pages...`);
+          startPolling();
+        }
+      } catch (e) {
+        console.error(e);
+      }
+    };
+    checkActiveScan();
+    
+    return () => clearInterval(initialPollInterval);
   }, []);
+
+  let pollIntervalId = null;
+
+  const startPolling = () => {
+    if (pollIntervalId) clearInterval(pollIntervalId);
+    pollIntervalId = setInterval(async () => {
+      if (scanCancelledRef.current) {
+        clearInterval(pollIntervalId);
+        setScanning(false);
+        return;
+      }
+
+      try {
+        const progress = await getScanProgress();
+        
+        if (progress.status === 'idle' || progress.status === 'cancelled') {
+          clearInterval(pollIntervalId);
+          if (!scanCancelledRef.current) {
+            setScanStatusText(progress.status === 'cancelled' ? "Audit cancelled." : "Audit status idle.");
+            setTimeout(() => setScanning(false), 2000);
+          }
+          return;
+        }
+
+        if (progress.status === 'completed') {
+          clearInterval(pollIntervalId);
+          setScanCurrent(progress.total);
+          setScanProgress(100);
+          setScanStatusText("Audit complete! Updating dashboard...");
+          await fetchData();
+          setTimeout(() => setScanning(false), 2000);
+          return;
+        }
+
+        // Still running
+        setScanTotal(progress.total);
+        setScanCurrent(progress.completed);
+        const percent = Math.min(100, Math.round((progress.completed / progress.total) * 100));
+        setScanProgress(percent);
+        setScanStatusText(`Auditing page ${progress.completed} of ${progress.total}...`);
+
+      } catch (e) {
+        console.error("Polling error:", e);
+        clearInterval(pollIntervalId);
+        setScanStatusText("Scan connection lost. Please refresh.");
+        setTimeout(() => setScanning(false), 2000);
+      }
+    }, 2000); // Poll every 2 seconds
+  };
 
   const handleScan = async () => {
     scanCancelledRef.current = false;
@@ -148,83 +222,26 @@ function Dashboard() {
     setScanProgress(0);
     setScanCurrent(0);
     setScanTotal(0);
-    setScanStatusText("Initializing audit...");
+    setScanStatusText("Initializing background audit...");
 
     try {
-      // 1. Fetch settings to get crawl interval
-      const settingsData = await getSettings();
-      const delayMs = settingsData && settingsData.crawlInterval ? settingsData.crawlInterval * 1000 : 2000;
-
-      // 2. Fetch all publish page IDs
-      const pagesToScanResponse = await getPagesToScan();
-      const allIds = pagesToScanResponse.ids || [];
-      
-      if (allIds.length === 0) {
-        setScanStatusText("No pages found to audit.");
-        await new Promise(r => setTimeout(r, 1500));
-        setScanning(false);
+      const response = await startBackgroundScan();
+      if (!response.success) {
+        setScanStatusText(response.message || "Failed to start background scan.");
+        setTimeout(() => setScanning(false), 2000);
         return;
       }
 
-      setScanTotal(allIds.length);
-      setScanStatusText(`Preparing audit for ${allIds.length} pages...`);
+      setScanTotal(response.total);
+      setScanStatusText(`Background audit queued for ${response.total} pages...`);
+      
+      // Start polling the backend for progress
+      startPolling();
 
-      // 3. Scan in batches of 2
-      const batchSize = 2;
-      let completed = 0;
-
-      for (let i = 0; i < allIds.length; i += batchSize) {
-        // Check if user cancelled
-        if (scanCancelledRef.current) {
-          setScanStatusText("Audit cancelled by user.");
-          break;
-        }
-
-        const batch = allIds.slice(i, i + batchSize);
-        setScanStatusText(`Auditing pages ${i + 1}-${Math.min(i + batchSize, allIds.length)} of ${allIds.length}...`);
-        
-        await triggerScan(batch);
-        
-        completed += batch.length;
-        setScanCurrent(completed);
-        setScanProgress(Math.min(100, Math.round((completed / allIds.length) * 100)));
-
-        // If there's another batch, respect crawlInterval
-        if (i + batchSize < allIds.length) {
-          // Wait in small steps so cancellation is responsive during the delay
-          const delayStep = 250; // check every 250ms
-          const steps = Math.ceil(delayMs / delayStep);
-          for (let step = 0; step < steps; step++) {
-            if (scanCancelledRef.current) {
-              break;
-            }
-            setScanStatusText(`Auditing page ${completed} of ${allIds.length}... Delaying next request for ${Math.max(0, ((delayMs - (step * delayStep)) / 1000).toFixed(1))}s...`);
-            await new Promise(r => setTimeout(r, delayStep));
-          }
-        }
-      }
-
-      if (scanCancelledRef.current) {
-        setScanStatusText("Audit cancelled.");
-      } else {
-        setScanStatusText("Audit complete! Sending email reports...");
-        try {
-          await triggerScanComplete();
-        } catch (emailErr) {
-          console.error("Failed to send scan completion email:", emailErr);
-        }
-        setScanStatusText("Audit complete! Updating dashboard...");
-      }
-
-      // Refresh data
-      await fetchData();
     } catch (error) {
       console.error("Scan failed:", error);
       setScanStatusText("Scan failed. Check console logs.");
-    } finally {
-      // Let the status message rest so the user can read the result
-      await new Promise(r => setTimeout(r, 2000));
-      setScanning(false);
+      setTimeout(() => setScanning(false), 2000);
     }
   };
 
@@ -1379,6 +1396,10 @@ function Dashboard() {
                     {auditingCompetitor ? 'Analyzing URL...' : 'Start Comparison'}
                   </Button>
                 </Box>
+                <Typography variant="body2" sx={{ mt: 1.5, fontSize: '0.85rem', color: 'var(--text)', opacity: 0.8 }}>
+                  <SearchIcon sx={{ fontSize: '1rem', verticalAlign: 'middle', mr: 0.5, color: '#3b82f6' }} />
+                  Not sure? <a href="https://www.google.com/" target="_blank" rel="noreferrer" style={{ color: '#3b82f6', textDecoration: 'none', fontWeight: 600 }}>Search your keyword on Google</a>, copy the link of the #1 ranking result, and paste it here!
+                </Typography>
               </Box>
             </Grid>
 

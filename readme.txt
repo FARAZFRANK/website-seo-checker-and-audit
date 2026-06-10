@@ -4,7 +4,7 @@ Tags: seo, audit, seo-checker, on-page-seo, seo-audit
 Requires at least: 5.8
 Tested up to: 7.0
 Requires PHP: 7.4
-Stable tag: 1.0.5
+Stable tag: 1.0.9
 License: GPLv2 or later
 License URI: https://www.gnu.org/licenses/gpl-2.0.html
 
@@ -80,6 +80,29 @@ No. All auditing is performed locally on your server. No data is sent to externa
 
 == Changelog ==
 
+ = 1.0.9 =
+ * [2026-06-10]
+ * Refactored the scanning process to run entirely as an asynchronous background job, preventing timeouts when switching browser tabs.
+ * Updated dashboard UI to intelligently poll and resume scanning progress if the user navigates away and comes back.
+
+ = 1.0.8 =
+ * [2026-06-10]
+ * Added a collapse toggle button to the main dashboard sidebar for a cleaner UI experience.
+ 
+ = 1.0.7 =
+ * [2026-06-10]
+ * Added "Global Features Integration" toggles in Settings so admins can easily disable major components.
+ * Updated "Comparison" tab to showcase newly added features.
+ 
+ = 1.0.6 =
+ * [2026-06-10]
+ * Added WooCommerce SEO tags (Product Schema and OpenGraph Pricing).
+ * Added Local Business SEO settings and Auto-Schema Generation.
+ * Added Advanced Social Media Override UI (OpenGraph/Twitter).
+ * Added Missing Image Alt Tag Auto-injector (`the_content` filter).
+ * Added Custom JSON-LD Schema builder for posts/pages.
+ * Added WordPress FAQ blocks Auto-Schema Generation (Yoast & Rank Math detection).
+
 = 1.0.5 =
 * June 9, 2026
 * Added a detailed "How To Use" documentation submenu page.
@@ -124,6 +147,9 @@ No. All auditing is performed locally on your server. No data is sent to externa
 * Settings panel with crawl configuration.
 
 == Upgrade Notice ==
+
+= 1.0.9 =
+Major refactor for the global audit scanner. It now runs as a stable asynchronous background job, fixing timeout and tab-switching issues.
 
 = 1.0.5 =
 Introduces the new "How To Use" and "Comparison" pages, plus major stability and dark mode UI fixes for the React dashboard.

@@ -44,6 +44,17 @@ export const triggerScanComplete = async () => {
   return response.data;
 };
 
+export const startBackgroundScan = async () => {
+  const response = await apiClient.post('scan/start-background');
+  return response.data;
+};
+
+export const getScanProgress = async (cancel = false) => {
+  const url = cancel ? 'scan/progress?action=cancel' : 'scan/progress';
+  const response = await apiClient.get(url);
+  return response.data;
+};
+
 export const updateIssueStatus = async (issueId, status) => {
   const response = await apiClient.post(`issues/${issueId}/status`, { status });
   return response.data;

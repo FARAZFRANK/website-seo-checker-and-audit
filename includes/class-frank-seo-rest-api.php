@@ -97,6 +97,24 @@ class Frank_SEO_REST_API {
 			),
 		) );
 
+		register_rest_route( $namespace, '/scan/start-background', array(
+			'methods'             => WP_REST_Server::CREATABLE,
+			'callback'            => array( $this, 'start_background_scan' ),
+			'permission_callback' => array( $this, 'check_permission' ),
+		) );
+
+		register_rest_route( $namespace, '/scan/process-chunk', array(
+			'methods'             => WP_REST_Server::CREATABLE,
+			'callback'            => array( $this, 'process_scan_chunk' ),
+			'permission_callback' => '__return_true', // Authenticated by internal token
+		) );
+
+		register_rest_route( $namespace, '/scan/progress', array(
+			'methods'             => WP_REST_Server::READABLE,
+			'callback'            => array( $this, 'get_scan_progress' ),
+			'permission_callback' => array( $this, 'check_permission' ),
+		) );
+
 		register_rest_route( $namespace, '/pages-to-scan', array(
 			'methods'             => WP_REST_Server::READABLE,
 			'callback'            => array( $this, 'get_pages_to_scan' ),
@@ -464,6 +482,118 @@ class Frank_SEO_REST_API {
 		return rest_ensure_response( array( 'success' => true, 'scanned' => count($results), 'results' => $results ) );
 	}
 
+	public function start_background_scan( $request ) {
+		$pages = get_posts( array(
+			'post_type'      => array( 'post', 'page' ),
+			'post_status'    => 'publish',
+			'posts_per_page' => -1,
+			'fields'         => 'ids',
+		) );
+
+		if ( empty( $pages ) ) {
+			return rest_ensure_response( array( 'success' => false, 'message' => 'No pages to scan.' ) );
+		}
+
+		$queue_data = array(
+			'total'     => count( $pages ),
+			'completed' => 0,
+			'queue'     => $pages,
+			'token'     => wp_generate_password( 24, false ),
+			'status'    => 'running',
+		);
+		update_option( 'frank_seo_background_scan_queue', $queue_data );
+
+		// Fire first async chunk
+		$url = rest_url( 'frank-seo/v1/scan/process-chunk' );
+		wp_remote_post( $url, array(
+			'timeout'   => 0.01,
+			'blocking'  => false,
+			'sslverify' => apply_filters( 'https_local_ssl_verify', false ),
+			'body'      => array(
+				'token' => $queue_data['token'],
+			),
+		) );
+
+		return rest_ensure_response( array( 'success' => true, 'total' => $queue_data['total'] ) );
+	}
+
+	public function process_scan_chunk( $request ) {
+		$token = $request->get_param( 'token' );
+		$queue_data = get_option( 'frank_seo_background_scan_queue' );
+
+		if ( ! $queue_data || ! isset( $queue_data['token'] ) || $queue_data['token'] !== $token ) {
+			return new WP_Error( 'unauthorized', 'Invalid token', array( 'status' => 403 ) );
+		}
+
+		if ( empty( $queue_data['queue'] ) ) {
+			// Finished
+			$queue_data['status'] = 'completed';
+			update_option( 'frank_seo_background_scan_queue', $queue_data );
+			
+			// Optional: Trigger complete email
+			if ( function_exists( 'frank_seo_send_email_report' ) ) {
+				frank_seo_send_email_report( 'manual' );
+			}
+			return rest_ensure_response( array( 'success' => true, 'status' => 'completed' ) );
+		}
+
+		// Process a batch (e.g., 2 pages at a time)
+		$batch_size = 2;
+		$batch = array_splice( $queue_data['queue'], 0, $batch_size );
+
+		$auditor = new Frank_SEO_Auditor();
+		foreach ( $batch as $pid ) {
+			$auditor->audit_post( $pid );
+			$queue_data['completed']++;
+		}
+
+		update_option( 'frank_seo_background_scan_queue', $queue_data );
+
+		// Check if we need to continue
+		if ( ! empty( $queue_data['queue'] ) ) {
+			$url = rest_url( 'frank-seo/v1/scan/process-chunk' );
+			wp_remote_post( $url, array(
+				'timeout'   => 0.01,
+				'blocking'  => false,
+				'sslverify' => apply_filters( 'https_local_ssl_verify', false ),
+				'body'      => array(
+					'token' => $queue_data['token'],
+				),
+			) );
+		} else {
+			$queue_data['status'] = 'completed';
+			update_option( 'frank_seo_background_scan_queue', $queue_data );
+			
+			// Trigger complete email
+			if ( function_exists( 'frank_seo_send_email_report' ) ) {
+				frank_seo_send_email_report( 'manual' );
+			}
+		}
+
+		return rest_ensure_response( array( 'success' => true, 'processed' => count( $batch ) ) );
+	}
+
+	public function get_scan_progress( $request ) {
+		$queue_data = get_option( 'frank_seo_background_scan_queue' );
+		
+		if ( ! $queue_data ) {
+			return rest_ensure_response( array( 'status' => 'idle' ) );
+		}
+
+		// Check if user requested cancellation
+		$action = $request->get_param( 'action' );
+		if ( $action === 'cancel' ) {
+			delete_option( 'frank_seo_background_scan_queue' );
+			return rest_ensure_response( array( 'status' => 'cancelled' ) );
+		}
+
+		return rest_ensure_response( array(
+			'status'    => $queue_data['status'],
+			'total'     => $queue_data['total'],
+			'completed' => $queue_data['completed'],
+		) );
+	}
+
 	public function get_pages_to_scan( $request ) {
 		$posts = get_posts( array(
 			'post_type'      => array( 'post', 'page' ),
@@ -512,6 +642,11 @@ class Frank_SEO_REST_API {
 			'enableOpenGraph' => true,
 			'enableImageSEO' => true,
 			'enableAdvancedSchema' => true,
+			'ga4Id' => '',
+			'gscVerification' => '',
+			'enableAiBotBlocker' => true,
+			'enableAutoRedirects' => true,
+			'enableBreadcrumbs' => true,
 		);
 
 		$settings = wp_parse_args( $settings, $defaults );
@@ -541,6 +676,12 @@ class Frank_SEO_REST_API {
 		$settings['enableOpenGraph']      = (bool) $settings['enableOpenGraph'];
 		$settings['enableImageSEO']       = (bool) $settings['enableImageSEO'];
 		$settings['enableAdvancedSchema'] = (bool) $settings['enableAdvancedSchema'];
+
+		$settings['ga4Id']                = isset( $settings['ga4Id'] ) ? sanitize_text_field( $settings['ga4Id'] ) : '';
+		$settings['gscVerification']      = isset( $settings['gscVerification'] ) ? sanitize_text_field( $settings['gscVerification'] ) : '';
+		$settings['enableAiBotBlocker']   = (bool) $settings['enableAiBotBlocker'];
+		$settings['enableAutoRedirects']  = (bool) $settings['enableAutoRedirects'];
+		$settings['enableBreadcrumbs']    = (bool) $settings['enableBreadcrumbs'];
 
 		return rest_ensure_response( $settings );
 	}
@@ -592,6 +733,12 @@ class Frank_SEO_REST_API {
 		$sanitized_settings['enableImageSEO']       = isset( $params['enableImageSEO'] ) ? (bool) $params['enableImageSEO'] : true;
 		$sanitized_settings['enableAdvancedSchema'] = isset( $params['enableAdvancedSchema'] ) ? (bool) $params['enableAdvancedSchema'] : true;
 
+		$sanitized_settings['ga4Id']                = isset( $params['ga4Id'] ) ? sanitize_text_field( $params['ga4Id'] ) : '';
+		$sanitized_settings['gscVerification']      = isset( $params['gscVerification'] ) ? sanitize_text_field( $params['gscVerification'] ) : '';
+		$sanitized_settings['enableAiBotBlocker']   = isset( $params['enableAiBotBlocker'] ) ? (bool) $params['enableAiBotBlocker'] : true;
+		$sanitized_settings['enableAutoRedirects']  = isset( $params['enableAutoRedirects'] ) ? (bool) $params['enableAutoRedirects'] : true;
+		$sanitized_settings['enableBreadcrumbs']    = isset( $params['enableBreadcrumbs'] ) ? (bool) $params['enableBreadcrumbs'] : true;
+
 		update_option( 'frank_seo_settings', $sanitized_settings );
 
 		// Update background cron schedule
@@ -633,6 +780,16 @@ class Frank_SEO_REST_API {
 		// Delete options
 		delete_option( 'frank_seo_settings' );
 		delete_option( 'frank_seo_db_version' );
+
+		// Clear scheduled cron jobs
+		wp_clear_scheduled_hook( 'frank_seo_scheduled_scan' );
+
+		// Delete all post meta data created by the plugin
+		// phpcs:ignore WordPress.DB.DirectDatabaseQuery.DirectQuery, WordPress.DB.DirectDatabaseQuery.NoCaching
+		$wpdb->query( "DELETE FROM {$wpdb->postmeta} WHERE meta_key LIKE '\_frank\_seo\_%'" );
+
+		// Flush rewrite rules to remove sitemap endpoint
+		flush_rewrite_rules();
 
 		return rest_ensure_response( array( 'success' => true, 'message' => 'Plugin reset successfully.' ) );
 	}

@@ -14,6 +14,7 @@ class Frank_SEO_Redirect_Manager {
 	 */
 	public function init() {
 		add_action( 'template_redirect', array( $this, 'handle_redirects_and_404s' ), 1 );
+		add_action( 'post_updated', array( $this, 'auto_redirect_on_slug_change' ), 10, 3 );
 	}
 
 	/**
@@ -97,6 +98,70 @@ class Frank_SEO_Redirect_Manager {
 					'last_hit'   => current_time( 'mysql' ),
 				)
 			);
+		}
+	}
+
+	/**
+	 * Automatically create a 301 redirect if a published post's slug changes.
+	 */
+	public function auto_redirect_on_slug_change( $post_id, $post_after, $post_before ) {
+		// Only run for published posts
+		if ( 'publish' !== $post_before->post_status || 'publish' !== $post_after->post_status ) {
+			return;
+		}
+
+		// Only check if the post name (slug) actually changed
+		if ( $post_before->post_name === $post_after->post_name ) {
+			return;
+		}
+
+		$settings = get_option( 'frank_seo_settings', array() );
+		$enable_auto_redirects = isset( $settings['enableAutoRedirects'] ) ? (bool) $settings['enableAutoRedirects'] : true;
+
+		if ( ! $enable_auto_redirects ) {
+			return;
+		}
+
+		// Calculate old and new paths
+		$old_url = get_permalink( $post_before->ID );
+		// Temporarily set post name to old one to get old permalink reliably
+		$post_after->post_name = $post_before->post_name;
+		$old_url = get_permalink( $post_after );
+		$post_after->post_name = $post_after->post_name; // Reset
+		$new_url = get_permalink( $post_after->ID );
+
+		if ( ! $old_url || ! $new_url || $old_url === $new_url ) {
+			return;
+		}
+
+		$old_path = wp_parse_url( $old_url, PHP_URL_PATH );
+		$new_path = wp_parse_url( $new_url, PHP_URL_PATH );
+
+		if ( $old_path && $new_path && $old_path !== $new_path ) {
+			global $wpdb;
+			$table_redirects = $wpdb->prefix . 'frank_seo_redirects';
+
+			// Check if redirect already exists to prevent duplicates
+			$exists = $wpdb->get_var( $wpdb->prepare( "SELECT id FROM $table_redirects WHERE url_from = %s", $old_path ) );
+
+			if ( ! $exists ) {
+				$wpdb->insert(
+					$table_redirects,
+					array(
+						'url_from' => $old_path,
+						'url_to'   => $new_path,
+						'status'   => '301',
+						'hits'     => 0,
+					)
+				);
+			} else {
+				// Update existing redirect to point to new path
+				$wpdb->update(
+					$table_redirects,
+					array( 'url_to' => $new_path ),
+					array( 'url_from' => $old_path )
+				);
+			}
 		}
 	}
 }

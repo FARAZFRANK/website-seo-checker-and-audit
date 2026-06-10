@@ -1,0 +1,153 @@
+Free and Pro features of 8 plugins:
+=====================
+1) Rank Math SEO
+
+Free features:
+Setup wizard.
+On-page SEO suggestions.
+XML sitemap.
+Schema markup.
+404 monitor and redirections.
+WooCommerce SEO basics.
+Google Search Console integration.
+Local SEO basics.
+Up to 5 focus keywords per page.
+
+Pro features:
+Unlimited keywords per page.
+Keyword rank tracking.
+Google Analytics 4 integration.
+More advanced WooCommerce SEO.
+More granular reporting and keyword performance insights.
+Extra automation and premium modules.
+
+2) Yoast SEO
+
+Free features::
+Real-time SEO guidance.
+Smart internal linking suggestions.
+Social previews for Facebook and X.
+Bot blocker for AI crawlers.
+Basic schema.
+XML sitemap.
+Core content analysis.
+
+Pro features:
+AI tools.
+Google Docs integration.
+24/7 support.
+Premium advanced workflows and upgrades.
+Additional extension-based capabilities such as Local SEO, Video SEO, and News SEO are listed as included “at no extra cost” on the plugin page.
+
+3) All in One SEO Pack
+
+Free features:
+Automatic title optimization.
+Meta tag generation.
+Duplicate content protection.
+XML sitemap submission.
+Image XML sitemap.
+AMP support.
+Override title, meta description, and meta keywords.
+WooCommerce integration basics.
+
+Pro features:
+WooCommerce functionality.
+SEO for taxonomies.
+Video sitemaps.
+Premium support.
+Video screencasts/tutorial access.
+
+4) Squirrly SEO
+
+Free features:
+Core SEO utilities.
+Meta previews.
+Schema and rich snippet support.
+Sitemap-related functionality.
+Social preview support.
+Automatic redirects on permalink changes.
+Instant indexing support is mentioned in Squirrly’s content.
+
+Pro features:
+Reusable schema templates.
+More advanced SEO automation.
+Cloud services and broader feature set.
+Paid plan access to higher-level SEO tooling and support.
+
+5) The SEO Framework
+
+Free features:
+Automatic meta tag generation.
+Canonical URL handling.
+SEO Bar with 70+ checks.
+No ads, no tracking, no branding.
+Fast and lightweight core plugin.
+Basic automated SEO and security-focused behavior.
+Pro / paid extensions
+Focus keyword targeting.
+Local SEO.
+Analytics integration via Cord.
+SEO health monitoring and anti-spam tools.
+Structured data / article schema extensions.
+Extension Manager access and API services.
+
+6) SEO Engine
+
+Free features:
+AI in the free version.
+Full MCP support.
+Smart SEO tooling with schema and redirection positioning in its core branding.
+
+Pro features:
+Magic Fix.
+WooCommerce AI.
+Search Engine Ranking.
+Advanced Analytics.
+Priority Support.
+
+7) SiteSEO
+
+Free features:
+Setup wizard.
+Meta title and description management.
+Content analysis.
+XML sitemap.
+Google Analytics integration.
+Google Search Console integration.
+Google Index API support.
+Breadcrumbs.
+Link assistant.
+Social meta.
+WooCommerce SEO.
+Unlimited keyword analysis.
+
+Pro features:
+404 monitoring.
+Advanced indexing and crawl-status insights.
+More advanced schema and rich snippet controls.
+Video sitemap.
+Google News sitemap.
+RSS sitemap.
+Extended AI content features.
+More advanced WooCommerce and PageSpeed-related capabilities in some listings.
+
+8) SureRank
+
+Free features:
+Core SEO setup.
+Site-wide SEO checks.
+Meta tags.
+XML sitemap.
+Social previews.
+Automatic image alt text.
+Google Search Console integration.
+Basic functionality described as enough for most websites.
+
+Pro features:
+SERP research.
+Content gap finder.
+Redirection feature.
+Extended meta templates.
+Link suggestions.
+Premium support and automatic updates.

@@ -1,0 +1,19 @@
+1. Missing API Key Alert Banner
+- Flaw: Users don't know they need to add a Gemini API key. AI features silently fail.
+- Fix: Add a global yellow warning banner across the React Dashboard if the API key is not configured in settings.
+
+2. Advanced Schema Builder is Too Technical
+- Flaw: Non-technical users don't know what JSON-LD is. The empty text box is confusing.
+- Fix: Add placeholder text with a JSON-LD example, and add a helper link pointing to a free Schema Generator website.
+
+3. Manual Competitor URL Fetching
+- Flaw: Copy-pasting the #1 Google result is manual friction.
+- Fix: Add a "Find Competitor" helper button next to the input that automatically opens a new Google Search tab for their Focus Keyword, making it 1-click to find the URL.
+
+4. Hunting Down Broken Links (No Visual Highlighter)
+- Flaw: The backend tells them there are 3 broken links, but they have to manually find them inside their 3000-word article.
+- Fix: Inject a lightweight frontend script (only for logged-in admins) that automatically outlines broken links in red with a tooltip when they view their live page.
+
+5. Sitemap "Save" Requirement
+- Flaw: If users change their WordPress permalinks later, the sitemap rules break until they re-save the Frank SEO settings.
+- Fix: Hook into the WordPress `update_option_permalink_structure` action to automatically flush rewrite rules in the background silently.

@@ -19,6 +19,9 @@ class Frank_SEO_Meta_Renderer {
 
 		// Front-end head meta tags
 		add_action( 'wp_head', array( $this, 'render_head_meta_tags' ), 2 );
+		
+		// Visual broken link highlighter for admins
+		add_action( 'wp_footer', array( $this, 'render_broken_links_highlighter' ) );
 	}
 
 	/**
@@ -53,15 +56,33 @@ class Frank_SEO_Meta_Renderer {
 	 * Render standard meta tags, Open Graph, and Twitter Cards in wp_head.
 	 */
 	public function render_head_meta_tags() {
-		if ( ! is_singular() ) {
-			return;
-		}
-
 		$post_id = get_the_ID();
 		
 		$settings = get_option( 'frank_seo_settings', array() );
 		$enable_woo = isset( $settings['enableWooCommerceSEO'] ) ? (bool) $settings['enableWooCommerceSEO'] : true;
 		$enable_og  = isset( $settings['enableOpenGraph'] ) ? (bool) $settings['enableOpenGraph'] : true;
+
+		// 0. Global Integrations (GA4 & GSC)
+		if ( ! empty( $settings['gscVerification'] ) ) {
+			echo '<!-- Frank SEO Google Search Console -->' . "\n";
+			echo '<meta name="google-site-verification" content="' . esc_attr( sanitize_text_field( $settings['gscVerification'] ) ) . '" />' . "\n";
+		}
+
+		if ( ! empty( $settings['ga4Id'] ) ) {
+			$ga4_id = esc_attr( sanitize_text_field( $settings['ga4Id'] ) );
+			echo '<!-- Frank SEO Google Analytics 4 -->' . "\n";
+			echo '<script async src="https://www.googletagmanager.com/gtag/js?id=' . $ga4_id . '"></script>' . "\n";
+			echo '<script>' . "\n";
+			echo '  window.dataLayer = window.dataLayer || [];' . "\n";
+			echo '  function gtag(){dataLayer.push(arguments);}' . "\n";
+			echo '  gtag("js", new Date());' . "\n";
+			echo '  gtag("config", "' . $ga4_id . '");' . "\n";
+			echo '</script>' . "\n";
+		}
+
+		if ( ! is_singular() ) {
+			return; // The rest of these tags are for singular posts/pages
+		}
 
 		// 1. Fetch custom post meta settings
 		$meta_description = get_post_meta( $post_id, '_frank_seo_description', true );
@@ -152,5 +173,40 @@ class Frank_SEO_Meta_Renderer {
 				echo '<meta name="twitter:image" content="' . esc_url( $og_image ) . '" />' . "\n";
 			}
 		}
+	}
+
+	/**
+	 * Renders an inline script to highlight broken links for logged-in administrators.
+	 */
+	public function render_broken_links_highlighter() {
+		if ( ! is_user_logged_in() || ! current_user_can( 'manage_options' ) || ! is_singular() ) {
+			return;
+		}
+
+		$post_id = get_the_ID();
+		global $wpdb;
+		$table_links = $wpdb->prefix . 'frank_audit_links';
+
+		// phpcs:ignore WordPress.DB.DirectDatabaseQuery.DirectQuery, WordPress.DB.DirectDatabaseQuery.NoCaching, WordPress.DB.PreparedSQL.InterpolatedNotPrepared, PluginCheck.Security.DirectDB.UnescapedDBParameter
+		$broken_links = $wpdb->get_col( $wpdb->prepare( "SELECT url FROM $table_links WHERE page_id = %d AND (status_code >= 400 OR status_code = 0)", $post_id ) );
+
+		if ( empty( $broken_links ) ) {
+			return;
+		}
+		?>
+		<script>
+		document.addEventListener('DOMContentLoaded', function() {
+			var brokenLinks = <?php echo wp_json_encode( $broken_links ); ?>;
+			var links = document.getElementsByTagName('a');
+			for (var i = 0; i < links.length; i++) {
+				if (brokenLinks.includes(links[i].href)) {
+					links[i].style.border = '2px dashed red';
+					links[i].title = 'Frank SEO: Broken Link Detected!';
+					links[i].style.backgroundColor = 'rgba(255,0,0,0.1)';
+				}
+			}
+		});
+		</script>
+		<?php
 	}
 }

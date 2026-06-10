@@ -134,7 +134,10 @@ class Frank_SEO_Sitemap {
 			'order'          => 'DESC',
 		) );
 
-		echo '<urlset xmlns="http://www.sitemaps.org/schemas/sitemap/0.9">' . "\n";
+		$settings = get_option( 'frank_seo_settings', array() );
+		$enable_images = isset( $settings['enableImageSEO'] ) ? (bool) $settings['enableImageSEO'] : true;
+
+		echo '<urlset xmlns="http://www.sitemaps.org/schemas/sitemap/0.9" xmlns:image="http://www.google.com/schemas/sitemap-image/1.1">' . "\n";
 		foreach ( $posts as $p ) {
 			// Skip password protected or specifically excluded items if applicable
 			if ( ! empty( $p->post_password ) ) {
@@ -154,6 +157,34 @@ class Frank_SEO_Sitemap {
 			echo '    <lastmod>' . esc_html( get_the_modified_date( 'c', $p->ID ) ) . '</lastmod>' . "\n";
 			echo '    <changefreq>weekly</changefreq>' . "\n";
 			echo '    <priority>' . ( is_front_page() || $p->ID === (int) get_option( 'page_on_front' ) ? '1.0' : '0.8' ) . '</priority>' . "\n";
+			
+			// Image SEO Integration
+			if ( $enable_images ) {
+				$images = array();
+				
+				// Featured Image
+				if ( has_post_thumbnail( $p->ID ) ) {
+					$images[] = get_the_post_thumbnail_url( $p->ID, 'full' );
+				}
+				
+				// Images in content
+				if ( preg_match_all( '/<img[^>]+src=[\'"]([^\'"]+)[\'"][^>]*>/i', $p->post_content, $matches ) ) {
+					foreach ( $matches[1] as $src ) {
+						$images[] = $src;
+					}
+				}
+				
+				$images = array_unique( $images );
+				// Limit to 1000 images per URL per Google spec
+				$images = array_slice( $images, 0, 1000 );
+				
+				foreach ( $images as $img_url ) {
+					echo '    <image:image>' . "\n";
+					echo '      <image:loc>' . esc_url( $img_url ) . '</image:loc>' . "\n";
+					echo '    </image:image>' . "\n";
+				}
+			}
+
 			echo '  </url>' . "\n";
 		}
 		echo '</urlset>' . "\n";

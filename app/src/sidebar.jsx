@@ -405,9 +405,14 @@ const FrankSeoSidebar = () => {
 					label="Raw JSON-LD"
 					value={ customSchema }
 					onChange={ ( val ) => updateMeta( '_frank_seo_custom_schema', val ) }
-					placeholder='{ "@context": "https://schema.org", ... }'
+					placeholder='{&#10;  "@context": "https://schema.org",&#10;  "@type": "Recipe",&#10;  "name": "Pizza",&#10;  ...&#10;}'
 					rows={ 8 }
 					style={{ fontFamily: 'monospace', fontSize: '11px' }}
+					help={
+						<span style={{ fontSize: '11px' }}>
+							Need help? <a href="https://technicalseo.com/tools/schema-markup-generator/" target="_blank" rel="noreferrer">Generate Schema code for free here</a>.
+						</span>
+					}
 				/>
 			</PanelBody>
 		</PluginSidebar>

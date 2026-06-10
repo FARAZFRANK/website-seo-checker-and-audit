@@ -1,6 +1,6 @@
 import React, { useState, useEffect } from 'react';
 import { HashRouter as Router, Routes, Route, Link, useLocation } from 'react-router-dom';
-import { Typography, Drawer, List, ListItem, ListItemButton, ListItemIcon, ListItemText, CssBaseline, Box, Toolbar, IconButton } from '@mui/material';
+import { Typography, Drawer, List, ListItem, ListItemButton, ListItemIcon, ListItemText, CssBaseline, Box, Toolbar, IconButton, Alert, AlertTitle } from '@mui/material';
 import { ThemeProvider, createTheme } from '@mui/material/styles';
 import DashboardIcon from '@mui/icons-material/Dashboard';
 import SettingsIcon from '@mui/icons-material/Settings';
@@ -42,6 +42,18 @@ function Layout() {
     } else if (page === 'frank-seo-audit' && location.pathname === '/') {
        // already at root, do nothing
     }
+  }, []);
+
+  const [missingApiKey, setMissingApiKey] = useState(false);
+
+  useEffect(() => {
+    import('./api').then(({ getSettings }) => {
+      getSettings().then(data => {
+        if (data.success && !data.settings.geminiApiKey) {
+          setMissingApiKey(true);
+        }
+      }).catch(err => console.error(err));
+    });
   }, []);
 
   const [theme, setTheme] = useState(() => {
@@ -225,6 +237,14 @@ function Layout() {
             {theme === 'dark' ? <LightModeIcon /> : <DarkModeIcon />}
           </IconButton>
         </Box>
+        
+        {missingApiKey && (
+          <Alert severity="warning" sx={{ mb: 3, borderRadius: '12px' }}>
+            <AlertTitle sx={{ fontWeight: 700 }}>Action Required: Missing Google Gemini API Key</AlertTitle>
+            Frank SEO's AI features (like generating Meta Titles and Competitor AI Audits) will not work until you configure your free API Key. Please click on the <strong>Settings</strong> tab on the left to add your key.
+          </Alert>
+        )}
+
         <Routes>
           <Route path="/" element={<Dashboard />} />
           <Route path="/page/:id" element={<PageDetail />} />

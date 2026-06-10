@@ -263,7 +263,7 @@ function Redirects() {
         }}
       >
         <form onSubmit={handleSubmit}>
-          <DialogTitle sx={{ fontFamily: 'var(--sans)', fontWeight: 800 }}>
+          <DialogTitle sx={{ fontFamily: 'var(--sans)', fontWeight: 800, color: 'var(--text-h)' }}>
             {formId > 0 ? 'Edit Redirect Rule' : 'Add Redirect Rule'}
           </DialogTitle>
           <DialogContent>

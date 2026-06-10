@@ -277,7 +277,7 @@ function Logs404() {
         }}
       >
         <form onSubmit={handleCreateRedirect}>
-          <DialogTitle sx={{ fontFamily: 'var(--sans)', fontWeight: 800 }}>
+          <DialogTitle sx={{ fontFamily: 'var(--sans)', fontWeight: 800, color: 'var(--text-h)' }}>
             Create Redirection for Broken Link
           </DialogTitle>
           <DialogContent>

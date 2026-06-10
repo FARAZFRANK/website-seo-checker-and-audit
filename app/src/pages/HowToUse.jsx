@@ -264,6 +264,7 @@ function HowToUse() {
             <ul>
               <li style={{ marginBottom: '10px' }}><strong>Hits Column:</strong> Shows how many times people tried to visit that broken link. High numbers mean you are actively losing lots of visitors!</li>
               <li style={{ marginBottom: '10px' }}><strong>Redirect Button:</strong> If you see a broken link with high hits, click this button. It will instantly pop open the Redirects Manager so you can forward that lost traffic to your homepage or a related article, saving your visitors!</li>
+              <li style={{ marginBottom: '10px' }}><strong>Visual Frontend Highlighter:</strong> Frank SEO automatically outlines any broken links in a bold red dashed border when you view your live posts (only visible to logged-in admins). No more manually hunting down broken URLs!</li>
             </ul>
             <Typography variant="body1">
               <strong>Usecase:</strong> Check this tab once a week. If you see a lot of broken links getting hit, use the Redirect button to plug the holes in your website's traffic bucket.
@@ -317,6 +318,11 @@ function HowToUse() {
             <Typography variant="subtitle1" sx={{ fontWeight: 700, mt: 3, mb: 1, color: 'var(--text-h)' }}>5. Global Features Integration</Typography>
             <Typography variant="body2" paragraph>
               <strong>Toggle Major Features:</strong> If you use another plugin for a specific task (like WooCommerce SEO or Local Business Schema) and don't want Frank SEO to handle it, you can individually turn off those features here to prevent conflicts. By default, everything is enabled so you don't need any other plugins.
+            </Typography>
+
+            <Typography variant="subtitle1" sx={{ fontWeight: 700, mt: 3, mb: 1, color: '#ef4444' }}>6. Danger Zone</Typography>
+            <Typography variant="body2" paragraph>
+              <strong>Completely Reset Plugin Data:</strong> If you ever want to wipe the slate clean, clicking the red reset button at the bottom of the Settings page will delete all audit history, 404 logs, redirects, plugin settings, and completely erase all SEO metadata (Titles, Descriptions, Schema) the plugin ever added to your posts. This cannot be undone.
             </Typography>
           </AccordionDetails>
         </Accordion>

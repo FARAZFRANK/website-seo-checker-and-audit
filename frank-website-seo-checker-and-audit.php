@@ -2,7 +2,7 @@
 /**
  * Plugin Name:       Frank Website SEO Checker And Audit
  * Description:       A complete on-page SEO audit plugin with a React-powered dashboard. Crawls pages, detects SEO issues, and maintains history.
- * Version:           1.0.8
+ * Version:           1.0.9
  * Author:			  FARAZFRANK
  * Author URI:        https://wpfrank.com/
  * License:           GPL-2.0+
@@ -10,19 +10,6 @@
  * Text Domain:       frank-website-seo-checker-and-audit
  * Domain Path:       /languages
  *
- * CHANGELOG:
- * [2026-06-10] v1.0.8
- * - Added a collapse toggle button to the main dashboard sidebar for a cleaner UI experience.
- * [2026-06-10] v1.0.7
- * - Added "Global Features Integration" toggles in Settings so admins can easily disable major components.
- * - Updated "Comparison" tab to showcase newly added features.
- * [2026-06-10] v1.0.6
- * - Added WooCommerce SEO tags (Product Schema and OpenGraph Pricing).
- * - Added Local Business SEO settings and Auto-Schema Generation.
- * - Added Advanced Social Media Override UI (OpenGraph/Twitter).
- * - Added Missing Image Alt Tag Auto-injector (`the_content` filter).
- * - Added Custom JSON-LD Schema builder for posts/pages.
- * - Added WordPress FAQ blocks Auto-Schema Generation (Yoast & Rank Math detection).
  */
 
 // If this file is called directly, abort.
@@ -33,7 +20,7 @@ if (!defined('ABSPATH')) {
 /**
  * Currently plugin version.
  */
-define('FRANK_SEO_AUDIT_VERSION', '1.0.8');
+define('FRANK_SEO_AUDIT_VERSION', '1.0.9');
 
 /**
  * Plugin directory path.
@@ -66,6 +53,14 @@ register_activation_hook(__FILE__, 'frank_seo_audit_activate');
 register_deactivation_hook(__FILE__, 'frank_seo_audit_deactivate');
 
 /**
+ * Flush rewrite rules automatically when permalink structure changes.
+ */
+add_action( 'update_option_permalink_structure', 'frank_seo_flush_rules_on_permalink_change' );
+function frank_seo_flush_rules_on_permalink_change() {
+	flush_rewrite_rules();
+}
+
+/**
  * The core plugin class that is used to define internationalization,
  * admin-specific hooks, and public-facing site hooks.
  */
@@ -77,6 +72,8 @@ require_once FRANK_SEO_AUDIT_DIR . 'includes/class-frank-seo-schema-builder.php'
 require_once FRANK_SEO_AUDIT_DIR . 'includes/class-frank-seo-redirect-manager.php';
 require_once FRANK_SEO_AUDIT_DIR . 'includes/class-frank-seo-sitemap.php';
 require_once FRANK_SEO_AUDIT_DIR . 'includes/class-frank-seo-image-optimizer.php';
+require_once FRANK_SEO_AUDIT_DIR . 'includes/class-frank-seo-bot-blocker.php';
+require_once FRANK_SEO_AUDIT_DIR . 'includes/class-frank-seo-breadcrumbs.php';
 
 /**
  * Begins execution of the plugin.
@@ -108,72 +105,83 @@ function frank_seo_audit_run()
 	$image_optimizer = new Frank_SEO_Image_Optimizer();
 	$image_optimizer->init();
 
+	// Initialize AI Bot Blocker
+	$bot_blocker = new Frank_SEO_Bot_Blocker();
+	$bot_blocker->init();
+
+	// Initialize Breadcrumbs System
+	$breadcrumbs = new Frank_SEO_Breadcrumbs();
+	$breadcrumbs->init();
+
 	// Run automatic DB upgrades on version mismatch
-	$db_version = get_option( 'frank_seo_db_version' );
-	if ( ! $db_version || $db_version !== FRANK_SEO_AUDIT_VERSION ) {
+	$db_version = get_option('frank_seo_db_version');
+	if (!$db_version || $db_version !== FRANK_SEO_AUDIT_VERSION) {
 		require_once FRANK_SEO_AUDIT_DIR . 'includes/class-frank-seo-activator.php';
 		Frank_SEO_Activator::activate();
-		update_option( 'frank_seo_db_version', FRANK_SEO_AUDIT_VERSION );
+		update_option('frank_seo_db_version', FRANK_SEO_AUDIT_VERSION);
 	}
 }
 frank_seo_audit_run();
 
 // Register custom cron schedules
-add_filter( 'cron_schedules', 'frank_seo_add_cron_schedules' );
-function frank_seo_add_cron_schedules( $schedules ) {
+add_filter('cron_schedules', 'frank_seo_add_cron_schedules');
+function frank_seo_add_cron_schedules($schedules)
+{
 	$schedules['weekly'] = array(
 		'interval' => 7 * 24 * 60 * 60,
-		'display'  => esc_html__( 'Once Weekly', 'frank-website-seo-checker-and-audit' ),
+		'display' => esc_html__('Once Weekly', 'frank-website-seo-checker-and-audit'),
 	);
 	$schedules['monthly'] = array(
 		'interval' => 30 * 24 * 60 * 60,
-		'display'  => esc_html__( 'Once Monthly', 'frank-website-seo-checker-and-audit' ),
+		'display' => esc_html__('Once Monthly', 'frank-website-seo-checker-and-audit'),
 	);
 	return $schedules;
 }
 
 // Hook cron task
-add_action( 'frank_seo_scheduled_scan', 'frank_seo_run_scheduled_scan' );
-function frank_seo_run_scheduled_scan() {
-	$pages = get_posts( array(
-		'post_type'      => array( 'post', 'page' ),
-		'post_status'    => 'publish',
+add_action('frank_seo_scheduled_scan', 'frank_seo_run_scheduled_scan');
+function frank_seo_run_scheduled_scan()
+{
+	$pages = get_posts(array(
+		'post_type' => array('post', 'page'),
+		'post_status' => 'publish',
 		'posts_per_page' => -1,
-		'fields'         => 'ids',
-	) );
+		'fields' => 'ids',
+	));
 
-	if ( ! empty( $pages ) ) {
+	if (!empty($pages)) {
 		$auditor = new Frank_SEO_Auditor();
-		foreach ( $pages as $pid ) {
-			$auditor->audit_post( $pid );
+		foreach ($pages as $pid) {
+			$auditor->audit_post($pid);
 		}
 	}
 
-	frank_seo_send_email_report( 'scheduled' );
+	frank_seo_send_email_report('scheduled');
 }
 
 // Send email report
-function frank_seo_send_email_report( $trigger_type = 'manual' ) {
-	$settings = get_option( 'frank_seo_settings', array() );
+function frank_seo_send_email_report($trigger_type = 'manual')
+{
+	$settings = get_option('frank_seo_settings', array());
 
 	// Check if this specific email trigger is enabled
-	if ( $trigger_type === 'manual' ) {
-		if ( empty( $settings['enableScanEmail'] ) ) {
+	if ($trigger_type === 'manual') {
+		if (empty($settings['enableScanEmail'])) {
 			return false;
 		}
 	} else {
-		if ( empty( $settings['enableScheduledEmail'] ) ) {
+		if (empty($settings['enableScheduledEmail'])) {
 			return false;
 		}
 	}
 
-	$recipients = isset( $settings['emailRecipients'] ) ? sanitize_text_field( $settings['emailRecipients'] ) : get_option( 'admin_email' );
-	if ( empty( $recipients ) ) {
+	$recipients = isset($settings['emailRecipients']) ? sanitize_text_field($settings['emailRecipients']) : get_option('admin_email');
+	if (empty($recipients)) {
 		return false;
 	}
 
 	// Compile multiple emails
-	$to = array_map( 'trim', explode( ',', $recipients ) );
+	$to = array_map('trim', explode(',', $recipients));
 
 	// Fetch current summary stats
 	global $wpdb;
@@ -181,22 +189,22 @@ function frank_seo_send_email_report( $trigger_type = 'manual' ) {
 	$table_issues = $wpdb->prefix . 'frank_audit_issues';
 
 	// Check if tables exist
-	if ( $wpdb->get_var( "SHOW TABLES LIKE '$table_pages'" ) !== $table_pages ) {
+	if ($wpdb->get_var("SHOW TABLES LIKE '$table_pages'") !== $table_pages) {
 		return false;
 	}
 
 	// phpcs:disable WordPress.DB.DirectDatabaseQuery.DirectQuery, WordPress.DB.DirectDatabaseQuery.NoCaching, WordPress.DB.PreparedSQL.InterpolatedNotPrepared, PluginCheck.Security.DirectDB.UnescapedDBParameter
-	$total_pages = (int) $wpdb->get_var( "SELECT COUNT(*) FROM $table_pages" );
-	$total_issues = (int) $wpdb->get_var( $wpdb->prepare( "SELECT COUNT(*) FROM $table_issues WHERE status = %s", 'Open' ) );
-	$average_score = (int) $wpdb->get_var( "SELECT AVG(seo_score) FROM $table_pages" );
+	$total_pages = (int) $wpdb->get_var("SELECT COUNT(*) FROM $table_pages");
+	$total_issues = (int) $wpdb->get_var($wpdb->prepare("SELECT COUNT(*) FROM $table_issues WHERE status = %s", 'Open'));
+	$average_score = (int) $wpdb->get_var("SELECT AVG(seo_score) FROM $table_pages");
 
 	// Fetch top 5 pages with lowest scores
-	$low_score_pages = $wpdb->get_results( "SELECT url, title, seo_score, errors_count, warnings_count FROM $table_pages ORDER BY seo_score ASC LIMIT 5" );
+	$low_score_pages = $wpdb->get_results("SELECT url, title, seo_score, errors_count, warnings_count FROM $table_pages ORDER BY seo_score ASC LIMIT 5");
 	// phpcs:enable
 
 	// Build the HTML email content
-	$subject = sprintf( '[%s] SEO Audit Report - %s', get_bloginfo('name'), date('M d, Y') );
-	
+	$subject = sprintf('[%s] SEO Audit Report - %s', get_bloginfo('name'), date('M d, Y'));
+
 	// Setup headers
 	$headers = array('Content-Type: text/html; charset=UTF-8');
 
@@ -205,9 +213,9 @@ function frank_seo_send_email_report( $trigger_type = 'manual' ) {
 	$subtitle = $trigger_type === 'manual' ? 'A manual crawl and SEO check has successfully finished on your website.' : 'Your automated background SEO check-up report is ready.';
 
 	$score_color = '#ef4444'; // Red
-	if ( $average_score >= 90 ) {
+	if ($average_score >= 90) {
 		$score_color = '#10b981'; // Green
-	} elseif ( $average_score >= 70 ) {
+	} elseif ($average_score >= 70) {
 		$score_color = '#f59e0b'; // Orange
 	}
 
@@ -219,7 +227,7 @@ function frank_seo_send_email_report( $trigger_type = 'manual' ) {
 	<html>
 	<head>
 		<meta charset="utf-8">
-		<title>' . esc_html( $subject ) . '</title>
+		<title>' . esc_html($subject) . '</title>
 		<style>
 			body { font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Oxygen-Sans, Ubuntu, Cantarell, "Helvetica Neue", sans-serif; background-color: #f8fafc; color: #334155; margin: 0; padding: 20px; }
 			.container { max-width: 600px; margin: 0 auto; background: #ffffff; border: 1px solid #e2e8f0; border-radius: 16px; overflow: hidden; box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.05); }
@@ -246,8 +254,8 @@ function frank_seo_send_email_report( $trigger_type = 'manual' ) {
 	<body>
 		<div class="container">
 			<div class="header">
-				<h1>' . esc_html( $title ) . '</h1>
-				<p>' . esc_html( $subtitle ) . '</p>
+				<h1>' . esc_html($title) . '</h1>
+				<p>' . esc_html($subtitle) . '</p>
 			</div>
 			<div class="content">
 				<div class="grid">
@@ -265,7 +273,7 @@ function frank_seo_send_email_report( $trigger_type = 'manual' ) {
 					</div>
 				</div>';
 
-	if ( ! empty( $low_score_pages ) ) {
+	if (!empty($low_score_pages)) {
 		$body .= '<h2 class="table-title">Pages Requiring Attention</h2>
 				<table class="table">
 					<thead>
@@ -277,18 +285,18 @@ function frank_seo_send_email_report( $trigger_type = 'manual' ) {
 						</tr>
 					</thead>
 					<tbody>';
-		foreach ( $low_score_pages as $p ) {
+		foreach ($low_score_pages as $p) {
 			$p_color = '#ef4444';
-			if ( $p->seo_score >= 90 ) {
+			if ($p->seo_score >= 90) {
 				$p_color = '#10b981';
-			} elseif ( $p->seo_score >= 70 ) {
+			} elseif ($p->seo_score >= 70) {
 				$p_color = '#f59e0b';
 			}
 
 			$body .= '<tr>
 				<td>
-					<div style="font-weight: 600; color: #0f172a;">' . esc_html( $p->title ) . '</div>
-					<div style="font-size: 11px; color: #64748b; max-width: 250px; overflow: hidden; text-overflow: ellipsis; white-space: nowrap;">' . esc_html( $p->url ) . '</div>
+					<div style="font-weight: 600; color: #0f172a;">' . esc_html($p->title) . '</div>
+					<div style="font-size: 11px; color: #64748b; max-width: 250px; overflow: hidden; text-overflow: ellipsis; white-space: nowrap;">' . esc_html($p->url) . '</div>
 				</td>
 				<td>
 					<span class="score-badge" style="background-color: ' . $p_color . ';">' . $p->seo_score . '%</span>
@@ -303,15 +311,15 @@ function frank_seo_send_email_report( $trigger_type = 'manual' ) {
 
 	$body .= '
 				<div class="btn-container">
-					<a href="' . esc_url( admin_url( 'admin.php?page=frank-seo-audit' ) ) . '" class="btn">View Full SEO Dashboard</a>
+					<a href="' . esc_url(admin_url('admin.php?page=frank-seo-audit')) . '" class="btn">View Full SEO Dashboard</a>
 				</div>
 			</div>
 			<div class="footer">
-				<p>This report was generated by Frank Website SEO Checker And Audit plugin on <a href="' . esc_url( home_url() ) . '">' . esc_html( get_bloginfo('name') ) . '</a>.</p>
+				<p>This report was generated by Frank Website SEO Checker And Audit plugin on <a href="' . esc_url(home_url()) . '">' . esc_html(get_bloginfo('name')) . '</a>.</p>
 			</div>
 		</div>
 	</body>
 	</html>';
 
-	return wp_mail( $to, $subject, $body, $headers );
+	return wp_mail($to, $subject, $body, $headers);
 }
