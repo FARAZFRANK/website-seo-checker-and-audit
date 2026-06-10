@@ -2,7 +2,7 @@
 /**
  * Plugin Name:       Frank Website SEO Checker And Audit
  * Description:       A complete on-page SEO audit plugin with a React-powered dashboard. Crawls pages, detects SEO issues, and maintains history.
- * Version:           1.0.7
+ * Version:           1.0.8
  * Author:			  FARAZFRANK
  * Author URI:        https://wpfrank.com/
  * License:           GPL-2.0+
@@ -11,6 +11,8 @@
  * Domain Path:       /languages
  *
  * CHANGELOG:
+ * [2026-06-10] v1.0.8
+ * - Added a collapse toggle button to the main dashboard sidebar for a cleaner UI experience.
  * [2026-06-10] v1.0.7
  * - Added "Global Features Integration" toggles in Settings so admins can easily disable major components.
  * - Updated "Comparison" tab to showcase newly added features.
@@ -31,7 +33,7 @@ if (!defined('ABSPATH')) {
 /**
  * Currently plugin version.
  */
-define('FRANK_SEO_AUDIT_VERSION', '1.0.7');
+define('FRANK_SEO_AUDIT_VERSION', '1.0.8');
 
 /**
  * Plugin directory path.
