@@ -1,5 +1,5 @@
 import React, { useState } from 'react';
-import { Box, Typography, Tabs, Tab, Accordion, AccordionSummary, AccordionDetails } from '@mui/material';
+import { Box, Typography, Tabs, Tab, Accordion, AccordionSummary, AccordionDetails, Button, Link } from '@mui/material';
 import ExpandMoreIcon from '@mui/icons-material/ExpandMore';
 import DashboardIcon from '@mui/icons-material/Dashboard';
 import HistoryIcon from '@mui/icons-material/History';
@@ -10,6 +10,7 @@ import AutoAwesomeIcon from '@mui/icons-material/AutoAwesome';
 import FindInPageIcon from '@mui/icons-material/FindInPage';
 import MapIcon from '@mui/icons-material/Map';
 import TuneIcon from '@mui/icons-material/Tune';
+import ContactSupportIcon from '@mui/icons-material/ContactSupport';
 
 function TabPanel(props) {
   const { children, value, index, ...other } = props;
@@ -74,6 +75,7 @@ function HowToUse() {
           <Tab icon={<SwapCallsIcon />} iconPosition="start" label="Redirects" />
           <Tab icon={<ReportProblemIcon />} iconPosition="start" label="404 Monitor" />
           <Tab icon={<SettingsIcon />} iconPosition="start" label="Settings" />
+          <Tab icon={<ContactSupportIcon />} iconPosition="start" label="Support" />
         </Tabs>
       </Box>
 
@@ -324,6 +326,44 @@ function HowToUse() {
             <Typography variant="body2" paragraph>
               <strong>Completely Reset Plugin Data:</strong> If you ever want to wipe the slate clean, clicking the red reset button at the bottom of the Settings page will delete all audit history, 404 logs, redirects, plugin settings, and completely erase all SEO metadata (Titles, Descriptions, Schema) the plugin ever added to your posts. This cannot be undone.
             </Typography>
+          </AccordionDetails>
+        </Accordion>
+      </TabPanel>
+
+      {/* =========================================
+          SUPPORT TAB 
+      ========================================= */}
+      <TabPanel value={value} index={5}>
+        <Accordion defaultExpanded sx={accordionStyle}>
+          <AccordionSummary expandIcon={<ExpandMoreIcon sx={{ color: 'var(--text)' }} />}>
+            <Box sx={{ display: 'flex', alignItems: 'center', gap: 2 }}>
+              <ContactSupportIcon sx={{ color: '#3b82f6' }} />
+              <Typography variant="h6" sx={{ fontWeight: 600, fontFamily: 'var(--sans)', color: 'var(--text-h)' }}>Support & Feature Requests</Typography>
+            </Box>
+          </AccordionSummary>
+          <AccordionDetails sx={{ color: 'var(--text)', fontFamily: 'var(--sans)' }}>
+            <Typography variant="body1" paragraph>
+              <strong>Having a problem?</strong> If you face any issues or bugs with the plugin, please create a support thread on the official WordPress repository so we can help you out:
+            </Typography>
+            <Box sx={{ mb: 3 }}>
+              <Link href="https://wordpress.org/support/plugin/frank-website-seo-checker-and-audit/" target="_blank" rel="noopener noreferrer" sx={{ color: 'var(--primary)', fontWeight: 'bold' }}>
+                Create a Support Thread on WordPress.org
+              </Link>
+            </Box>
+
+            <Typography variant="body1" paragraph>
+              <strong>Want a new feature?</strong> If you have any new feature requests or want to extend the functionality of the plugin, please contact us on our official website:
+            </Typography>
+            <Button 
+              variant="contained" 
+              color="primary" 
+              href="https://wpfrank.com/contact/" 
+              target="_blank" 
+              rel="noopener noreferrer"
+              sx={{ textTransform: 'none', fontWeight: 'bold', fontFamily: 'var(--sans)', borderRadius: '8px' }}
+            >
+              Contact Us at WPFrank
+            </Button>
           </AccordionDetails>
         </Accordion>
       </TabPanel>
