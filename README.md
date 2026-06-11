@@ -1,6 +1,6 @@
 # Frank Website SEO Checker And Audit
 
-![Version](https://img.shields.io/badge/version-1.0.9-blue.svg)
+![Version](https://img.shields.io/badge/version-1.1.0-blue.svg)
 ![WordPress](https://img.shields.io/badge/WordPress-5.8+-blue.svg)
 ![PHP](https://img.shields.io/badge/PHP-7.4+-blue.svg)
 ![License](https://img.shields.io/badge/license-GPLv2-green.svg)
@@ -114,6 +114,11 @@ Score = 100 - (Errors × 15) - (Warnings × 5) - (Notices × 2)
 *Note: The score is securely clamped between 0 and 100.*
 
 ## 📝 Changelog
+
+### 1.1.0 (2026-06-11)
+- **Compliance**: Passed comprehensive WordPress Plugin Review Guidelines compliance audit.
+- **Documentation**: Refactored readme.txt for high SEO visibility with keyword-rich feature descriptions.
+- **Support**: Added a detailed "Frequently Asked Questions" section covering top SEO questions.
 
 ### 1.0.9 (2026-06-10)
 - **Feature**: Refactored the scanning process to run entirely as an asynchronous background job, preventing timeouts when switching browser tabs.
