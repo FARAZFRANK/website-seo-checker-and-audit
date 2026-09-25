@@ -4,7 +4,7 @@ Tags: seo, seo audit, schema, xml sitemap, redirects
 Requires at least: 5.8
 Tested up to: 7.1
 Requires PHP: 7.4
-Stable tag: 1.1.1
+Stable tag: 1.2.0
 License: GPLv2 or later
 License URI: https://www.gnu.org/licenses/gpl-2.0.html
 
@@ -157,6 +157,17 @@ PHP 7.4 or higher.
 
 == Changelog ==
 
+= 1.2.0 =
+* [2026-09-25]
+* Feature: Complete enterprise-grade XML Sitemap Engine with automated sitemap index (/sitemap_index.xml) and paginated sub-sitemaps (e.g. post-sitemap1.xml).
+* Feature: Dedicated first-class "XML Sitemap" sidebar navigation tab and WordPress admin submenu for seamless configuration.
+* Feature: Smart transient caching (frank_seo_sm_*) with instant dynamic flushing on content publish, edit, or trash (save_post, transition_post_status, deleted_post).
+* Feature: Specialized Google Image Sitemap extraction parsing <image:image> tags from featured images, inline content photos, and WooCommerce product galleries.
+* Feature: Automatic term sitemaps for Categories, Tags, and custom taxonomies with soft-404 filtering (only terms with count > 0).
+* Feature: Robust auto-sync logic filtering out 'noindex' URLs, drafts, password-protected items, and 301/302 redirects.
+* Feature: Branded, interactive XSLT stylesheet (assets/sitemap.xsl) with dark/light mode and real-time client-side search filtering.
+* Feature: Developer extensibility hooks including frank_seo_sitemap_url_entry, frank_seo_sitemap_post_types, frank_seo_sitemap_taxonomies, frank_seo_sitemap_index_items, and frank_seo_sitemap_items_per_page.
+
 = 1.1.1 =
 * [2026-08-24]
 * Tested plugin with latest WordPress v7.1
@@ -234,6 +245,9 @@ PHP 7.4 or higher.
 * Settings panel with crawl configuration.
 
 == Upgrade Notice ==
+
+= 1.2.0 =
+Major release introducing the standalone, high-performance XML Sitemap module with dedicated dashboard tab, Google Image sitemaps, pagination, and dynamic caching.
 
 = 1.1.0 =
 Readme documentation refresh with expanded FAQs covering setup, scoring, privacy, and compatibility.

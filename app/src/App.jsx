@@ -222,7 +222,7 @@ function Layout() {
           }}
         >
           <Typography variant="h6" noWrap component="div" sx={{ fontFamily: 'var(--sans)', fontWeight: 700, letterSpacing: '-0.02em', color: 'var(--text-h)' }}>
-            Frank <span className="gradient-text">SEO Checker & Audit</span> v1.0.5
+            Frank <span className="gradient-text">SEO Checker & Audit</span> v1.2.0
           </Typography>
           <IconButton 
             onClick={toggleTheme} 

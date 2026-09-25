@@ -1,6 +1,6 @@
 # Frank Website SEO Checker And Audit
 
-![Version](https://img.shields.io/badge/version-1.1.0-blue.svg)
+![Version](https://img.shields.io/badge/version-1.2.0-blue.svg)
 ![WordPress](https://img.shields.io/badge/WordPress-5.8+-blue.svg)
 ![PHP](https://img.shields.io/badge/PHP-7.4+-blue.svg)
 ![License](https://img.shields.io/badge/license-GPLv2-green.svg)
@@ -114,6 +114,19 @@ Score = 100 - (Errors × 15) - (Warnings × 5) - (Notices × 2)
 *Note: The score is securely clamped between 0 and 100.*
 
 ## 📝 Changelog
+
+### 1.2.0 (2026-09-25)
+- **Feature (XML Sitemap Engine)**: Added high-performance XML sitemap index (`/sitemap_index.xml`) with automatic chunk pagination (100–2,000 URLs).
+- **UI/UX**: Dedicated first-class "XML Sitemap" sidebar navigation tab and WordPress admin submenu for easy configuration.
+- **Performance (Caching)**: Smart transient caching (`frank_seo_sm_*`) dynamically flushed on content save/update/delete.
+- **Image Sitemaps**: Automated `<image:image>` extraction for featured images, inline content photos, and WooCommerce product gallery media.
+- **Taxonomies**: Non-empty term sitemaps (`count > 0`) preventing Google soft-404 errors.
+- **Auto-Sync & Filtering**: Automatically honors `noindex` robots flags, search engine visibility settings, redirects (301/302), and draft states.
+- **Styling**: Modern, branded XSLT template (`assets/sitemap.xsl`) with live client-side search filtering.
+- **Extensibility**: Added developer filter hooks (`frank_seo_sitemap_url_entry`, `frank_seo_sitemap_post_types`, `frank_seo_sitemap_taxonomies`, `frank_seo_sitemap_index_items`, `frank_seo_sitemap_items_per_page`).
+
+### 1.1.1 (2026-08-24)
+- Tested plugin with latest WordPress v7.1
 
 ### 1.1.0 (2026-06-11)
 - **Compliance**: Passed comprehensive WordPress Plugin Review Guidelines compliance audit.
