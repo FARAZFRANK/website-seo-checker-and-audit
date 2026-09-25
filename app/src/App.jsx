@@ -13,9 +13,11 @@ import HelpOutlineIcon from '@mui/icons-material/HelpOutline';
 import CompareArrowsIcon from '@mui/icons-material/CompareArrows';
 import ChevronLeftIcon from '@mui/icons-material/ChevronLeft';
 import ChevronRightIcon from '@mui/icons-material/ChevronRight';
+import AccountTreeIcon from '@mui/icons-material/AccountTree';
 
 import Dashboard from './pages/Dashboard';
 import Settings from './pages/Settings';
+import Sitemap from './pages/Sitemap';
 import PageDetail from './pages/PageDetail';
 import History from './pages/History';
 import Redirects from './pages/Redirects';
@@ -39,6 +41,8 @@ function Layout() {
       window.location.hash = '#/how-to-use';
     } else if (page === 'frank-seo-comparison' && location.pathname !== '/comparison') {
       window.location.hash = '#/comparison';
+    } else if (page === 'frank-seo-sitemap' && location.pathname !== '/sitemap') {
+      window.location.hash = '#/sitemap';
     } else if (page === 'frank-seo-audit' && location.pathname === '/') {
        // already at root, do nothing
     }
@@ -90,6 +94,7 @@ function Layout() {
     { text: 'Audit History', icon: <HistoryIcon />, path: '/history' },
     { text: 'Redirects', icon: <SwapCallsIcon />, path: '/redirects' },
     { text: '404 Monitor', icon: <ReportProblemIcon />, path: '/404-monitor' },
+    { text: 'XML Sitemap', icon: <AccountTreeIcon />, path: '/sitemap' },
     { text: 'Settings', icon: <SettingsIcon />, path: '/settings' },
     { text: 'How To Use', icon: <HelpOutlineIcon />, path: '/how-to-use' },
     { text: 'Comparison', icon: <CompareArrowsIcon />, path: '/comparison' }
@@ -251,6 +256,7 @@ function Layout() {
           <Route path="/history" element={<History />} />
           <Route path="/redirects" element={<Redirects />} />
           <Route path="/404-monitor" element={<Logs404 />} />
+          <Route path="/sitemap" element={<Sitemap />} />
           <Route path="/settings" element={<Settings />} />
           <Route path="/how-to-use" element={<HowToUse />} />
           <Route path="/comparison" element={<Comparison />} />

@@ -60,6 +60,15 @@ class Frank_SEO_Admin {
 
 		add_submenu_page(
 			'frank-seo-audit',
+			__( 'XML Sitemap', 'frank-website-seo-checker-and-audit' ),
+			__( 'XML Sitemap', 'frank-website-seo-checker-and-audit' ),
+			'manage_options',
+			'frank-seo-sitemap',
+			array( $this, 'display_plugin_setup_page' )
+		);
+
+		add_submenu_page(
+			'frank-seo-audit',
 			__( 'Our Plugin vs Others', 'frank-website-seo-checker-and-audit' ),
 			__( 'Comparison', 'frank-website-seo-checker-and-audit' ),
 			'manage_options',
