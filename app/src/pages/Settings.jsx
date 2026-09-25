@@ -1293,7 +1293,7 @@ function Settings() {
         </DialogTitle>
         <DialogContent>
           <DialogContentText sx={{ fontFamily: 'var(--sans)', color: 'var(--text)' }}>
-            Are you absolutely sure you want to reset the plugin? This will delete all your settings, page audit history, and detected issues permanently.
+            Are you absolutely sure you want to reset the plugin? This will reset all your configurations to fresh defaults, purge XML sitemap caches, and delete page audit history, 404 logs, and redirects permanently.
           </DialogContentText>
         </DialogContent>
         <DialogActions sx={{ padding: '16px 24px' }}>

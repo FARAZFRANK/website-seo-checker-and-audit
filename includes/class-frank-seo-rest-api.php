@@ -838,10 +838,60 @@ class Frank_SEO_REST_API {
 		// phpcs:ignore WordPress.DB.DirectDatabaseQuery.DirectQuery, WordPress.DB.DirectDatabaseQuery.NoCaching
 		$wpdb->query( "DELETE FROM {$wpdb->postmeta} WHERE meta_key LIKE '\_frank\_seo\_%'" );
 
-		// Flush rewrite rules to remove sitemap endpoint
+		// Clear sitemap transient caches
+		// phpcs:ignore WordPress.DB.DirectDatabaseQuery.DirectQuery, WordPress.DB.DirectDatabaseQuery.NoCaching
+		$wpdb->query( "DELETE FROM {$wpdb->options} WHERE option_name LIKE '\_transient\_frank\_seo\_sm\_%' OR option_name LIKE '\_transient\_timeout\_frank\_seo\_sm\_%'" );
+
+		if ( class_exists( 'Frank_SEO_Sitemap' ) ) {
+			Frank_SEO_Sitemap::clear_sitemap_cache();
+		}
+
+		// Re-initialize default options so all components and sitemaps function immediately with clean settings
+		$default_settings = array(
+			'xmlSitemaps'           => true,
+			'enableSitemap'         => true,
+			'sitemapPostTypes'      => array( 'post', 'page' ),
+			'sitemapTaxonomies'     => array( 'category' ),
+			'sitemapEntriesPerPage' => 1000,
+			'sitemapIncludeImages'  => true,
+			'sitemapExcludePostIds' => '',
+			'excludePatterns'       => "*/wp-admin/*\n*/wp-includes/*\n*?replytocom=*",
+			'crawlDepth'            => 3,
+			'crawlInterval'         => 2,
+			'schedule'              => 'Monthly',
+			'checkMetaData'         => true,
+			'checkAltTags'          => true,
+			'checkBrokenLinks'      => false,
+			'excludeMenus'          => true,
+			'excludeFooters'        => true,
+			'excludeSidebars'       => true,
+			'emailRecipients'       => get_option( 'admin_email' ),
+			'enableScanEmail'       => false,
+			'enableScheduledEmail'  => false,
+			'geminiApiKey'          => '',
+			'localBusinessName'     => '',
+			'localBusinessType'     => 'LocalBusiness',
+			'localBusinessAddress'  => '',
+			'localBusinessCity'     => '',
+			'localBusinessZip'      => '',
+			'localBusinessPhone'    => '',
+			'enableWooCommerceSEO'  => true,
+			'enableLocalSEO'        => true,
+			'enableOpenGraph'       => true,
+			'enableImageSEO'        => true,
+			'enableAdvancedSchema'  => true,
+			'ga4Id'                 => '',
+			'gscVerification'       => '',
+			'enableAiBotBlocker'    => true,
+			'enableAutoRedirects'   => true,
+			'enableBreadcrumbs'     => true,
+		);
+		update_option( 'frank_seo_settings', $default_settings );
+
+		// Flush rewrite rules to ensure clean sitemap endpoints
 		flush_rewrite_rules();
 
-		return rest_ensure_response( array( 'success' => true, 'message' => 'Plugin reset successfully.' ) );
+		return rest_ensure_response( array( 'success' => true, 'message' => 'Plugin reset successfully. Fresh defaults restored.' ) );
 	}
 
 	public function scan_complete_report( $request ) {

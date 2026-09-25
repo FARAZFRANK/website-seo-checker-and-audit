@@ -11,6 +11,7 @@ import FindInPageIcon from '@mui/icons-material/FindInPage';
 import MapIcon from '@mui/icons-material/Map';
 import TuneIcon from '@mui/icons-material/Tune';
 import ContactSupportIcon from '@mui/icons-material/ContactSupport';
+import AccountTreeIcon from '@mui/icons-material/AccountTree';
 
 function TabPanel(props) {
   const { children, value, index, ...other } = props;
@@ -74,6 +75,7 @@ function HowToUse() {
           <Tab icon={<HistoryIcon />} iconPosition="start" label="Audit History" />
           <Tab icon={<SwapCallsIcon />} iconPosition="start" label="Redirects" />
           <Tab icon={<ReportProblemIcon />} iconPosition="start" label="404 Monitor" />
+          <Tab icon={<AccountTreeIcon />} iconPosition="start" label="XML Sitemap" />
           <Tab icon={<SettingsIcon />} iconPosition="start" label="Settings" />
           <Tab icon={<ContactSupportIcon />} iconPosition="start" label="Support" />
         </Tabs>
@@ -276,9 +278,74 @@ function HowToUse() {
       </TabPanel>
 
       {/* =========================================
-          SETTINGS TAB 
+          XML SITEMAP TAB 
       ========================================= */}
       <TabPanel value={value} index={4}>
+        <Accordion defaultExpanded sx={accordionStyle}>
+          <AccordionSummary expandIcon={<ExpandMoreIcon sx={{ color: 'var(--text)' }} />}>
+            <Box sx={{ display: 'flex', alignItems: 'center', gap: 2 }}>
+              <AccountTreeIcon sx={{ color: 'var(--primary)' }} />
+              <Typography variant="h6" sx={{ fontWeight: 600, fontFamily: 'var(--sans)', color: 'var(--text-h)' }}>XML Sitemap Architecture & Indexing (/sitemap_index.xml)</Typography>
+            </Box>
+          </AccordionSummary>
+          <AccordionDetails sx={{ color: 'var(--text)', fontFamily: 'var(--sans)' }}>
+            <Typography variant="body1" paragraph>
+              <strong>What it does:</strong> Frank SEO automatically provides an enterprise-grade XML Sitemap engine conforming to the latest Google and Bing webmaster standards. Instead of generating a single massive file that crashes your server on large websites, it serves an index file (<code>/sitemap_index.xml</code>) linking to sub-sitemaps (e.g. <code>post-sitemap1.xml</code>, <code>page-sitemap1.xml</code>).
+            </Typography>
+            <Typography variant="body1" paragraph><strong>Key Capabilities:</strong></Typography>
+            <ul>
+              <li style={{ marginBottom: '10px' }}><strong>Sitemap Pagination:</strong> Splits content into chunked sub-sitemaps based on your configurable URLs per sitemap limit (100 to 2,000 URLs).</li>
+              <li style={{ marginBottom: '10px' }}><strong>Branded XSLT View:</strong> Opening your sitemap in any browser displays a sleek, branded interactive table with real-time live search filtering.</li>
+              <li style={{ marginBottom: '10px' }}><strong>Submitting to Google:</strong> Simply copy your sitemap index URL and paste <code>sitemap_index.xml</code> into your Google Search Console Sitemaps field.</li>
+            </ul>
+          </AccordionDetails>
+        </Accordion>
+
+        <Accordion sx={accordionStyle}>
+          <AccordionSummary expandIcon={<ExpandMoreIcon sx={{ color: 'var(--text)' }} />}>
+            <Box sx={{ display: 'flex', alignItems: 'center', gap: 2 }}>
+              <AutoAwesomeIcon sx={{ color: '#10b981' }} />
+              <Typography variant="h6" sx={{ fontWeight: 600, fontFamily: 'var(--sans)', color: 'var(--text-h)' }}>Google Image Sitemaps Extraction</Typography>
+            </Box>
+          </AccordionSummary>
+          <AccordionDetails sx={{ color: 'var(--text)', fontFamily: 'var(--sans)' }}>
+            <Typography variant="body1" paragraph>
+              <strong>What it does:</strong> Google Images can drive significant organic search traffic. Under the <strong>Images & Media</strong> sub-tab, Frank SEO automatically extracts featured images, Gutenberg and Classic editor content photos, and WooCommerce product gallery images and wraps them inside official <code>&lt;image:image&gt;</code> tags.
+            </Typography>
+            <Typography variant="body1">
+              <strong>Usecase:</strong> Leave this setting ON so Google immediately indexes your visual media alongside your articles and products.
+            </Typography>
+          </AccordionDetails>
+        </Accordion>
+
+        <Accordion sx={accordionStyle}>
+          <AccordionSummary expandIcon={<ExpandMoreIcon sx={{ color: 'var(--text)' }} />}>
+            <Box sx={{ display: 'flex', alignItems: 'center', gap: 2 }}>
+              <TuneIcon sx={{ color: '#f59e0b' }} />
+              <Typography variant="h6" sx={{ fontWeight: 600, fontFamily: 'var(--sans)', color: 'var(--text-h)' }}>Auto-Sync, Taxonomies & Intelligent Caching</Typography>
+            </Box>
+          </AccordionSummary>
+          <AccordionDetails sx={{ color: 'var(--text)', fontFamily: 'var(--sans)' }}>
+            <Typography variant="body1" paragraph>
+              <strong>Intelligent Transient Caching:</strong> Rather than executing database queries on every bot hit, sitemaps are cached in transient memory for 24 hours. The second you publish, edit, or trash a post or category, Frank SEO automatically invalidates and regenerates the cache dynamically.
+            </Typography>
+            <Typography variant="body1" paragraph><strong>Auto-Sync Safeguards:</strong></Typography>
+            <ul>
+              <li style={{ marginBottom: '10px' }}><strong>NoIndex Sync:</strong> Any post marked 'NoIndex' in the editor is automatically excluded from sitemaps.</li>
+              <li style={{ marginBottom: '10px' }}><strong>Soft 404 Prevention:</strong> Categories, tags, and taxonomies are only indexed if they have at least 1 published post assigned (count &gt; 0).</li>
+              <li style={{ marginBottom: '10px' }}><strong>Redirects Filtering:</strong> Posts with active 301/302 redirects are automatically filtered out.</li>
+            </ul>
+            <Typography variant="body1">
+              <strong>Purge Cache Button:</strong> You can click the <strong>"Purge Cache"</strong> button in the XML Sitemap tab header at any time to instantly flush all cached sitemaps and reload rewrite rules.
+            </Typography>
+          </AccordionDetails>
+        </Accordion>
+      </TabPanel>
+
+      {/* =========================================
+          SETTINGS TAB 
+      ========================================= */}
+      <TabPanel value={value} index={5}>
         <Accordion defaultExpanded sx={accordionStyle}>
           <AccordionSummary expandIcon={<ExpandMoreIcon sx={{ color: 'var(--text)' }} />}>
             <Box sx={{ display: 'flex', alignItems: 'center', gap: 2 }}>
@@ -324,7 +391,7 @@ function HowToUse() {
 
             <Typography variant="subtitle1" sx={{ fontWeight: 700, mt: 3, mb: 1, color: '#ef4444' }}>6. Danger Zone</Typography>
             <Typography variant="body2" paragraph>
-              <strong>Completely Reset Plugin Data:</strong> If you ever want to wipe the slate clean, clicking the red reset button at the bottom of the Settings page will delete all audit history, 404 logs, redirects, plugin settings, and completely erase all SEO metadata (Titles, Descriptions, Schema) the plugin ever added to your posts. This cannot be undone.
+              <strong>Completely Reset Plugin Data:</strong> If you ever want to wipe the slate clean, clicking the red reset button at the bottom of the Settings page will delete all audit history, 404 logs, redirects, purge XML sitemap transient caches, and restore clean defaults. This cannot be undone.
             </Typography>
           </AccordionDetails>
         </Accordion>
@@ -333,7 +400,7 @@ function HowToUse() {
       {/* =========================================
           SUPPORT TAB 
       ========================================= */}
-      <TabPanel value={value} index={5}>
+      <TabPanel value={value} index={6}>
         <Accordion defaultExpanded sx={accordionStyle}>
           <AccordionSummary expandIcon={<ExpandMoreIcon sx={{ color: 'var(--text)' }} />}>
             <Box sx={{ display: 'flex', alignItems: 'center', gap: 2 }}>
