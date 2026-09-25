@@ -26,3 +26,4 @@ Desktop.ini
 # Scratch / dev-only files
 scratch_*.php
 scratch/
+.playwright-mcp/

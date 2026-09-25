@@ -237,6 +237,19 @@ class Frank_SEO_REST_API {
 			'callback'            => array( $this, 'generate_seo_meta_ai' ),
 			'permission_callback' => array( $this, 'check_permission' ),
 		) );
+
+		// XML Sitemap routes
+		register_rest_route( $namespace, '/sitemap/metadata', array(
+			'methods'             => WP_REST_Server::READABLE,
+			'callback'            => array( $this, 'get_sitemap_metadata' ),
+			'permission_callback' => array( $this, 'check_permission' ),
+		) );
+
+		register_rest_route( $namespace, '/sitemap/clear-cache', array(
+			'methods'             => WP_REST_Server::CREATABLE,
+			'callback'            => array( $this, 'clear_sitemap_cache' ),
+			'permission_callback' => array( $this, 'check_permission' ),
+		) );
 	}
 
 	public function check_permission() {
@@ -617,6 +630,12 @@ class Frank_SEO_REST_API {
 		// Ensure all keys are populated with defaults if they don't exist
 		$defaults = array(
 			'xmlSitemaps'      => true,
+			'enableSitemap'    => true,
+			'sitemapPostTypes' => array( 'post', 'page' ),
+			'sitemapTaxonomies'=> array( 'category' ),
+			'sitemapEntriesPerPage' => 1000,
+			'sitemapIncludeImages'  => true,
+			'sitemapExcludePostIds' => '',
 			'excludePatterns'  => "*/wp-admin/*\n*/wp-includes/*\n*?replytocom=*",
 			'crawlDepth'       => 3,
 			'crawlInterval'    => 2,
@@ -653,6 +672,12 @@ class Frank_SEO_REST_API {
 
 		// Type cast variables to match javascript types exactly
 		$settings['xmlSitemaps']      = (bool) $settings['xmlSitemaps'];
+		$settings['enableSitemap']    = isset( $settings['enableSitemap'] ) ? (bool) $settings['enableSitemap'] : (bool) $settings['xmlSitemaps'];
+		$settings['sitemapPostTypes'] = is_array( $settings['sitemapPostTypes'] ) ? array_values( array_map( 'sanitize_key', $settings['sitemapPostTypes'] ) ) : array( 'post', 'page' );
+		$settings['sitemapTaxonomies']= is_array( $settings['sitemapTaxonomies'] ) ? array_values( array_map( 'sanitize_key', $settings['sitemapTaxonomies'] ) ) : array( 'category' );
+		$settings['sitemapEntriesPerPage'] = max( 100, min( 2000, intval( $settings['sitemapEntriesPerPage'] ) ) );
+		$settings['sitemapIncludeImages']  = (bool) $settings['sitemapIncludeImages'];
+		$settings['sitemapExcludePostIds'] = sanitize_text_field( $settings['sitemapExcludePostIds'] );
 		$settings['crawlDepth']       = (int) $settings['crawlDepth'];
 		$settings['crawlInterval']    = (float) $settings['crawlInterval'];
 		$settings['checkMetaData']    = (bool) $settings['checkMetaData'];
@@ -683,7 +708,10 @@ class Frank_SEO_REST_API {
 		$settings['enableAutoRedirects']  = (bool) $settings['enableAutoRedirects'];
 		$settings['enableBreadcrumbs']    = (bool) $settings['enableBreadcrumbs'];
 
-		return rest_ensure_response( $settings );
+		return rest_ensure_response( array(
+			'success'  => true,
+			'settings' => $settings,
+		) );
 	}
 
 	/**
@@ -698,6 +726,24 @@ class Frank_SEO_REST_API {
 		// Sanitize inputs
 		$sanitized_settings = array();
 		$sanitized_settings['xmlSitemaps']      = isset( $params['xmlSitemaps'] ) ? (bool) $params['xmlSitemaps'] : true;
+		$sanitized_settings['enableSitemap']    = isset( $params['enableSitemap'] ) ? (bool) $params['enableSitemap'] : ( isset( $params['xmlSitemaps'] ) ? (bool) $params['xmlSitemaps'] : true );
+
+		if ( isset( $params['sitemapPostTypes'] ) && is_array( $params['sitemapPostTypes'] ) ) {
+			$sanitized_settings['sitemapPostTypes'] = array_values( array_map( 'sanitize_key', $params['sitemapPostTypes'] ) );
+		} else {
+			$sanitized_settings['sitemapPostTypes'] = array( 'post', 'page' );
+		}
+
+		if ( isset( $params['sitemapTaxonomies'] ) && is_array( $params['sitemapTaxonomies'] ) ) {
+			$sanitized_settings['sitemapTaxonomies'] = array_values( array_map( 'sanitize_key', $params['sitemapTaxonomies'] ) );
+		} else {
+			$sanitized_settings['sitemapTaxonomies'] = array( 'category' );
+		}
+
+		$sanitized_settings['sitemapEntriesPerPage'] = isset( $params['sitemapEntriesPerPage'] ) ? max( 100, min( 2000, intval( $params['sitemapEntriesPerPage'] ) ) ) : 1000;
+		$sanitized_settings['sitemapIncludeImages']  = isset( $params['sitemapIncludeImages'] ) ? (bool) $params['sitemapIncludeImages'] : true;
+		$sanitized_settings['sitemapExcludePostIds'] = isset( $params['sitemapExcludePostIds'] ) ? sanitize_text_field( $params['sitemapExcludePostIds'] ) : '';
+
 		$sanitized_settings['excludePatterns']  = isset( $params['excludePatterns'] ) ? sanitize_textarea_field( $params['excludePatterns'] ) : '';
 		$sanitized_settings['crawlDepth']       = isset( $params['crawlDepth'] ) ? min( 5, max( 1, intval( $params['crawlDepth'] ) ) ) : 3;
 		$sanitized_settings['crawlInterval']    = isset( $params['crawlInterval'] ) ? min( 5.0, max( 0.5, floatval( $params['crawlInterval'] ) ) ) : 2.0;
@@ -740,6 +786,10 @@ class Frank_SEO_REST_API {
 		$sanitized_settings['enableBreadcrumbs']    = isset( $params['enableBreadcrumbs'] ) ? (bool) $params['enableBreadcrumbs'] : true;
 
 		update_option( 'frank_seo_settings', $sanitized_settings );
+
+		// Clear sitemap cache when settings are saved
+		$sitemap_engine = new Frank_SEO_Sitemap();
+		$sitemap_engine->clear_cache();
 
 		// Update background cron schedule
 		$this->update_cron_schedule( $sanitized_settings );
@@ -1062,6 +1112,68 @@ class Frank_SEO_REST_API {
 			'success'     => true,
 			'title'       => sanitize_text_field( $seo_meta['title'] ),
 			'description' => sanitize_text_field( $seo_meta['description'] ),
+		) );
+	}
+
+	/**
+	 * Get XML Sitemap metadata, detected post types, taxonomies, and live status.
+	 */
+	public function get_sitemap_metadata( $request ) {
+		$settings = get_option( 'frank_seo_settings', array() );
+		$enabled  = isset( $settings['enableSitemap'] ) ? (bool) $settings['enableSitemap'] : ( isset( $settings['xmlSitemaps'] ) ? (bool) $settings['xmlSitemaps'] : true );
+
+		// Detect all public post types
+		$post_types_objects = get_post_types( array( 'public' => true ), 'objects' );
+		unset( $post_types_objects['attachment'] );
+
+		$post_types_list = array();
+		foreach ( $post_types_objects as $pt_name => $pt_obj ) {
+			$count = wp_count_posts( $pt_name );
+			$published = isset( $count->publish ) ? (int) $count->publish : 0;
+			$post_types_list[] = array(
+				'name'      => $pt_name,
+				'label'     => $pt_obj->labels->name ?: $pt_name,
+				'count'     => $published,
+			);
+		}
+
+		// Detect all public taxonomies
+		$taxonomies_objects = get_taxonomies( array( 'public' => true ), 'objects' );
+		unset( $taxonomies_objects['post_format'] );
+
+		$taxonomies_list = array();
+		foreach ( $taxonomies_objects as $tax_name => $tax_obj ) {
+			$terms_count = (int) wp_count_terms( array(
+				'taxonomy'   => $tax_name,
+				'hide_empty' => true,
+			) );
+			$taxonomies_list[] = array(
+				'name'      => $tax_name,
+				'label'     => $tax_obj->labels->name ?: $tax_name,
+				'count'     => $terms_count,
+			);
+		}
+
+		return rest_ensure_response( array(
+			'success'              => true,
+			'sitemap_url'          => home_url( '/sitemap_index.xml' ),
+			'is_enabled'           => $enabled,
+			'available_post_types' => $post_types_list,
+			'available_taxonomies' => $taxonomies_list,
+		) );
+	}
+
+	/**
+	 * Clear XML Sitemap cache.
+	 */
+	public function clear_sitemap_cache( $request ) {
+		$sitemap_engine = new Frank_SEO_Sitemap();
+		$sitemap_engine->clear_cache();
+		flush_rewrite_rules();
+
+		return rest_ensure_response( array(
+			'success' => true,
+			'message' => 'Sitemap transient cache flushed and rewrite rules refreshed successfully.',
 		) );
 	}
 }

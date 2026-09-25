@@ -19,7 +19,11 @@ import {
   DialogContentText,
   DialogTitle,
   InputAdornment,
-  IconButton
+  IconButton,
+  Chip,
+  Tabs,
+  Tab,
+  Tooltip
 } from '@mui/material';
 import SettingsIcon from '@mui/icons-material/Settings';
 import SaveIcon from '@mui/icons-material/Save';
@@ -34,12 +38,25 @@ import StorefrontIcon from '@mui/icons-material/Storefront';
 import Visibility from '@mui/icons-material/Visibility';
 import VisibilityOff from '@mui/icons-material/VisibilityOff';
 import AutoAwesomeIcon from '@mui/icons-material/AutoAwesome';
-import { getSettings, updateSettings, resetPlugin } from '../api';
+import MapIcon from '@mui/icons-material/Map';
+import OpenInNewIcon from '@mui/icons-material/OpenInNew';
+import CachedIcon from '@mui/icons-material/Cached';
+import CheckCircleOutlineIcon from '@mui/icons-material/CheckCircleOutline';
+import LayersIcon from '@mui/icons-material/Layers';
+import CategoryIcon from '@mui/icons-material/Category';
+import RefreshIcon from '@mui/icons-material/Refresh';
+import { getSettings, updateSettings, resetPlugin, getSitemapMetadata, clearSitemapCache } from '../api';
 
 function Settings() {
   const [loading, setLoading] = useState(true);
   const [settings, setSettings] = useState({
     xmlSitemaps: true,
+    enableSitemap: true,
+    sitemapPostTypes: ['post', 'page'],
+    sitemapTaxonomies: ['category'],
+    sitemapEntriesPerPage: 1000,
+    sitemapIncludeImages: true,
+    sitemapExcludePostIds: '',
     excludePatterns: "*/wp-admin/*\n*/wp-includes/*\n*?replytocom=*",
     crawlDepth: 3,
     crawlInterval: 2,
@@ -72,6 +89,20 @@ function Settings() {
     enableBreadcrumbs: true,
   });
 
+  const [sitemapMeta, setSitemapMeta] = useState({
+    sitemap_url: '/sitemap_index.xml',
+    is_enabled: true,
+    available_post_types: [
+      { name: 'post', label: 'Posts', count: 0 },
+      { name: 'page', label: 'Pages', count: 0 }
+    ],
+    available_taxonomies: [
+      { name: 'category', label: 'Categories', count: 0 }
+    ]
+  });
+  const [sitemapTab, setSitemapTab] = useState(0);
+  const [clearingSitemapCache, setClearingSitemapCache] = useState(false);
+
   const [showApiKey, setShowApiKey] = useState(false);
   const [saving, setSaving] = useState(false);
   const [openToast, setOpenToast] = useState(false);
@@ -85,11 +116,17 @@ function Settings() {
     const fetchSettings = async () => {
       try {
         const response = await getSettings();
-        if (response && response.success && response.settings) {
-          const apiSettings = response.settings;
+        if (response && (response.settings || response.xmlSitemaps !== undefined)) {
+          const apiSettings = response.settings || response;
           setSettings(prev => ({
             ...prev,
             xmlSitemaps: apiSettings.xmlSitemaps !== undefined ? !!apiSettings.xmlSitemaps : prev.xmlSitemaps,
+            enableSitemap: apiSettings.enableSitemap !== undefined ? !!apiSettings.enableSitemap : (apiSettings.xmlSitemaps !== undefined ? !!apiSettings.xmlSitemaps : prev.enableSitemap),
+            sitemapPostTypes: Array.isArray(apiSettings.sitemapPostTypes) ? apiSettings.sitemapPostTypes : prev.sitemapPostTypes,
+            sitemapTaxonomies: Array.isArray(apiSettings.sitemapTaxonomies) ? apiSettings.sitemapTaxonomies : prev.sitemapTaxonomies,
+            sitemapEntriesPerPage: apiSettings.sitemapEntriesPerPage ? Number(apiSettings.sitemapEntriesPerPage) : prev.sitemapEntriesPerPage,
+            sitemapIncludeImages: apiSettings.sitemapIncludeImages !== undefined ? !!apiSettings.sitemapIncludeImages : prev.sitemapIncludeImages,
+            sitemapExcludePostIds: apiSettings.sitemapExcludePostIds !== undefined ? apiSettings.sitemapExcludePostIds : prev.sitemapExcludePostIds,
             excludePatterns: apiSettings.excludePatterns !== undefined ? apiSettings.excludePatterns : prev.excludePatterns,
             crawlDepth: apiSettings.crawlDepth !== undefined ? Number(apiSettings.crawlDepth) : prev.crawlDepth,
             crawlInterval: apiSettings.crawlInterval !== undefined ? Number(apiSettings.crawlInterval) : prev.crawlInterval,
@@ -122,6 +159,16 @@ function Settings() {
             enableBreadcrumbs: apiSettings.enableBreadcrumbs !== undefined ? !!apiSettings.enableBreadcrumbs : prev.enableBreadcrumbs,
           }));
         }
+
+        // Fetch sitemap metadata
+        try {
+          const sitemapRes = await getSitemapMetadata();
+          if (sitemapRes && sitemapRes.success) {
+            setSitemapMeta(sitemapRes);
+          }
+        } catch (sErr) {
+          console.error("Failed to fetch sitemap metadata:", sErr);
+        }
       } catch (err) {
         console.error("Failed to fetch settings from API:", err);
       } finally {
@@ -130,6 +177,25 @@ function Settings() {
     };
     fetchSettings();
   }, []);
+
+  const handleClearSitemapCache = async () => {
+    setClearingSitemapCache(true);
+    try {
+      const res = await clearSitemapCache();
+      if (res && res.success) {
+        setToastMessage(res.message || 'Sitemap cache flushed and refreshed successfully!');
+        setOpenToast(true);
+      } else {
+        setErrorMessage(res?.message || 'Failed to flush sitemap cache.');
+        setErrorToast(true);
+      }
+    } catch (err) {
+      setErrorMessage('Network error while flushing sitemap cache.');
+      setErrorToast(true);
+    } finally {
+      setClearingSitemapCache(false);
+    }
+  };
 
   const handleSave = async () => {
     setSaving(true);
@@ -234,6 +300,423 @@ function Settings() {
         {/* Left Columns - Detailed settings modules */}
         <Grid item xs={12} md={8}>
           <Box sx={{ display: 'flex', flexDirection: 'column', gap: 4 }}>
+            {/* XML Sitemap Module Card */}
+            <Box className="glass-panel" sx={{ p: 4, borderRadius: '20px', border: '1px solid var(--border)' }}>
+              <Box sx={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between', flexWrap: 'wrap', gap: 2, mb: 3 }}>
+                <Box sx={{ display: 'flex', alignItems: 'center', gap: 1.5 }}>
+                  <Box sx={{ 
+                    width: 42, 
+                    height: 42, 
+                    borderRadius: '12px', 
+                    bgcolor: 'rgba(99, 102, 241, 0.1)', 
+                    display: 'flex', 
+                    alignItems: 'center', 
+                    justifyContent: 'center',
+                    color: 'var(--primary)'
+                  }}>
+                    <MapIcon sx={{ fontSize: 24 }} />
+                  </Box>
+                  <Box>
+                    <Box sx={{ display: 'flex', alignItems: 'center', gap: 1.5 }}>
+                      <Typography variant="h6" sx={{ fontWeight: 800, fontFamily: 'var(--sans)', color: 'var(--text-h)', letterSpacing: '-0.02em' }}>
+                        XML Sitemap Engine
+                      </Typography>
+                      <Chip 
+                        label={settings.enableSitemap ? "Active & Synchronized" : "Disabled"} 
+                        size="small"
+                        sx={{ 
+                          fontWeight: 700, 
+                          fontSize: '0.72rem',
+                          fontFamily: 'var(--sans)',
+                          bgcolor: settings.enableSitemap ? 'rgba(16, 185, 129, 0.12)' : 'rgba(100, 116, 139, 0.12)',
+                          color: settings.enableSitemap ? '#059669' : '#64748b',
+                          borderRadius: '8px'
+                        }}
+                      />
+                    </Box>
+                    <Typography sx={{ color: 'var(--text)', opacity: 0.8, fontSize: '0.82rem', fontFamily: 'var(--sans)' }}>
+                      High-performance XML sitemap index with smart pagination, caching, and auto-sync.
+                    </Typography>
+                  </Box>
+                </Box>
+
+                <Box sx={{ display: 'flex', alignItems: 'center', gap: 1.5 }}>
+                  {settings.enableSitemap && (
+                    <Button
+                      variant="outlined"
+                      size="small"
+                      href={sitemapMeta.sitemap_url || `${window.location.origin}/sitemap_index.xml`}
+                      target="_blank"
+                      rel="noopener noreferrer"
+                      endIcon={<OpenInNewIcon sx={{ fontSize: '15px !important' }} />}
+                      sx={{
+                        textTransform: 'none',
+                        fontFamily: 'var(--sans)',
+                        fontWeight: 700,
+                        fontSize: '0.8rem',
+                        borderRadius: '10px',
+                        color: 'var(--primary)',
+                        borderColor: 'rgba(99, 102, 241, 0.3)',
+                        '&:hover': {
+                          borderColor: 'var(--primary)',
+                          bgcolor: 'rgba(99, 102, 241, 0.06)'
+                        }
+                      }}
+                    >
+                      View Live Sitemap
+                    </Button>
+                  )}
+                  <Button
+                    variant="outlined"
+                    size="small"
+                    onClick={handleClearSitemapCache}
+                    disabled={clearingSitemapCache}
+                    startIcon={clearingSitemapCache ? <CircularProgress size={14} color="inherit" /> : <CachedIcon sx={{ fontSize: '16px !important' }} />}
+                    sx={{
+                      textTransform: 'none',
+                      fontFamily: 'var(--sans)',
+                      fontWeight: 600,
+                      fontSize: '0.8rem',
+                      borderRadius: '10px',
+                      color: 'var(--text)',
+                      borderColor: 'var(--border)',
+                      '&:hover': {
+                        borderColor: 'var(--text-h)',
+                        bgcolor: 'rgba(255, 255, 255, 0.05)'
+                      }
+                    }}
+                  >
+                    Purge Cache
+                  </Button>
+                </Box>
+              </Box>
+
+              {/* Master Toggle */}
+              <Box sx={{ 
+                p: 2.5, 
+                mb: 3, 
+                borderRadius: '14px', 
+                bgcolor: 'rgba(99, 102, 241, 0.04)', 
+                border: '1px solid rgba(99, 102, 241, 0.12)' 
+              }}>
+                <FormControlLabel
+                  control={
+                    <Switch 
+                      checked={settings.enableSitemap} 
+                      onChange={(e) => setSettings({ ...settings, enableSitemap: e.target.checked, xmlSitemaps: e.target.checked })}
+                      sx={{
+                        '& .MuiSwitch-switchBase.Mui-checked': {
+                          color: 'var(--primary)',
+                          '& + .MuiSwitch-track': {
+                            backgroundColor: 'var(--primary)',
+                          },
+                        },
+                      }}
+                    />
+                  }
+                  label={
+                    <Box>
+                      <Typography sx={{ fontWeight: 700, fontFamily: 'var(--sans)', fontSize: '0.95rem', color: 'var(--text-h)' }}>
+                        Enable XML Sitemap Generation
+                      </Typography>
+                      <Typography sx={{ color: 'var(--text)', opacity: 0.82, fontSize: '0.82rem', fontFamily: 'var(--sans)', mt: 0.2 }}>
+                        Serves index and sub-sitemaps conforming to Google and Bing guidelines. Automatically flushes cache on content publish and respects robots noindex directives.
+                      </Typography>
+                    </Box>
+                  }
+                />
+              </Box>
+
+              {settings.enableSitemap && (
+                <Box>
+                  {/* Sitemap Sub-Navigation Tabs */}
+                  <Tabs 
+                    value={sitemapTab} 
+                    onChange={(e, val) => setSitemapTab(val)}
+                    sx={{
+                      mb: 3,
+                      borderBottom: '1px solid var(--border)',
+                      '& .MuiTabs-indicator': {
+                        backgroundColor: 'var(--primary)',
+                        height: 3,
+                        borderRadius: '3px 3px 0 0'
+                      },
+                      '& .MuiTab-root': {
+                        textTransform: 'none',
+                        fontFamily: 'var(--sans)',
+                        fontWeight: 700,
+                        fontSize: '0.85rem',
+                        color: 'var(--text)',
+                        minHeight: 44,
+                        py: 1,
+                        px: 2,
+                        '&.Mui-selected': {
+                          color: 'var(--primary)'
+                        }
+                      }
+                    }}
+                  >
+                    <Tab icon={<LayersIcon sx={{ fontSize: 18 }} />} iconPosition="start" label="Post Types" />
+                    <Tab icon={<CategoryIcon sx={{ fontSize: 18 }} />} iconPosition="start" label="Taxonomies" />
+                    <Tab icon={<TuneIcon sx={{ fontSize: 18 }} />} iconPosition="start" label="Advanced Tuning" />
+                  </Tabs>
+
+                  {/* TAB 0: Post Types */}
+                  {sitemapTab === 0 && (
+                    <Box>
+                      <Typography sx={{ color: 'var(--text)', opacity: 0.85, fontSize: '0.84rem', fontFamily: 'var(--sans)', mb: 2.5 }}>
+                        Choose which published post types should be indexed in your sitemap. Redirected URLs (301/302), password-protected posts, and items marked 'noindex' are automatically excluded.
+                      </Typography>
+
+                      <Grid container spacing={2}>
+                        {sitemapMeta.available_post_types && sitemapMeta.available_post_types.length > 0 ? (
+                          sitemapMeta.available_post_types.map((pt) => {
+                            const isIncluded = settings.sitemapPostTypes.includes(pt.name);
+                            return (
+                              <Grid item xs={12} sm={6} key={pt.name}>
+                                <Box 
+                                  sx={{ 
+                                    p: 2, 
+                                    borderRadius: '12px', 
+                                    border: isIncluded ? '1.5px solid rgba(99, 102, 241, 0.4)' : '1px solid var(--border)',
+                                    bgcolor: isIncluded ? 'rgba(99, 102, 241, 0.03)' : 'transparent',
+                                    display: 'flex',
+                                    alignItems: 'center',
+                                    justifyContent: 'space-between',
+                                    transition: 'all 0.2s ease'
+                                  }}
+                                >
+                                  <Box>
+                                    <Box sx={{ display: 'flex', alignItems: 'center', gap: 1 }}>
+                                      <Typography sx={{ fontWeight: 700, fontFamily: 'var(--sans)', fontSize: '0.9rem', color: 'var(--text-h)' }}>
+                                        {pt.label}
+                                      </Typography>
+                                      <Chip 
+                                        label={`${pt.count} Published`} 
+                                        size="small" 
+                                        sx={{ 
+                                          height: 20, 
+                                          fontSize: '0.7rem', 
+                                          fontWeight: 600,
+                                          fontFamily: 'var(--sans)',
+                                          bgcolor: 'rgba(255, 255, 255, 0.08)' 
+                                        }} 
+                                      />
+                                    </Box>
+                                    <Typography sx={{ color: 'var(--text)', opacity: 0.7, fontSize: '0.75rem', fontFamily: 'monospace', mt: 0.3 }}>
+                                      /{pt.name}-sitemap.xml
+                                    </Typography>
+                                  </Box>
+                                  <Switch 
+                                    size="small"
+                                    checked={isIncluded}
+                                    onChange={(e) => {
+                                      const updated = e.target.checked
+                                        ? [...settings.sitemapPostTypes, pt.name]
+                                        : settings.sitemapPostTypes.filter((name) => name !== pt.name);
+                                      setSettings({ ...settings, sitemapPostTypes: updated });
+                                    }}
+                                    sx={{
+                                      '& .MuiSwitch-switchBase.Mui-checked': {
+                                        color: 'var(--primary)',
+                                        '& + .MuiSwitch-track': {
+                                          backgroundColor: 'var(--primary)',
+                                        },
+                                      },
+                                    }}
+                                  />
+                                </Box>
+                              </Grid>
+                            );
+                          })
+                        ) : (
+                          <Grid item xs={12}>
+                            <Typography sx={{ color: 'var(--text)', fontSize: '0.85rem' }}>
+                              Loading detected post types...
+                            </Typography>
+                          </Grid>
+                        )}
+                      </Grid>
+                    </Box>
+                  )}
+
+                  {/* TAB 1: Taxonomies */}
+                  {sitemapTab === 1 && (
+                    <Box>
+                      <Typography sx={{ color: 'var(--text)', opacity: 0.85, fontSize: '0.84rem', fontFamily: 'var(--sans)', mb: 2.5 }}>
+                        Select taxonomy archives to include in the sitemap. To prevent empty search results and soft 404 errors, only terms with at least 1 published post are served.
+                      </Typography>
+
+                      <Grid container spacing={2}>
+                        {sitemapMeta.available_taxonomies && sitemapMeta.available_taxonomies.length > 0 ? (
+                          sitemapMeta.available_taxonomies.map((tax) => {
+                            const isIncluded = settings.sitemapTaxonomies.includes(tax.name);
+                            return (
+                              <Grid item xs={12} sm={6} key={tax.name}>
+                                <Box 
+                                  sx={{ 
+                                    p: 2, 
+                                    borderRadius: '12px', 
+                                    border: isIncluded ? '1.5px solid rgba(99, 102, 241, 0.4)' : '1px solid var(--border)',
+                                    bgcolor: isIncluded ? 'rgba(99, 102, 241, 0.03)' : 'transparent',
+                                    display: 'flex',
+                                    alignItems: 'center',
+                                    justifyContent: 'space-between',
+                                    transition: 'all 0.2s ease'
+                                  }}
+                                >
+                                  <Box>
+                                    <Box sx={{ display: 'flex', alignItems: 'center', gap: 1 }}>
+                                      <Typography sx={{ fontWeight: 700, fontFamily: 'var(--sans)', fontSize: '0.9rem', color: 'var(--text-h)' }}>
+                                        {tax.label}
+                                      </Typography>
+                                      <Chip 
+                                        label={`${tax.count} Terms`} 
+                                        size="small" 
+                                        sx={{ 
+                                          height: 20, 
+                                          fontSize: '0.7rem', 
+                                          fontWeight: 600,
+                                          fontFamily: 'var(--sans)',
+                                          bgcolor: 'rgba(255, 255, 255, 0.08)' 
+                                        }} 
+                                      />
+                                    </Box>
+                                    <Typography sx={{ color: 'var(--text)', opacity: 0.7, fontSize: '0.75rem', fontFamily: 'monospace', mt: 0.3 }}>
+                                      /{tax.name}-sitemap.xml
+                                    </Typography>
+                                  </Box>
+                                  <Switch 
+                                    size="small"
+                                    checked={isIncluded}
+                                    onChange={(e) => {
+                                      const updated = e.target.checked
+                                        ? [...settings.sitemapTaxonomies, tax.name]
+                                        : settings.sitemapTaxonomies.filter((name) => name !== tax.name);
+                                      setSettings({ ...settings, sitemapTaxonomies: updated });
+                                    }}
+                                    sx={{
+                                      '& .MuiSwitch-switchBase.Mui-checked': {
+                                        color: 'var(--primary)',
+                                        '& + .MuiSwitch-track': {
+                                          backgroundColor: 'var(--primary)',
+                                        },
+                                      },
+                                    }}
+                                  />
+                                </Box>
+                              </Grid>
+                            );
+                          })
+                        ) : (
+                          <Grid item xs={12}>
+                            <Typography sx={{ color: 'var(--text)', fontSize: '0.85rem' }}>
+                              Loading detected taxonomies...
+                            </Typography>
+                          </Grid>
+                        )}
+                      </Grid>
+                    </Box>
+                  )}
+
+                  {/* TAB 2: Advanced Tuning */}
+                  {sitemapTab === 2 && (
+                    <Box>
+                      <Grid container spacing={3}>
+                        <Grid item xs={12}>
+                          <Box sx={{ p: 2.5, borderRadius: '12px', border: '1px solid var(--border)', bgcolor: 'rgba(255, 255, 255, 0.02)' }}>
+                            <FormControlLabel
+                              control={
+                                <Switch 
+                                  checked={settings.sitemapIncludeImages} 
+                                  onChange={(e) => setSettings({ ...settings, sitemapIncludeImages: e.target.checked })}
+                                  sx={{
+                                    '& .MuiSwitch-switchBase.Mui-checked': {
+                                      color: 'var(--primary)',
+                                      '& + .MuiSwitch-track': {
+                                        backgroundColor: 'var(--primary)',
+                                      },
+                                    },
+                                  }}
+                                />
+                              }
+                              label={
+                                <Box>
+                                  <Typography sx={{ fontWeight: 700, fontFamily: 'var(--sans)', fontSize: '0.92rem', color: 'var(--text-h)' }}>
+                                    Image Sitemaps Extraction
+                                  </Typography>
+                                  <Typography sx={{ color: 'var(--text)', opacity: 0.8, fontSize: '0.8rem', fontFamily: 'var(--sans)', mt: 0.2 }}>
+                                    Automatically extracts featured images, inline content photos, and WooCommerce product galleries to attach standard &lt;image:image&gt; tags for Google Images discovery.
+                                  </Typography>
+                                </Box>
+                              }
+                            />
+                          </Box>
+                        </Grid>
+
+                        <Grid item xs={12}>
+                          <Box sx={{ p: 2.5, borderRadius: '12px', border: '1px solid var(--border)', bgcolor: 'rgba(255, 255, 255, 0.02)' }}>
+                            <Typography sx={{ fontWeight: 700, fontFamily: 'var(--sans)', fontSize: '0.92rem', color: 'var(--text-h)', mb: 0.5 }}>
+                              Entries Per Sitemap (Pagination): <span style={{ color: 'var(--primary)', fontWeight: 800 }}>{settings.sitemapEntriesPerPage} URLs</span>
+                            </Typography>
+                            <Typography sx={{ color: 'var(--text)', opacity: 0.8, fontSize: '0.8rem', fontFamily: 'var(--sans)', mb: 2 }}>
+                              Large websites are split into paginated sub-sitemaps (e.g. post-sitemap1.xml, post-sitemap2.xml) to avoid server memory overload.
+                            </Typography>
+                            <Slider
+                              value={settings.sitemapEntriesPerPage}
+                              min={100}
+                              max={2000}
+                              step={100}
+                              marks={[
+                                { value: 100, label: '100' },
+                                { value: 500, label: '500' },
+                                { value: 1000, label: '1000 (Recommended)' },
+                                { value: 2000, label: '2000' },
+                              ]}
+                              onChange={(e, val) => setSettings({ ...settings, sitemapEntriesPerPage: val })}
+                              sx={{
+                                mx: 1.5,
+                                width: 'calc(100% - 24px)',
+                                color: 'var(--primary)',
+                                '& .MuiSlider-markLabel': {
+                                  fontFamily: 'var(--sans)',
+                                  fontSize: '0.75rem',
+                                }
+                              }}
+                            />
+                          </Box>
+                        </Grid>
+
+                        <Grid item xs={12}>
+                          <TextField
+                            label="Exclude Specific Post / Page IDs"
+                            variant="outlined"
+                            fullWidth
+                            value={settings.sitemapExcludePostIds || ''}
+                            onChange={(e) => setSettings({ ...settings, sitemapExcludePostIds: e.target.value })}
+                            placeholder="e.g. 14, 25, 108"
+                            helperText="Comma-separated IDs of posts or pages to permanently exclude from all generated sitemaps."
+                            sx={{
+                              '& .MuiOutlinedInput-root': {
+                                borderRadius: '12px',
+                                fontFamily: 'var(--sans)',
+                                fontSize: '0.9rem',
+                                '& fieldset': { borderColor: 'var(--border)' },
+                                '&:hover fieldset': { borderColor: 'var(--primary)' },
+                                '&.Mui-focused fieldset': { borderColor: 'var(--primary)', borderWidth: '1px' }
+                              },
+                              '& .MuiInputLabel-root': { fontFamily: 'var(--sans)', fontSize: '0.9rem' },
+                              '& .MuiFormHelperText-root': { fontFamily: 'var(--sans)', fontSize: '0.78rem' }
+                            }}
+                          />
+                        </Grid>
+                      </Grid>
+                    </Box>
+                  )}
+                </Box>
+              )}
+            </Box>
+
             {/* Crawler Settings Card */}
             <Box className="glass-panel" sx={{ p: 4, borderRadius: '20px' }}>
               <Box sx={{ display: 'flex', alignItems: 'center', gap: 1.5, mb: 3 }}>

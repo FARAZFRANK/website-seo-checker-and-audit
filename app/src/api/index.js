@@ -130,4 +130,15 @@ export const generateSeoMetaAi = async (title, content, keyword) => {
   return response.data;
 };
 
+export const getSitemapMetadata = async () => {
+  const response = await apiClient.get('sitemap/metadata');
+  return response.data;
+};
+
+export const clearSitemapCache = async () => {
+  const response = await apiClient.post('sitemap/clear-cache');
+  return response.data;
+};
+
 export default apiClient;
+

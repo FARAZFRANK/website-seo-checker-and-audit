@@ -1,30 +1,22 @@
-=== Frank Website SEO Checker And Audit ===
-Contributors: FARAZFRANK
-Tags: seo, seo plugin, woocommerce seo, xml sitemap, schema
+=== Website SEO Checker & Site Audit – On-Page SEO, Schema Markup, Sitemap & Redirects ===
+Contributors: awordpresslife, razipathhan, hanif0991, muhammadshahid, fkfaisalkhan007, sharikkhan007, zishlife, FARAZFRANK
+Tags: seo, seo audit, schema, xml sitemap, redirects
 Requires at least: 5.8
-Tested up to: 7.0
+Tested up to: 7.1
 Requires PHP: 7.4
-Stable tag: 1.1.0
+Stable tag: 1.1.1
 License: GPLv2 or later
 License URI: https://www.gnu.org/licenses/gpl-2.0.html
 
-A complete on-page SEO audit plugin with a React dashboard. Crawl pages, detect issues, track links, and monitor SEO health.
+On-page SEO audits, JSON-LD schema, XML sitemaps, 301 redirects, 404 monitoring, and broken link checking for WordPress. All features included free.
 
 == Description ==
 
-**Frank Website SEO Checker And Audit** is a powerful, all-in-one **WordPress SEO plugin** designed to help you rank higher in search engines, boost organic traffic, and optimize your website like a professional. Whether you are a beginner or an advanced user, our complete **Search Engine Optimization (SEO)** toolkit provides a modern, single-page application (SPA) dashboard inside your WordPress admin to run comprehensive **on-page SEO audits** across your entire site.
+**Frank Website SEO Checker And Audit** is a WordPress SEO plugin that audits your published posts and pages, reports on-page SEO issues, and generates the technical output search engines rely on: JSON-LD schema markup, meta tags, XML sitemaps, and breadcrumbs. It also monitors broken links and 404 errors and lets you fix them with 301 redirects from the same dashboard.
 
-Unlike many other SEO solutions that lock essential functionality behind premium upgrades or expensive subscriptions, this plugin gives you a complete, fully-featured toolkit right out of the box. We believe great SEO should be accessible to everyone. Enjoy advanced **Schema markup generation**, **WooCommerce SEO**, **Local SEO**, automated **XML sitemaps**, **404 monitoring**, and **301 redirects** without hitting a paywall!
+Every feature listed below is included in the free version. There is no premium tier or paid upgrade.
 
-= Why Choose Frank SEO Checker & Audit? =
-
-When evaluating SEO solutions, you might notice that many free plugins only offer basic metadata editing. Here is what makes this the perfect **SEO analyzer** and optimization plugin for your WordPress website:
-
-* **Fully Featured, No Upsells:** From Local Business SEO to WooCommerce Product Schema, everything is included. Get access to a professional suite of tools to improve your search rankings.
-* **Modern React Dashboard:** The administration panel is built using React, offering a lightning-fast, responsive, glassmorphic design. Manage your **technical SEO** without constant page reloads.
-* **Zero Front-End Bloat:** The dashboard and scanning engine run exclusively in the WordPress backend. Your website's public-facing speed and Core Web Vitals remain completely unaffected.
-* **Asynchronous Background Audits:** Scanning your site happens efficiently in the background. You can navigate away from the page, and the SEO checker will continue auditing your content.
-* **All-in-One SEO Toolkit:** It replaces the need for multiple separate plugins by offering a **Redirect Manager**, **404 Error Log**, **XML Sitemaps generator**, and an **AI Bot Blocker** all in a single, cohesive package.
+The audit runs entirely inside your WordPress admin on your own server. It does not send your content to third-party services.
 
 = Key SEO Features & Functionality =
 
@@ -43,17 +35,62 @@ When evaluating SEO solutions, you might notice that many free plugins only offe
 * **Audit History & Bulk Actions** — Logs every scan and status change with timestamps. Select and delete multiple page audits or mark issues as "Fixed" or "Ignored".
 * **Extensive Settings Panel** — Complete control over crawl depth, crawl interval, schedule frequency, and the ability to toggle specific global integrations on or off.
 
+= SEO Audit =
+
+* Run a global audit of all published posts and pages in one click, or schedule automatic scans daily, weekly, or monthly.
+* Each page receives a SEO score between 0 and 100, with a breakdown of detected errors, warnings, and notices — such as missing meta titles, missing meta descriptions, heading structure problems, and missing image alt attributes.
+* Track internal and outbound links on every audited page, including HTTP status verification, so broken links and 404 responses are caught early.
+* Scans run asynchronously in the background: you can navigate away while the audit continues, watch live progress, or cancel a scan at any time.
+* Receive an HTML audit report by email when scheduled scans finish, with support for multiple recipients.
+* Review audit history with timestamps, re-scan a single page on demand, and use bulk actions to delete audits or mark issues as Fixed or Ignored.
+
+= Schema Markup =
+
+* Generate LocalBusiness JSON-LD schema from your business name, address, phone number, and business type.
+* Output WooCommerce Product schema (JSON-LD) and OpenGraph product pricing tags automatically on product pages.
+* Create custom JSON-LD schema for individual posts and pages.
+* Detect WordPress FAQ blocks (including Yoast and Rank Math FAQ blocks) and generate matching FAQ schema automatically.
+
+= Meta Tags and Social Sharing =
+
+* Fix missing or duplicated meta titles and meta descriptions flagged by the audit using the built-in editors.
+* Override OpenGraph and Twitter card tags per page through the social media settings screen.
+
+= Sitemaps and Indexing =
+
+* Generate a dynamic XML sitemap that stays up to date as you publish new content, helping Google and Bing discover and index your pages.
+* Output SEO-friendly breadcrumbs for site navigation and search engine understanding.
+
+= Redirects and Error Monitoring =
+
+* Log 404 Not Found requests as they happen and create 301 permanent redirects to recover traffic from moved or deleted URLs.
+
+= Additional Tools =
+
+* Fill in missing image alt attributes automatically, using the post title or keyword as the fallback value.
+* Optionally block known AI scraper bots from crawling your site.
+* Enable or disable each major integration individually in Settings.
+
+= Dashboard =
+
+* All tools run in a single-page admin dashboard built with React, including light/dark mode, sortable tables, column visibility controls, score-range filtering, and a visual scan progress bar.
+* The scanner and dashboard operate in the admin area; public-facing pages only receive the generated meta tags, schema output, and sitemap files described above.
+
 = How It Works =
 
 1. Navigate to **Frank SEO Audit** in your WordPress admin sidebar.
 2. Click **Run Global Audit** to crawl your published content, or set up a scheduled scan in the settings.
-3. Review your SEO scores, errors, and warnings in the dashboard table.
-4. Click **View Details** on any page to see a full breakdown of issues and links.
-5. Fix issues using the built-in meta editors, or mark them as ignored to track your remediation progress.
+3. Review SEO scores, errors, warnings, and link statuses in the dashboard table.
+4. Open **View Details** on any page for the full issue and link breakdown.
+5. Fix issues with the built-in meta editors, or mark them as ignored to track remediation progress.
+
+= Privacy =
+
+All auditing is performed locally on your own server. No website data is sent to external APIs or third-party services. The only optional external connection is Google Analytics 4, which activates solely if you enter a GA4 Tracking ID in the settings yourself.
 
 == Installation ==
 
-1. Upload the `frank-website-seo-checker-and-audit` folder to the `/wp-content/plugins/` directory.
+1. In your WordPress admin, go to Plugins > Add New, search for "Website SEO Checker", then click Install Now. Alternatively, upload the `frank-website-seo-checker-and-audit` folder to the `/wp-content/plugins/` directory.
 2. Activate the plugin through the **Plugins** menu in WordPress.
 3. Navigate to **Frank SEO Audit** in the admin sidebar to begin auditing.
 
@@ -73,52 +110,56 @@ The source code for the React single-page application is included inside the plu
 == Frequently Asked Questions ==
 
 = What post types does the plugin audit? =
-The plugin audits all published **posts** and **pages** by default.
+All published **posts** and **pages** are audited by default.
 
 = How is the SEO score calculated? =
-The score starts at 100 and deducts points for each issue found: -15 per error, -5 per warning, and -2 per notice. The score is clamped between 0 and 100.
+Each page starts at 100 points. Points are deducted per detected issue: -15 for each error, -5 for each warning, and -2 for each notice. The final score is clamped between 0 and 100.
 
 = Is this plugin compatible with my theme and page builders? =
-Yes! The plugin works completely independent of your theme. It is fully compatible with Gutenberg, Elementor, Divi, Beaver Builder, and all other major WordPress page builders.
+Yes. The plugin works independently of your theme and is compatible with Gutenberg, Elementor, Divi, Beaver Builder, and other major WordPress page builders.
 
 = Does this plugin work with WooCommerce? =
-Absolutely. Our plugin automatically detects WooCommerce products and generates proper Product Schema (JSON-LD) and OpenGraph pricing metadata out of the box.
+Yes. When WooCommerce products are detected, the plugin outputs Product schema (JSON-LD) and OpenGraph pricing metadata automatically.
 
 = Will this plugin slow down my website? =
-No. All scanning processes and the React dashboard run exclusively in the WordPress backend. The frontend integrations (like meta tags and sitemaps) are highly optimized, caching effectively without relying on heavy frameworks. Your public-facing site speed remains unaffected.
+Scanning runs asynchronously in the WordPress admin, so audits continue in the background even if you close the tab. Public-facing pages receive only generated output such as meta tags, schema markup, and the XML sitemap.
 
 = Can I use this plugin alongside other SEO plugins? =
-While you can, we strongly recommend disabling other SEO plugins (such as Yoast, Rank Math, or AIOSEO) when using Frank SEO Checker & Audit. Running multiple SEO plugins simultaneously can result in duplicate meta tags and conflicting Schema markup, which may confuse search engines.
+You can, but it is not recommended. Running multiple SEO plugins together can produce duplicate meta tags and conflicting schema markup, which may confuse search engines. If you switch from another SEO plugin (such as Yoast, Rank Math, or AIOSEO), disable its overlapping modules first.
 
 = Do I need to be an SEO expert to use this plugin? =
-Not at all. The plugin is designed to be incredibly user-friendly for beginners. The built-in scanner provides clear, actionable recommendations and highlights exact errors so you know exactly what to fix.
+No. The audit lists each issue with a clear explanation of what to fix, so beginners can work through errors and warnings step by step.
 
 = Is there a premium or "Pro" version I have to pay for? =
-No! We believe in providing a complete SEO toolkit for free. Advanced features like Local Business SEO, WooCommerce integrations, Schema generation, and Redirects are included at no extra cost.
+No. All features — including Local Business schema, WooCommerce integration, schema generation, sitemaps, and redirects — are included in the free version.
 
 = Does it automatically generate a sitemap? =
-Yes. The plugin includes a dynamic XML Sitemap engine that automatically maintains an up-to-date map of your content to help Google and Bing index your site faster.
+Yes. The plugin includes a dynamic XML sitemap engine that keeps an up-to-date map of your content for Google, Bing, and other search engines.
 
 = Can I re-audit a single page? =
-Yes. On the page details screen, you can click to re-scan an individual page without having to run a full global audit of your entire site.
+Yes. On the page details screen you can re-scan an individual page without running a full global audit.
 
 = Does this plugin send my website data to external servers? =
-No. All auditing is performed locally on your server. No data is sent to external APIs or third-party services. The only external connection is Google Analytics 4, which is strictly optional and only activates if you manually enter your GA4 Tracking ID in the settings.
+No. All auditing is performed locally on your server. No data is sent to external APIs or third-party services. The only external connection is Google Analytics 4, which is strictly optional and activates only if you manually enter your GA4 Tracking ID in the settings.
 
 = How does the AI Bot Blocker work? =
-When enabled, the AI Bot Blocker adds specific directives to your site to deter known AI scrapers (like ChatGPT, Claude, and others) and unauthorized bots from crawling your content, protecting your intellectual property.
+When enabled, the AI Bot Blocker adds crawl directives to your site intended to deter known AI scrapers (such as ChatGPT, Claude, and others) from crawling your content. Compliance depends on each bot respecting those directives.
 
 = What PHP version is required? =
-The plugin requires PHP 7.4 or higher to ensure optimal performance and security.
+PHP 7.4 or higher.
 
 == Screenshots ==
 
-1. Dashboard overview with SEO score summary cards and audited pages table.
-2. Page detail view showing detected SEO issues and their severity.
-3. Link audit panel displaying inbound and outbound links with status codes.
-4. Settings panel for configuring audit behavior.
+1. SEO analysis overview dashboard with per-page audit scores
+2. Global audit configuration options
+3. Audit scheduling and email report preferences
+4. Global feature integration toggles in Settings
 
 == Changelog ==
+
+= 1.1.1 =
+* [2026-08-24]
+* Tested plugin with latest WordPress v7.1
 
 = 1.1.0 =
 * [2026-06-11]
@@ -126,28 +167,28 @@ The plugin requires PHP 7.4 or higher to ensure optimal performance and security
 * Refactored readme.txt for high SEO visibility with keyword-rich feature descriptions.
 * Added a detailed "Frequently Asked Questions" section covering top SEO questions.
 
- = 1.0.9 =
- * [2026-06-10]
- * Refactored the scanning process to run entirely as an asynchronous background job, preventing timeouts when switching browser tabs.
- * Updated dashboard UI to intelligently poll and resume scanning progress if the user navigates away and comes back.
+= 1.0.9 =
+* [2026-06-10]
+* Refactored the scanning process to run entirely as an asynchronous background job, preventing timeouts when switching browser tabs.
+* Updated dashboard UI to intelligently poll and resume scanning progress if the user navigates away and comes back.
 
- = 1.0.8 =
- * [2026-06-10]
- * Added a collapse toggle button to the main dashboard sidebar for a cleaner UI experience.
- 
- = 1.0.7 =
- * [2026-06-10]
- * Added "Global Features Integration" toggles in Settings so admins can easily disable major components.
- * Updated "Comparison" tab to showcase newly added features.
- 
- = 1.0.6 =
- * [2026-06-10]
- * Added WooCommerce SEO tags (Product Schema and OpenGraph Pricing).
- * Added Local Business SEO settings and Auto-Schema Generation.
- * Added Advanced Social Media Override UI (OpenGraph/Twitter).
- * Added Missing Image Alt Tag Auto-injector (`the_content` filter).
- * Added Custom JSON-LD Schema builder for posts/pages.
- * Added WordPress FAQ blocks Auto-Schema Generation (Yoast & Rank Math detection).
+= 1.0.8 =
+* [2026-06-10]
+* Added a collapse toggle button to the main dashboard sidebar for a cleaner UI experience.
+
+= 1.0.7 =
+* [2026-06-10]
+* Added "Global Features Integration" toggles in Settings so admins can easily disable major components.
+* Updated "Comparison" tab to showcase newly added features.
+
+= 1.0.6 =
+* [2026-06-10]
+* Added WooCommerce SEO tags (Product Schema and OpenGraph Pricing).
+* Added Local Business SEO settings and Auto-Schema Generation.
+* Added Advanced Social Media Override UI (OpenGraph/Twitter).
+* Added Missing Image Alt Tag Auto-injector (`the_content` filter).
+* Added Custom JSON-LD Schema builder for posts/pages.
+* Added WordPress FAQ blocks Auto-Schema Generation (Yoast & Rank Math detection).
 
 = 1.0.5 =
 * June 9, 2026
@@ -195,7 +236,7 @@ The plugin requires PHP 7.4 or higher to ensure optimal performance and security
 == Upgrade Notice ==
 
 = 1.1.0 =
-Major SEO and Search visibility update. Adds comprehensive documentation, expanded FAQs, and guarantees 100% adherence to WP guidelines.
+Readme documentation refresh with expanded FAQs covering setup, scoring, privacy, and compatibility.
 
 = 1.0.9 =
 Major refactor for the global audit scanner. It now runs as a stable asynchronous background job, fixing timeout and tab-switching issues.
